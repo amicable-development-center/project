@@ -1,0 +1,56 @@
+# 빌드 결과물
+dist/
+build/
+out/
+
+# 의존성 모듈
+node_modules/
+
+# 캐시 파일들
+.cache/
+.eslintcache
+.parcel-cache/
+
+# 환경 설정 파일들
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 로그 파일들
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 임시 파일들
+.DS_Store
+.vscode/settings.json
+.idea/
+
+# 빌드 도구 설정 (필요시)
+# vite.config.ts
+# tsconfig.json
+# eslint.config.mjs
+
+# 자동 생성 타입 파일들
+*.d.ts
+!src/**/*.d.ts
+
+# 테스트 커버리지
+coverage/
+
+# Storybook 빌드
+storybook-static/
+
+# 공용 자산 파일들 (JS 로직이 없는 경우)
+public/
+src/assets/
+
+# 프로덕션 번들 분석
+stats.html
+
+# Vercel/Netlify 배포 관련
+.vercel/
+.netlify/
