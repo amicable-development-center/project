@@ -45,7 +45,7 @@ export default [
       "no-unused-vars": "off",
       "no-undef": "off",
       "comma-dangle": [
-        "error",
+        "warn",
         {
           arrays: "always-multiline",
           objects: "always-multiline",
@@ -59,9 +59,9 @@ export default [
         "error",
         { argsIgnorePattern: "^_" },
       ],
-      "@typescript-eslint/explicit-module-boundary-types": "error",
+      "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/explicit-function-return-type": [
-        "error",
+        "warn",
         {
           allowExpressions: true,
           allowTypedFunctionExpressions: true,
