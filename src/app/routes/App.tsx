@@ -23,7 +23,7 @@ function App(): JSX.Element {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<UserProfilePage />} />
-        <Route path="/project/list" element={<ProjectListPage />} />
+        <Route path="/project" element={<ProjectListPage />} />
         <Route path="/project/insert" element={<ProjectInsertPage />} />
         <Route path="/project/:id" element={<ProjectDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
