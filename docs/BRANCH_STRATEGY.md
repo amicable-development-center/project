@@ -152,7 +152,7 @@ git branch -d feat/auth
 
 ### 커밋 메시지 형식
 ```
-type(scope): subject
+type(scope: 생략 가능): subject
 
 body (선택사항)
 
