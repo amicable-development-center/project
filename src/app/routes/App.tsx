@@ -16,6 +16,8 @@ const ProjectDetailPage = lazy(
 const ProjectInsertPage = lazy(
   () => import("@pages/project-insert/ui/ProjectInsertPage")
 );
+const LoginPage = lazy(() => import("@pages/login/ui/LoginPage"));
+const SignUpPage = lazy(() => import("@pages/signup/ui/SignUpPage"));
 
 function App(): JSX.Element {
   return (
@@ -26,6 +28,8 @@ function App(): JSX.Element {
         <Route path="/project" element={<ProjectListPage />} />
         <Route path="/project/insert" element={<ProjectInsertPage />} />
         <Route path="/project/:id" element={<ProjectDetailPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
