@@ -9,6 +9,7 @@ React + TypeScript + Vite 기반의 FSD(Feature-Sliced Design) 아키텍처를 �
 - [FSD 아키텍처](#-fsd-아키텍처)
 - [코드 품질 관리](#-코드-품질-관리)
 - [개발 환경 설정](#-개발-환경-설정)
+- [브랜치 전략 & CI/CD](#-브랜치-전략--cicd)
 - [커밋 컨벤션](#-커밋-컨벤션)
 - [개발 가이드라인](#-개발-가이드라인)
 
@@ -164,6 +165,34 @@ pnpm lint
 # Prettier 포매팅
 pnpm format
 ```
+
+## 🔀 브랜치 전략 & CI/CD
+
+### 브랜치 구조
+
+```
+main (Production)
+├── develop (Staging)
+│   ├── feat/auth/tkyoun0421
+│   ├── feat/user-profile/developer2
+│   └── fix/login-bug/tkyoun0421
+```
+
+### 워크플로우
+
+1. **기능 개발**: `feat/기능명/깃허브아이디` 브랜치에서 개발
+2. **스테이징**: `develop` 브랜치로 PR → Vercel Preview 자동 배포
+3. **프로덕션**: `develop` → `main` PR → Vercel Production 자동 배포
+
+### CI/CD 파이프라인
+
+- **CI**: 타입체크, 린트, 포맷, 빌드, 보안 검사
+- **CD**: Vercel 자동 배포 (develop: Preview, main: Production)
+
+### 관련 문서
+
+- [브랜치 전략 상세 가이드](./docs/BRANCH_STRATEGY.md)
+- [GitHub Actions CI/CD 설정](./.github/workflows/README.md)
 
 ## 📝 커밋 컨벤션
 

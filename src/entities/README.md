@@ -1,346 +1,253 @@
-# Entities Layer
+# Features Layer
 
-**Read (조회) 로직**을 담당하는 도메인 엔티티 계층입니다.
+**CUD (Create, Update, Delete) 로직**을 담당하는 기능 중심 계층입니다.
 
 ## 🎯 핵심 개념
 
-Entities는 **데이터 조회와 표시**를 담당합니다:
-- ✅ **Read**: 데이터 조회 및 표시
-- ✅ **Display**: 읽기 전용 UI 컴포넌트
-- ✅ **Model**: 비즈니스 도메인 모델
-- ❌ **Mutation**: 데이터 변경 로직은 Features에서 담당
+Features는 **사용자의 액션과 상태 변경**을 담당합니다:
+- ✅ **Create**: 새로운 데이터 생성
+- ✅ **Update**: 기존 데이터 수정  
+- ✅ **Delete**: 데이터 삭제
+- ❌ **Read**: 읽기 전용 로직은 Entities에서 담당
 
 ## 📁 구조
 
 ```
-entities/
-├── user/
+features/
+├── auth/
 │   ├── api/
-│   │   └── userApi.ts
+│   │   └── authApi.ts
 │   ├── hooks/
-│   │   └── useUser.ts
-│   ├── queries/
-│   │   └── userQueries.ts
+│   │   └── useLogin.ts
+│   ├── queries/    
+│   │   └── authQueries.ts
 │   ├── types/
-│   │   └── User.ts
+│   │   └── Auth.ts
 │   ├── ui/
-│   │   ├── UserCard.tsx
-│   │   ├── UserAvatar.tsx
-│   │   └── UserList.tsx
+│   │   ├── LoginForm.tsx
+│   │   └── LogoutButton.tsx
 │   ├── libs/
-│   │   └── userHelpers.ts
+│   │   └── authValidation.ts
 │   └── index.ts
 ├── post/
 │   ├── api/
 │   │   └── postApi.ts
-│   ├── queries/
-│   │   └── postQueries.ts
-│   ├── types/
-│   │   └── Post.ts
+│   ├── hooks/
+│   │   └── useCreatePost.ts
 │   ├── ui/
-│   │   ├── PostCard.tsx
-│   │   └── PostList.tsx
+│   │   ├── CreatePostForm.tsx
+│   │   └── EditPostForm.tsx
 │   └── index.ts
 └── comment/
-    ├── api/
-    │   └── commentApi.ts
+    ├── hooks/
+    │   ├── useCreateComment.ts
+    │   └── useDeleteComment.ts
     ├── ui/
-    │   ├── CommentItem.tsx
-    │   └── CommentList.tsx
-    ├── types/
-    │   └── Comment.ts
+    │   ├── CommentForm.tsx
+    │   └── DeleteCommentButton.tsx
     └── index.ts
 ```
 
 ## 📄 폴더별 표준 구조
 
-각 Entity는 다음과 같은 표준 구조를 따릅니다:
+각 Feature는 다음과 같은 표준 구조를 따릅니다:
 
 ```
-entity-name/
-├── api/          # API 요청 로직 (조회 전용)
-├── hooks/        # 커스텀 훅 (데이터 페칭)
-├── queries/      # React Query 설정
+feature-name/
+├── api/          # API 요청 로직 (mutation)
+├── hooks/        # 커스텀 훅 (액션 중심)
+├── queries/      # React Query Mutations
 ├── types/        # TypeScript 타입 정의
-├── ui/           # UI 컴포넌트 (표시 전용)
+├── ui/           # UI 컴포넌트 (폼, 버튼 등)
 ├── libs/         # 유틸리티 함수
 └── index.ts      # 외부 노출 인터페이스
 ```
 
 ## 🔧 사용 예시
 
-### 1. 사용자 Entity (user)
+### 1. 인증 Feature (auth)
 
 ```typescript
-// entities/user/types/User.ts
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  createdAt: string;
-}
-
-export interface UserListParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-}
-```
-
-```typescript
-// entities/user/api/userApi.ts
-export const userApi = {
-  getUser: async (id: string): Promise<User> => {
-    const response = await fetch(`/api/users/${id}`);
+// features/auth/api/authApi.ts
+export const authApi = {
+  login: async (credentials: LoginCredentials): Promise<User> => {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
     return response.json();
   },
   
-  getUserList: async (params: UserListParams): Promise<User[]> => {
-    const searchParams = new URLSearchParams(params);
-    const response = await fetch(`/api/users?${searchParams}`);
-    return response.json();
+  logout: async (): Promise<void> => {
+    await fetch('/api/auth/logout', { method: 'POST' });
   },
 };
 ```
 
 ```typescript
-// entities/user/queries/userQueries.ts
-import { useQuery } from '@tanstack/react-query';
-import { userApi } from '../api/userApi';
+// features/auth/hooks/useLogin.ts
+import { useMutation } from '@tanstack/react-query';
+import { authApi } from '../api/authApi';
 
-export const userQueries = {
-  user: (id: string) => ({
-    queryKey: ['user', id],
-    queryFn: () => userApi.getUser(id),
-  }),
+export const useLogin = () => {
+  return useMutation({
+    mutationFn: authApi.login,
+    onSuccess: (user) => {
+      // 로그인 성공 처리
+      localStorage.setItem('token', user.token);
+    },
+    onError: (error) => {
+      // 에러 처리
+      console.error('Login failed:', error);
+    },
+  });
+};
+```
+
+```typescript
+// features/auth/ui/LoginForm.tsx
+import { useLogin } from '../hooks/useLogin';
+
+const LoginForm = (): JSX.Element => {
+  const loginMutation = useLogin();
   
-  users: (params: UserListParams) => ({
-    queryKey: ['users', params],
-    queryFn: () => userApi.getUserList(params),
-  }),
-};
-```
+  const handleSubmit = (formData: LoginCredentials) => {
+    loginMutation.mutate(formData);
+  };
 
-```typescript
-// entities/user/hooks/useUser.ts
-import { useQuery } from '@tanstack/react-query';
-import { userQueries } from '../queries/userQueries';
-
-export const useUser = (id: string) => {
-  return useQuery(userQueries.user(id));
-};
-
-export const useUserList = (params: UserListParams = {}) => {
-  return useQuery(userQueries.users(params));
-};
-```
-
-```typescript
-// entities/user/ui/UserCard.tsx
-import { User } from '../types/User';
-
-interface UserCardProps {
-  user: User;
-  variant?: 'default' | 'compact';
-}
-
-const UserCard = ({ user, variant = 'default' }: UserCardProps): JSX.Element => {
   return (
-    <div className={`user-card ${variant}`}>
-      {user.avatar && (
-        <img src={user.avatar} alt={user.name} className="user-avatar" />
-      )}
-      <div className="user-info">
-        <h3>{user.name}</h3>
-        <p>{user.email}</p>
-      </div>
-    </div>
+    <form onSubmit={handleSubmit}>
+      {/* 폼 구현 */}
+      <button 
+        type="submit" 
+        disabled={loginMutation.isPending}
+      >
+        {loginMutation.isPending ? '로그인 중...' : '로그인'}
+      </button>
+    </form>
   );
 };
 
-export { UserCard };
+export { LoginForm };
+```
+
+### 2. 게시물 생성 Feature (post)
+
+```typescript
+// features/post/hooks/useCreatePost.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { postApi } from '../api/postApi';
+
+export const useCreatePost = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: postApi.create,
+    onSuccess: () => {
+      // 캐시 무효화하여 목록 새로고침
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+};
 ```
 
 ```typescript
-// entities/user/ui/UserList.tsx
-import { useUserList } from '../hooks/useUser';
-import { UserCard } from './UserCard';
+// features/post/ui/CreatePostForm.tsx
+import { useCreatePost } from '../hooks/useCreatePost';
 
-interface UserListProps {
-  search?: string;
-}
-
-const UserList = ({ search }: UserListProps): JSX.Element => {
-  const { data: users, isLoading, error } = useUserList({ search });
-
-  if (isLoading) return <div>사용자 목록을 로딩중...</div>;
-  if (error) return <div>에러가 발생했습니다</div>;
-  if (!users?.length) return <div>사용자가 없습니다</div>;
+const CreatePostForm = (): JSX.Element => {
+  const createPostMutation = useCreatePost();
+  
+  const handleSubmit = (postData: CreatePostRequest) => {
+    createPostMutation.mutate(postData);
+  };
 
   return (
-    <div className="user-list">
-      {users.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}
-    </div>
+    <form onSubmit={handleSubmit}>
+      {/* 게시물 생성 폼 */}
+    </form>
   );
 };
 
-export { UserList };
-```
-
-### 2. 게시물 Entity (post)
-
-```typescript
-// entities/post/ui/PostCard.tsx
-import { Post } from '../types/Post';
-
-interface PostCardProps {
-  post: Post;
-  showAuthor?: boolean;
-}
-
-const PostCard = ({ post, showAuthor = true }: PostCardProps): JSX.Element => {
-  return (
-    <article className="post-card">
-      <h2>{post.title}</h2>
-      <p>{post.excerpt}</p>
-      {showAuthor && (
-        <div className="post-meta">
-          <span>작성자: {post.author.name}</span>
-          <time>{post.createdAt}</time>
-        </div>
-      )}
-    </article>
-  );
-};
-
-export { PostCard };
+export { CreatePostForm };
 ```
 
 ### 3. Export 구조
 
 ```typescript
-// entities/user/index.ts
-export { UserCard } from './ui/UserCard';
-export { UserList } from './ui/UserList';
-export { UserAvatar } from './ui/UserAvatar';
-export { useUser, useUserList } from './hooks/useUser';
-export type { User, UserListParams } from './types/User';
+// features/auth/index.ts
+export { LoginForm } from './ui/LoginForm';
+export { LogoutButton } from './ui/LogoutButton';
+export { useLogin } from './hooks/useLogin';
+export { useLogout } from './hooks/useLogout';
+export type { LoginCredentials } from './types/Auth';
 ```
 
 ## 📋 개발 가이드라인
 
-### 1. Entities vs Features 구분
+### 1. Features vs Entities 구분
 
-| 구분 | Entities (R) | Features (CUD) |
-|------|--------------|----------------|
-| **목적** | 데이터 표시 | 데이터 변경 |
-| **상태** | 읽기 전용 | 로딩, 에러, 성공 |
-| **컴포넌트** | 카드, 목록, 상세 | 폼, 버튼, 모달 |
-| **React Query** | useQuery | useMutation |
-| **예시** | UserCard, PostList | LoginForm, DeleteButton |
+| 구분 | Features (CUD) | Entities (R) |
+|------|----------------|--------------|
+| **목적** | 데이터 변경 | 데이터 표시 |
+| **액션** | 폼 제출, 버튼 클릭 | 데이터 조회, 렌더링 |
+| **상태** | 로딩, 에러, 성공 | 읽기 전용 |
+| **예시** | 로그인 폼, 삭제 버튰 | 사용자 카드, 목록 |
 
 ### 2. 명명 규칙
-- 폴더명: 도메인명 (예: `user`, `post`, `comment`)
-- 컴포넌트명: 엔티티 + 용도 (예: `UserCard`, `PostList`)
-- 훅명: `use` + 엔티티명 (예: `useUser`, `usePostList`)
+- 폴더명: kebab-case (예: `user-management`, `post-editor`)
+- 컴포넌트명: 액션 중심 (예: `CreateUserForm`, `DeleteButton`)
+- 훅명: `use` + 액션 (예: `useCreateUser`, `useDeletePost`)
 
 ### 3. React Query 패턴
 ```typescript
-// Query 중심 (데이터 조회)
-const { data, isLoading, error } = useQuery({
-  queryKey: ['entity', id],
-  queryFn: () => api.get(id),
+// Mutation 중심 (상태 변경)
+const createMutation = useMutation({
+  mutationFn: api.create,
+  onSuccess: () => {
+    queryClient.invalidateQueries(['entities']);
+  },
 });
 ```
 
-### 4. UI 컴포넌트 특징
-- **순수 컴포넌트**: props를 받아서 렌더링만 담당
-- **재사용성**: 다양한 컨텍스트에서 재사용 가능
-- **변형 지원**: variant props로 다양한 스타일 지원
+### 4. 의존성 규칙
+- Entities, Shared 계층만 참조 가능
+- 다른 Features 직접 참조 금지
+- Pages, Widgets, App 계층 참조 금지
 
-### 5. 의존성 규칙
-- Shared 계층만 참조 가능
-- 다른 Entities, Features, Widgets, Pages, App 계층 참조 금지
-- 단, 같은 Entity 내부는 자유롭게 참조 가능
+## 🚀 Feature 유형별 예시
 
-## 🎨 Entity 유형별 예시
-
-### 데이터 표시 컴포넌트
+### 폼 기반 Feature
 ```typescript
-// 단순 데이터 표시
-const UserProfile = ({ user }: { user: User }): JSX.Element => {
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-    </div>
-  );
+// 사용자 입력을 받는 기능
+const UserRegistrationForm = (): JSX.Element => {
+  const registerMutation = useRegister();
+  // 폼 로직
 };
 ```
 
-### 목록 컴포넌트
+### 액션 기반 Feature  
 ```typescript
-// 데이터 목록 표시
-const PostList = (): JSX.Element => {
-  const { data: posts } = usePostList();
-  
-  return (
-    <div>
-      {posts?.map(post => (
-        <PostCard key={post.id} post={post} />
-      ))}
-    </div>
-  );
+// 버튼 클릭으로 실행되는 기능
+const DeletePostButton = ({ postId }: Props): JSX.Element => {
+  const deleteMutation = useDeletePost();
+  // 삭제 로직
 };
 ```
 
-### 상세 정보 컴포넌트
+### 복합 Feature
 ```typescript
-// 상세 정보 표시
-const UserDetail = ({ userId }: { userId: string }): JSX.Element => {
-  const { data: user } = useUser(userId);
-  
-  if (!user) return <div>사용자를 찾을 수 없습니다</div>;
-  
-  return (
-    <div>
-      {/* 상세 정보 렌더링 */}
-    </div>
-  );
+// 여러 액션을 포함하는 기능
+const PostEditor = (): JSX.Element => {
+  const saveMutation = useSavePost();
+  const publishMutation = usePublishPost();
+  // 편집기 로직
 };
-```
-
-## 🔄 컴포넌트 합성 패턴
-
-```typescript
-// 조합 가능한 컴포넌트 설계
-const UserCard = ({ user }: { user: User }): JSX.Element => (
-  <div className="user-card">
-    <UserAvatar user={user} />
-    <UserInfo user={user} />
-    <UserStats user={user} />
-  </div>
-);
-
-const UserAvatar = ({ user }: { user: User }): JSX.Element => (
-  <img src={user.avatar} alt={user.name} />
-);
-
-const UserInfo = ({ user }: { user: User }): JSX.Element => (
-  <div>
-    <h3>{user.name}</h3>
-    <p>{user.email}</p>
-  </div>
-);
 ```
 
 ## ⚠️ 주의사항
 
-- **읽기 전용**: 데이터 변경 로직은 포함하지 마세요
-- **순수성**: 사이드 이펙트 없는 순수 컴포넌트로 작성하세요
-- **재사용성**: 다양한 컨텍스트에서 사용할 수 있도록 설계하세요
-- **타입 안전성**: 모든 Entity에 명확한 TypeScript 타입을 정의하세요
-- **성능**: 불필요한 리렌더링을 방지하는 최적화를 고려하세요 
+- **읽기 전용 로직은 Entities로**: 데이터 조회/표시는 Features에 포함하지 마세요
+- **단일 책임 원칙**: 하나의 Feature는 하나의 주요 액션을 담당해야 합니다
+- **상태 관리**: 복잡한 상태는 React Query나 Context를 활용하세요
+- **에러 처리**: 모든 mutation에 적절한 에러 처리를 포함하세요 
