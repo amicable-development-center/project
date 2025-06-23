@@ -8,11 +8,11 @@ export default defineConfig({
   plugins: [react()],
   root: "./src/app",
   build: {
-    outDir: "dist",
+    outDir: "dist"
   },
   publicDir: "src/app/public",
   server: {
-    port: 3000,
+    port: 3000
   },
   resolve: {
     alias: {
@@ -21,7 +21,7 @@ export default defineConfig({
       "@widgets": resolve(__dirname, "./src/widgets"),
       "@features": resolve(__dirname, "./src/features"),
       "@entities": resolve(__dirname, "./src/entities"),
-      "@shared": resolve(__dirname, "./src/shared"),
-    },
-  },
+      "@shared": resolve(__dirname, "./src/shared")
+    }
+  }
 });

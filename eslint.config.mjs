@@ -47,10 +47,10 @@ export default [
       "comma-dangle": [
         "warn",
         {
-          arrays: "always-multiline",
-          objects: "always-multiline",
-          imports: "always-multiline",
-          exports: "always-multiline",
+          arrays: "only-multiline",
+          objects: "only-multiline",
+          imports: "only-multiline",
+          exports: "only-multiline",
           functions: "never",
         },
       ],
@@ -177,6 +177,14 @@ export default [
       "no-restricted-imports": [
         "warn",
         {
+          paths: [
+            {
+              name: "react",
+              importNames: ["FC", "FunctionComponent"],
+              message:
+                "🚨 React.FC 사용 금지! 대신 JSX.Element 리턴 타입을 사용하세요. 예: const Component = (): JSX.Element => { ... }",
+            },
+          ],
           patterns: [
             {
               group: ["@app/*", "@pages/*", "@widgets/*", "@features/*"],
@@ -194,6 +202,14 @@ export default [
       "no-restricted-imports": [
         "warn",
         {
+          paths: [
+            {
+              name: "react",
+              importNames: ["FC", "FunctionComponent"],
+              message:
+                "🚨 React.FC 사용 금지! 대신 JSX.Element 리턴 타입을 사용하세요. 예: const Component = (): JSX.Element => { ... }",
+            },
+          ],
           patterns: [
             {
               group: ["@app/*", "@pages/*", "@widgets/*", "@features/*"],
@@ -211,6 +227,14 @@ export default [
       "no-restricted-imports": [
         "warn",
         {
+          paths: [
+            {
+              name: "react",
+              importNames: ["FC", "FunctionComponent"],
+              message:
+                "🚨 React.FC 사용 금지! 대신 JSX.Element 리턴 타입을 사용하세요. 예: const Component = (): JSX.Element => { ... }",
+            },
+          ],
           patterns: [
             {
               group: ["@app/*", "@pages/*", "@widgets/*"],
@@ -228,6 +252,14 @@ export default [
       "no-restricted-imports": [
         "warn",
         {
+          paths: [
+            {
+              name: "react",
+              importNames: ["FC", "FunctionComponent"],
+              message:
+                "🚨 React.FC 사용 금지! 대신 JSX.Element 리턴 타입을 사용하세요. 예: const Component = (): JSX.Element => { ... }",
+            },
+          ],
           patterns: [
             {
               group: ["@app/*", "@pages/*"],
@@ -245,6 +277,14 @@ export default [
       "no-restricted-imports": [
         "warn",
         {
+          paths: [
+            {
+              name: "react",
+              importNames: ["FC", "FunctionComponent"],
+              message:
+                "🚨 React.FC 사용 금지! 대신 JSX.Element 리턴 타입을 사용하세요. 예: const Component = (): JSX.Element => { ... }",
+            },
+          ],
           patterns: [
             {
               group: ["@app/*"],

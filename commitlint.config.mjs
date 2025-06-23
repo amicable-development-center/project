@@ -6,7 +6,7 @@ export default {
     "subject-case": [
       2,
       "never",
-      ["sentence-case", "start-case", "pascal-case", "upper-case"],
+      ["sentence-case", "start-case", "pascal-case", "upper-case"]
     ],
 
     "subject-full-stop": [2, "never", "."],
@@ -25,12 +25,12 @@ export default {
         "chore", // 빌드 업무, 패키지 매니저 설정 등
         "ci", // CI 설정 변경
         "build", // 빌드 시스템 변경
-        "revert", // 이전 커밋 되돌리기
-      ],
+        "revert" // 이전 커밋 되돌리기
+      ]
     ],
 
     "subject-max-length": [2, "always", 50],
 
-    "header-max-length": [2, "always", 72],
-  },
+    "header-max-length": [2, "always", 72]
+  }
 };
