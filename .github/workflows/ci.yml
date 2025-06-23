@@ -26,9 +26,6 @@ jobs:
           node-version: "20"
           cache: "pnpm"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Type check
         run: pnpm run type-check
 
