@@ -159,12 +159,12 @@ export default [
         { type: "widgets", pattern: "src/widgets/**/*" },
         {
           type: "features",
-          pattern: "src/features/*/**/*",
+          pattern: "src/features/**/*",
           capture: ["module"],
         },
         {
           type: "entities",
-          pattern: "src/entities/*/**/*",
+          pattern: "src/entities/**/*",
           capture: ["module"],
         },
         { type: "shared", pattern: "src/shared/**/*" },
@@ -189,7 +189,7 @@ export default [
     },
   },
   {
-    files: ["src/entities/*/**/*.{js,ts,jsx,tsx}"],
+    files: ["src/entities/**/*.{js,ts,jsx,tsx}"],
     rules: {
       "no-restricted-imports": [
         "warn",
@@ -203,22 +203,10 @@ export default [
           ],
         },
       ],
-      "boundaries/no-external": [
-        "warn",
-        {
-          default: "disallow",
-          rules: [
-            {
-              from: ["entities"],
-              allow: [["entities", { segment: 0, mode: "same" }], ["shared"]],
-            },
-          ],
-        },
-      ],
     },
   },
   {
-    files: ["src/features/*/**/*.{js,ts,jsx,tsx}"],
+    files: ["src/features/**/*.{js,ts,jsx,tsx}"],
     rules: {
       "no-restricted-imports": [
         "warn",
@@ -228,22 +216,6 @@ export default [
               group: ["@app/*", "@pages/*", "@widgets/*"],
               message:
                 "🚨 FSD 위반: features 계층은 상위 계층을 import할 수 없습니다!",
-            },
-          ],
-        },
-      ],
-      "boundaries/no-external": [
-        "warn",
-        {
-          default: "disallow",
-          rules: [
-            {
-              from: ["features"],
-              allow: [
-                ["features", { segment: 0, mode: "same" }],
-                ["entities"],
-                ["shared"],
-              ],
             },
           ],
         },
