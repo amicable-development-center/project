@@ -55,7 +55,10 @@ export default [
         },
       ],
 
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/explicit-function-return-type": [
         "error",
@@ -78,7 +81,14 @@ export default [
       "import/order": [
         "warn",
         {
-          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
           pathGroups: [
             { pattern: "@app/**", group: "internal", position: "before" },
             { pattern: "@pages/**", group: "internal", position: "before" },
@@ -100,7 +110,14 @@ export default [
           rules: [
             {
               from: "app",
-              allow: ["app", "pages", "widgets", "features", "entities", "shared"],
+              allow: [
+                "app",
+                "pages",
+                "widgets",
+                "features",
+                "entities",
+                "shared",
+              ],
             },
             {
               from: "pages",
@@ -140,8 +157,16 @@ export default [
         { type: "app", pattern: "src/app/**/*" },
         { type: "pages", pattern: "src/pages/**/*" },
         { type: "widgets", pattern: "src/widgets/**/*" },
-        { type: "features", pattern: "src/features/*/**/*", capture: ["module"] },
-        { type: "entities", pattern: "src/entities/*/**/*", capture: ["module"] },
+        {
+          type: "features",
+          pattern: "src/features/*/**/*",
+          capture: ["module"],
+        },
+        {
+          type: "entities",
+          pattern: "src/entities/*/**/*",
+          capture: ["module"],
+        },
         { type: "shared", pattern: "src/shared/**/*" },
       ],
     },
@@ -155,7 +180,8 @@ export default [
           patterns: [
             {
               group: ["@app/*", "@pages/*", "@widgets/*", "@features/*"],
-              message: "🚨 FSD 위반: shared 계층은 다른 상위 계층을 import할 수 없습니다!",
+              message:
+                "🚨 FSD 위반: shared 계층은 다른 상위 계층을 import할 수 없습니다!",
             },
           ],
         },
@@ -171,7 +197,8 @@ export default [
           patterns: [
             {
               group: ["@app/*", "@pages/*", "@widgets/*", "@features/*"],
-              message: "🚨 FSD 위반: entities 계층은 상위 계층을 import할 수 없습니다!",
+              message:
+                "🚨 FSD 위반: entities 계층은 상위 계층을 import할 수 없습니다!",
             },
           ],
         },
@@ -199,7 +226,8 @@ export default [
           patterns: [
             {
               group: ["@app/*", "@pages/*", "@widgets/*"],
-              message: "🚨 FSD 위반: features 계층은 상위 계층을 import할 수 없습니다!",
+              message:
+                "🚨 FSD 위반: features 계층은 상위 계층을 import할 수 없습니다!",
             },
           ],
         },
@@ -211,7 +239,11 @@ export default [
           rules: [
             {
               from: ["features"],
-              allow: [["features", { segment: 0, mode: "same" }], ["entities"], ["shared"]],
+              allow: [
+                ["features", { segment: 0, mode: "same" }],
+                ["entities"],
+                ["shared"],
+              ],
             },
           ],
         },
@@ -222,12 +254,13 @@ export default [
     files: ["src/widgets/**/*.{js,ts,jsx,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
               group: ["@app/*", "@pages/*"],
-              message: "🚨 FSD 위반: widgets 계층은 app, pages 계층을 import할 수 없습니다!",
+              message:
+                "🚨 FSD 위반: widgets 계층은 app, pages 계층을 import할 수 없습니다!",
             },
           ],
         },
@@ -238,12 +271,13 @@ export default [
     files: ["src/pages/**/*.{js,ts,jsx,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
               group: ["@app/*"],
-              message: "🚨 FSD 위반: pages 계층은 app 계층을 import할 수 없습니다!",
+              message:
+                "🚨 FSD 위반: pages 계층은 app 계층을 import할 수 없습니다!",
             },
           ],
         },

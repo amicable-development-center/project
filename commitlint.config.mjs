@@ -6,7 +6,7 @@ export default {
     "subject-case": [
       2,
       "never",
-      ["sentence-case", "start-case", "pascal-case", "upper-case"]
+      ["sentence-case", "start-case", "pascal-case", "upper-case"],
     ],
 
     "subject-full-stop": [2, "never", "."],
@@ -21,16 +21,16 @@ export default {
         "style", // 코드 포매팅, 세미콜론 누락 등
         "refactor", // 코드 리팩토링
         "perf", // 성능 개선
-        "test", // 테스트 추가/수정
+        "resolve", // 병합 충돌 등 문제 해결
         "chore", // 빌드 업무, 패키지 매니저 설정 등
         "ci", // CI 설정 변경
         "build", // 빌드 시스템 변경
-        "revert" // 이전 커밋 되돌리기
-      ]
+        "revert", // 이전 커밋 되돌리기
+      ],
     ],
 
     "subject-max-length": [2, "always", 50],
 
-    "header-max-length": [2, "always", 72]
-  }
+    "header-max-length": [2, "always", 72],
+  },
 };
