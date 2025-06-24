@@ -7,7 +7,7 @@ const ProjectInsertPage = (): JSX.Element => {
 
   return (
     <div>
-      ProjectInsertPage
+      ProjectInsertPages
       <button onClick={submit}>Firebase 임시 등록버튼</button>
     </div>
   );
