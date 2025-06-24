@@ -3,19 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import { auth, googleProvider } from "@shared/firebase/firebase";
 
-const useGoogleLogin = () => {
+const useGoogleLogin = (): { googleLogin: () => Promise<void> } => {
   const navigate = useNavigate();
 
-  const googleLogin = async () => {
+  const googleLogin = async (): Promise<void> => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
       console.log("Google 로그인 성공: ", user);
-
-      // TODO: 필요 시 Firestore에 유저 정보 저장
-
-      navigate("/"); // 로그인 성공 시 메인 페이지로 이동
+      navigate("/");
     } catch (error) {
       console.error("Google 로그인 실패: ", error);
     }

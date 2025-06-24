@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import { auth, githubProvider } from "@shared/firebase/firebase";
 
-const useGithubLogin = () => {
+// ✅ 반환 타입 명시
+const useGithubLogin = (): { githubLogin: () => Promise<void> } => {
   const navigate = useNavigate();
 
-  const githubLogin = async () => {
+  // ✅ 함수 타입 명시
+  const githubLogin = async (): Promise<void> => {
     try {
       const result = await signInWithPopup(auth, githubProvider);
       const user = result.user;
