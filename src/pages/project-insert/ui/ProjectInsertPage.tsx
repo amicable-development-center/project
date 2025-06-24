@@ -1,6 +1,6 @@
 import { type JSX } from "react";
 
-import useProjectInsert from "@features/hook/useProjectInsert";
+import useProjectInsert from "@features/projects/hook/useProjectInsert";
 
 const ProjectInsertPage = (): JSX.Element => {
   const { submit } = useProjectInsert();

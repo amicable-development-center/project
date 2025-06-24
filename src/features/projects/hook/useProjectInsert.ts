@@ -1,4 +1,4 @@
-import { insertProjectItem } from "@features/projects/projdectsApi";
+import { insertProjectItem } from "@features/projects/api/projdectsApi";
 
 import type { ProjectItemInsertReq } from "@entities/projects/types/projects";
 
