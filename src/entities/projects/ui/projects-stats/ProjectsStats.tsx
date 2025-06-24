@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 
-const ProjectStats = (): JSX.Element => {
+const ProjectsStats = (): JSX.Element => {
   const mock = [
     {
       id: "a",
@@ -61,7 +61,7 @@ const ProjectStats = (): JSX.Element => {
   );
 };
 
-export default ProjectStats;
+export default ProjectsStats;
 
 interface ProjectStatsIconProps {
   color: string;
