@@ -1,4 +1,4 @@
-export const makePagingArr = (totalCount: number) => {
+export const makePagingArr = (totalCount: number): number[] => {
   const perPage = 6;
   const lastPageNum =
     totalCount % perPage > 0
