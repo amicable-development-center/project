@@ -14,14 +14,20 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { Timestamp } from "firebase/firestore/lite";
 import type { JSX } from "react";
 import { Link } from "react-router-dom";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
+import {
+  ProjectCategory,
+  Workflow,
+  type ProjectListRes,
+} from "@entities/projects/types/projects";
 
+import { ExpectedPeriod } from "@shared/types/schedule";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
-import UserProfileAvatar from "@shared/user/ui/UserProfileAvatar";
-import UserProfileWithNamePosition from "@shared/user/ui/UserProfileWithNamePosition";
+import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
+import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
 const ProjectCard = (): JSX.Element => {
   const theme = useTheme();
@@ -29,12 +35,16 @@ const ProjectCard = (): JSX.Element => {
 
   const mock: ProjectListRes = {
     id: "1",
-    userId: "1",
-    userName: "John Doe",
+    projectOwner: {
+      id: "1",
+      name: "John Doe",
+      userRole: "frontend",
+      email: "john.doe@example.com",
+      experience: "1년 이상",
+      avatar: "https://via.placeholder.com/150",
+    },
     status: "모집중",
     title: "Project Title",
-    userRole: "frontend",
-    avatar: "https://via.placeholder.com/150",
     oneLineInfo: "Project One Line Info",
     simpleInfo: "Project Simple Info",
     techStack: [
@@ -64,9 +74,9 @@ const ProjectCard = (): JSX.Element => {
       "Emotion",
     ],
     teamSize: 4,
-    expectedPeriod: "1개월",
+    expectedPeriod: ExpectedPeriod.oneMonth,
     description: "Project Description",
-    workflow: "Project Workflow",
+    workflow: Workflow.online,
     requirements: ["React", "Node.js", "MongoDB"],
     preferentialTreatment: ["React", "Node.js", "MongoDB"],
     positions: [
@@ -74,9 +84,20 @@ const ProjectCard = (): JSX.Element => {
         position: "Frontend",
         count: 2,
         experience: "1년 이상",
+        applicants: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],
       },
     ],
     applicants: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],
+    likedUsers: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],
+    category: ProjectCategory.webDevelopment,
+    closedDate: Timestamp.now(),
+    schedules: [
+      {
+        stageName: "기획",
+        period: ExpectedPeriod.oneMonth,
+        description: "기획 단계",
+      },
+    ],
   };
 
   return (
@@ -100,15 +121,15 @@ const ProjectCard = (): JSX.Element => {
         <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
           {isMobile ? (
             <UserProfileAvatar
-              name={mock.userName}
-              userRole={mock.userRole}
-              avatar={mock.avatar}
+              name={mock.projectOwner.name}
+              userRole={mock.projectOwner.userRole}
+              avatar={mock.projectOwner.avatar}
               flexDirection="row"
             />
           ) : (
             <UserProfileWithNamePosition
-              name={mock.userName}
-              userRole={mock.userRole}
+              name={mock.projectOwner.name}
+              userRole={mock.projectOwner.userRole}
               flexDirection="row"
             />
           )}
