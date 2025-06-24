@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 
 import App from "@app/routes/App";
 import theme from "@app/styles/theme";
+import "@app/styles/global.css";
 
 import queryClient from "@shared/react-query/queryClient";
 
