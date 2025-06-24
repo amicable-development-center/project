@@ -5,9 +5,9 @@ import type { ProjectItemInsertReq } from "@entities/projects/types/projects";
 import { db } from "@shared/firebase/firebase";
 
 /** firebase projects에 item 등록 */
-export async function insertProjectItem(
+export const insertProjectItem = async (
   projectItem: ProjectItemInsertReq
-): Promise<{ success: boolean; message: string; id?: string }> {
+): Promise<{ success: boolean; message: string; id?: string }> => {
   try {
     const postsRef = collection(db, "projects");
     const docRef = await addDoc(postsRef, projectItem);
@@ -24,11 +24,11 @@ export async function insertProjectItem(
       message: "프로젝트 등록에 실패하였습니다.",
     };
   }
-}
+};
 
 /** firebase projects에 item 수정 */
-export async function updateProjectItem(): Promise<void> {
+export const updateProjectItem = async (): Promise<void> => {
   return;
   const docRef = doc(db, "coments", "test");
   await setDoc(docRef, { title: "" }, { merge: true });
-}
+};
