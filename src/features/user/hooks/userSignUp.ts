@@ -5,11 +5,13 @@ import type { UserInput } from "@shared/user/types/user";
 
 import { saveUser } from "../api/userApi";
 
-export const useSignUp = () => {
+export const useSignUp = (): {
+  signUp: (userInput: UserInput) => Promise<void>;
+} => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
 
-  const signUp = async (userInput: UserInput) => {
+  const signUp = async (userInput: UserInput): Promise<void> => {
     if (!user) return;
 
     const { name, userRole, experience, introduceMyself } = userInput;
