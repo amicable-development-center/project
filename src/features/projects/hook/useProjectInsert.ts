@@ -22,6 +22,9 @@ export default useProjectInsert;
 const TestData: ProjectItemInsertReq = {
   userId: "user1234",
   userName: "홍길동",
+  userRole: "frontend",
+  avatar: "https://via.placeholder.com/150",
+  applicants: [],
   status: "모집중",
   title: "AI 기반 음악 추천 서비스 개발",
   oneLineInfo: "AI로 사용자 취향을 분석하는 음악 추천 프로젝트입니다.",
