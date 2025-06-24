@@ -18,31 +18,25 @@ const useGithubLogin = (): { githubLogin: () => Promise<void> } => {
     } catch (error: any) {
       console.error("GitHub 로그인 실패: ", error);
 
-      if (error.code === "auth/account-exists-with-different-credential") {
-        const email = error.customData?.email;
+      if (error.code !== "auth/account-exists-with-different-credential")
+        return;
 
-        if (email) {
-          const methods = await fetchSignInMethodsForEmail(auth, email);
-          console.warn("이미 가입된 로그인 방법:", methods);
+      const email = error.customData?.email;
+      if (!email) {
+        alert("이메일 정보를 가져올 수 없습니다.");
+        return;
+      }
 
-          if (methods.length > 0) {
-            if (methods.includes("google.com")) {
-              alert(
-                "이미 Google 계정으로 가입된 이메일입니다. Google 로그인을 이용해주세요."
-              );
-            } else {
-              alert(`이미 가입된 로그인 방법: ${methods.join(", ")}`);
-            }
-          } else {
-            alert(
-              "이미 다른 로그인 방법으로 가입된 이메일입니다. 다른 로그인 방법을 사용해주세요."
-            );
-          }
-        } else {
-          alert(
-            "이미 다른 로그인 방법으로 가입된 계정입니다. 이메일 정보를 가져올 수 없습니다."
-          );
-        }
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods.length === 0) {
+        alert("이미 다른 로그인 방법으로 가입된 이메일입니다.");
+        return;
+      }
+
+      if (methods.includes("google.com")) {
+        alert("이미 Google 계정으로 가입된 이메일입니다.");
+      } else {
+        alert(`이미 가입된 로그인 방법: ${methods.join(", ")}`);
       }
     }
   };
