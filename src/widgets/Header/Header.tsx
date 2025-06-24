@@ -10,13 +10,7 @@ const Header = (): JSX.Element => {
   const user = useAuthStore((state) => state.user);
 
   return (
-    <HeaderContainer
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      p={2}
-      bgcolor="#f5f5f5"
-    >
+    <HeaderContainer>
       <h1>🔥 Project Jam</h1>
       {user ? <LogoutButton /> : <LoginButton />}
     </HeaderContainer>
@@ -29,6 +23,6 @@ const HeaderContainer = styled(Box)({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  p: 2,
-  backgroundColor: "f5f5f5",
+  padding: "0 2rem",
+  backgroundColor: "#f5f5f5",
 });
