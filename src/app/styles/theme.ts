@@ -164,15 +164,15 @@ const theme = createTheme({
       },
     },
     subtitle1: {
-      fontSize: "4.8rem",
+      fontSize: "3.2rem",
       fontWeight: 700,
       lineHeight: 1.2,
       letterSpacing: "-0.025em",
       "@media (min-width:600px)": {
-        fontSize: "5.6rem",
+        fontSize: "4rem",
       },
       "@media (min-width:960px)": {
-        fontSize: "6.4rem",
+        fontSize: "6rem",
       },
     },
     subtitle2: {

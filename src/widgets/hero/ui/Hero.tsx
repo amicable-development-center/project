@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 const Hero = (): JSX.Element => {
   return (
-    <HeroSection>
+    <>
       <HeroTitle variant="subtitle1">
         함께 만들어가는{" "}
         <HeroTitleHighlight>사이드 프로젝트 🚀</HeroTitleHighlight>
@@ -38,20 +38,11 @@ const Hero = (): JSX.Element => {
           </HeroButton>
         </HeroButtonLink>
       </HeroButtonContainer>
-    </HeroSection>
+    </>
   );
 };
 
 export default Hero;
-
-const HeroSection = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: theme.palette.background.default,
-  padding: "8rem 1.6rem ",
-}));
 
 const HeroTitle = styled(Typography)(() => ({
   textAlign: "center",

@@ -1,14 +1,7 @@
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
-import {
-  Box,
-  Card,
-  CardContent,
-  Stack,
-  styled,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Stack, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 const ProjectsStats = (): JSX.Element => {
@@ -37,7 +30,7 @@ const ProjectsStats = (): JSX.Element => {
   ];
 
   return (
-    <ProjectStatsContainer>
+    <>
       {mock.map((stat) => {
         return (
           <ProjectStatsCard key={stat.id}>
@@ -57,7 +50,7 @@ const ProjectsStats = (): JSX.Element => {
           </ProjectStatsCard>
         );
       })}
-    </ProjectStatsContainer>
+    </>
   );
 };
 
@@ -66,17 +59,6 @@ export default ProjectsStats;
 interface ProjectStatsIconProps {
   color: string;
 }
-
-const ProjectStatsContainer = styled(Box)(() => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: "3.2rem",
-  justifyContent: "center",
-  padding: "6.4rem 1.6rem",
-  "@media (min-width:600px)": {
-    flexDirection: "row",
-  },
-}));
 
 const ProjectStatsCard = styled(Card)(() => ({
   flex: 1,
