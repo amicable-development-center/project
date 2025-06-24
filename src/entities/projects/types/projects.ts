@@ -1,34 +1,54 @@
-// 나중에 Project Owner 정보가 타입으로 들어가야할 것 같음 + expectedPeriod 타입 수정 or 포맷팅해서 DB 저장
-import type { UserRole } from "@shared/user/types/user";
+import type { Timestamp } from "firebase/firestore/lite";
 
-// 팀원 목록들도 타입으로 들어가야할 것 같음, 이미지도 타입으로 들어가야할 것 같음
-// 지원자들도 넣어야할 듯
+import type { ExpectedPeriod, ProjectSchedule } from "@shared/types/schedule";
+import type { User } from "@shared/types/user";
+
+export enum ProjectCategory {
+  webDevelopment = "웹 개발",
+  mobileDevelopment = "모바일 개발",
+  aiMl = "AI/ML",
+  blockchain = "블록체인",
+  gameDevelopment = "게임 개발",
+  dataScience = "데이터 사이언스",
+  iotHardware = "IoT/하드웨어",
+  webDesign = "웹 디자인",
+  etc = "기타",
+}
 export interface ProjectItemInsertReq {
-  userId: string; // 작성자 id
-  userName: string; // 작성사 이름
+  projectOwner: User; // 프로젝트 오너 유저 정보
   status: "모집중" | "모집완료";
-  userRole: UserRole;
-  avatar: string;
-  title: string; // 프로젝트 제목
+  category: ProjectCategory; // 프로젝트 분야
+  title: string; // 타이틀
   oneLineInfo: string; // 프로젝트 한줄 소개
   simpleInfo: string; // 프로젝트 간단 소개
-  techStack: string[]; // 기술 스택
   teamSize: number; // 팀 규모
-  expectedPeriod: string; // 예상기간
+  expectedPeriod: ExpectedPeriod; // 예상기간
+  closedDate: Timestamp; // 모집 마감 시간
+  workflow: Workflow; // 진행 방식
+  techStack: string[]; // 기술 스택
   description: string; // 상세 설명
-  workflow: string; // 진행방식
+  positions: Positions[]; // 모집 포지션
+  schedules: ProjectSchedule[]; // 프로젝트 일정
   requirements: string[]; // 지원 요구사항
   preferentialTreatment: string[]; //  우대사항
-  positions: Positions[]; // 모집 포지션
   applicants: string[]; // 지원자들
+  likedUsers: string[]; // 좋아요 누른 사람들
 }
-interface Positions {
-  position: string;
-  count: number;
+export interface Positions {
+  position: string; // 포지션
+  count: number; // 모집 인원
   experience: string; // 경력
+  status?: "recruiting" | "completed";
+  applicants: string[];
 }
-// 나중에 Project Owner 정보가 타입으로 들어가야할 것 같음 + expectedPeriod 타입 수정 or 포맷팅해서 DB 저장
-// 팀원 목록들도 타입으로 들어가야할 것 같음
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
+}
+
+export enum Workflow {
+  online = "온라인 (원격)",
+  offlineInBusan = "오프라인 (부산)",
+  offlineInSeoul = "오프라인 (서울)",
+  offlineInAnywhere = "오프라인 (자유)",
+  hybrid = "하이브리드(온라인 + 오프라인)",
 }

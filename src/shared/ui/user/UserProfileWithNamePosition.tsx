@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import type { CSSProperties, JSX } from "react";
 
-import type { User } from "@shared/user/types/user";
+import type { User } from "@shared/types/user";
 
 interface UserProfileWithNamePositionProps
   extends Pick<User, "name" | "userRole"> {
