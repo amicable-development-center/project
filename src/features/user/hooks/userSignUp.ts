@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
+import { saveUser } from "@features/user/api/userApi";
+
 import { useAuthStore } from "@shared/stores/authStore";
 import type { UserInput } from "@shared/user/types/user";
-
-import { saveUser } from "../api/userApi";
 
 export const useSignUp = (): {
   signUp: (userInput: UserInput) => Promise<void>;
@@ -15,7 +15,12 @@ export const useSignUp = (): {
     if (!user) return;
 
     const { name, userRole, experience, introduceMyself } = userInput;
-    console.log("서브밋 데이터:", userInput);
+
+    const finalIntroduceMyself =
+      (introduceMyself ?? "").trim() !== ""
+        ? introduceMyself
+        : "코딩하고 싶은 밤이에요~😘";
+
     await saveUser(user.uid, {
       id: user.uid,
       name,
@@ -25,7 +30,7 @@ export const useSignUp = (): {
       avatar: user.photoURL || "",
       likeProjects: [],
       appliedProjects: [],
-      introduceMyself,
+      introduceMyself: finalIntroduceMyself,
     });
 
     navigate("/");

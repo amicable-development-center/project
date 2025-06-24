@@ -52,6 +52,7 @@ const UserInfoForm = (): JSX.Element => {
         variant="outlined"
         value={introduceMyself}
         onChange={(e) => setIntroduceMyself(e.target.value)}
+        placeholder="코딩하고 싶은 밤이에요~😘"
         multiline
         rows={4}
       />
