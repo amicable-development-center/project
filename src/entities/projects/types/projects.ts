@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore/lite";
+
 export interface ProjectItemInsertReq {
   userId: string; // 작성자 id
   userName: string; // 작성사 이름
@@ -23,4 +25,5 @@ interface Positions {
 
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
+  createdAt: Timestamp;
 }

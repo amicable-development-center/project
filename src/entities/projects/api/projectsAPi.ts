@@ -1,23 +1,50 @@
-import { collection, getDocs } from "firebase/firestore/lite";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  QueryDocumentSnapshot,
+  startAfter,
+  type DocumentData,
+} from "firebase/firestore/lite";
 
 import type { ProjectListRes } from "@entities/projects/types/projects";
 
 import { db } from "@shared/firebase/firebase";
 
 /** firebase project 목록 불러오기 */
-export const getProjectList = async (): Promise<ProjectListRes[]> => {
+export const getProjectList = async ({
+  pageSize = 6,
+  lastDoc = null,
+}: {
+  pageSize?: number;
+  lastDoc?: QueryDocumentSnapshot<DocumentData> | null;
+}): Promise<{
+  projects: ProjectListRes[];
+  lastVisible: QueryDocumentSnapshot<DocumentData> | null;
+}> => {
   try {
-    const listRef = collection(db, "projects");
-    const querySnapshot = await getDocs(listRef);
+    const baseQuery = query(
+      collection(db, "projects"),
+      orderBy("createdAt", "desc"),
+      limit(pageSize)
+    );
+    const q = lastDoc ? query(baseQuery, startAfter(lastDoc)) : baseQuery;
 
-    const posts = querySnapshot.docs.map((doc) => ({
+    const querySnapshot = await getDocs(q);
+
+    const projects = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    })) as ProjectListRes[];
 
-    return posts as ProjectListRes[];
+    return {
+      projects: projects,
+      lastVisible: querySnapshot.docs[querySnapshot.docs.length - 1] || null,
+    };
   } catch (err) {
     console.log(err);
-    return [];
+    return { projects: [], lastVisible: null };
   }
 };
