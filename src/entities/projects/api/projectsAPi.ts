@@ -5,7 +5,7 @@ import type { ProjectListRes } from "@entities/projects/types/projects";
 import { db } from "@shared/firebase/firebase";
 
 /** firebase project 목록 불러오기 */
-export async function getProjectList(): Promise<ProjectListRes[]> {
+export const getProjectList = async (): Promise<ProjectListRes[]> => {
   try {
     const listRef = collection(db, "projects");
     const querySnapshot = await getDocs(listRef);
@@ -20,4 +20,4 @@ export async function getProjectList(): Promise<ProjectListRes[]> {
     console.log(err);
     return [];
   }
-}
+};
