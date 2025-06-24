@@ -1,8 +1,8 @@
 import { Avatar, Box, styled } from "@mui/material";
 import type { CSSProperties, JSX } from "react";
 
-import type { User } from "@shared/user/types/user";
-import UserProfileWithNamePosition from "@shared/user/ui/UserProfileWithNamePosition";
+import type { User } from "@shared/types/user";
+import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
 interface UserProfileAvatarProps
   extends Pick<User, "name" | "userRole" | "avatar"> {
