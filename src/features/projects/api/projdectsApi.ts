@@ -1,4 +1,10 @@
-import { addDoc, collection, doc, setDoc } from "firebase/firestore/lite";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore/lite";
 
 import type { ProjectItemInsertReq } from "@entities/projects/types/projects";
 
@@ -10,7 +16,10 @@ export const insertProjectItem = async (
 ): Promise<{ success: boolean; message: string; id?: string }> => {
   try {
     const postsRef = collection(db, "projects");
-    const docRef = await addDoc(postsRef, projectItem);
+    const docRef = await addDoc(postsRef, {
+      ...projectItem,
+      createdAt: serverTimestamp(),
+    });
 
     return {
       success: true,

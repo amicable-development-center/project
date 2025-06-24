@@ -1,5 +1,4 @@
 // 나중에 Project Owner 정보가 타입으로 들어가야할 것 같음 + expectedPeriod 타입 수정 or 포맷팅해서 DB 저장
-
 import type { UserRole } from "@shared/user/types/user";
 
 // 팀원 목록들도 타입으로 들어가야할 것 같음, 이미지도 타입으로 들어가야할 것 같음
@@ -23,7 +22,6 @@ export interface ProjectItemInsertReq {
   positions: Positions[]; // 모집 포지션
   applicants: string[]; // 지원자들
 }
-
 interface Positions {
   position: string;
   count: number;
