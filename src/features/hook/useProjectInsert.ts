@@ -1,6 +1,6 @@
 import { insertProjectItem } from "@features/projects/projdectsApi";
 
-import type { ProjectItemInsertReq } from "@entities/types/projects";
+import type { ProjectItemInsertReq } from "@entities/projects/types/projects";
 
 const useProjectInsert = (): { submit: () => Promise<void> } => {
   const submit = async (): Promise<void> => {

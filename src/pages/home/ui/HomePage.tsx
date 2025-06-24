@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import useProjectList from "@entities/queries/useProjectList";
+import useProjectList from "@entities/projects/queries/useProjectList";
 
 const HomePage = (): JSX.Element => {
   const { data } = useProjectList();

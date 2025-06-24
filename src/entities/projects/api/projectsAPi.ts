@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore/lite";
 
-import type { ProjectListRes } from "@entities/types/projects";
+import type { ProjectListRes } from "@entities/projects/types/projects";
 
 import { db } from "@shared/firebase/firebase";
 
