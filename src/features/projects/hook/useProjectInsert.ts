@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore/lite";
+import { Timestamp } from "firebase/firestore";
 
 import { insertProjectItem } from "@features/projects/api/projdectsApi";
 
