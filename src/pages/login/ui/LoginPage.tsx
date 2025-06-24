@@ -3,25 +3,6 @@ import type { JSX } from "react";
 
 import { LoginForm } from "@features/auth/ui/LoginForm";
 
-const PageWrapper = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  minHeight: "100vh",
-  backgroundColor: "#f5f7fb",
-});
-
-const LoginBox = styled(Box)({
-  width: "100%",
-  maxWidth: "400px",
-  padding: "32px",
-  borderRadius: "12px",
-  backgroundColor: "#fff",
-  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-  textAlign: "center",
-});
-
 const LoginPage = (): JSX.Element => {
   console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
   return (
@@ -41,3 +22,22 @@ const LoginPage = (): JSX.Element => {
 };
 
 export default LoginPage;
+
+const PageWrapper = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh",
+  backgroundColor: "#f5f7fb",
+});
+
+const LoginBox = styled(Box)({
+  width: "100%",
+  maxWidth: "400px",
+  padding: "32px",
+  borderRadius: "12px",
+  backgroundColor: "#fff",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+  textAlign: "center",
+});

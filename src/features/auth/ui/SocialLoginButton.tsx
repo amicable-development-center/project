@@ -7,15 +7,6 @@ interface SocialLoginButtonProps {
   onClick: () => void;
 }
 
-const SocialButton = styled(Button)({
-  width: "100%",
-  marginBottom: "16px",
-  textTransform: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
-
 const SocialLoginButton = ({
   label,
   logo,
@@ -34,3 +25,12 @@ const SocialLoginButton = ({
 };
 
 export { SocialLoginButton };
+
+const SocialButton = styled(Button)({
+  width: "100%",
+  marginBottom: "16px",
+  textTransform: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
