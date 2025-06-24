@@ -1,4 +1,8 @@
-import { signInWithPopup, fetchSignInMethodsForEmail } from "firebase/auth";
+import {
+  signInWithPopup,
+  fetchSignInMethodsForEmail,
+  getAdditionalUserInfo,
+} from "firebase/auth";
 import type { AuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +19,20 @@ export const useSocialLogin = (): {
       const user = result.user;
 
       console.log("소셜 로그인 성공: ", user);
-      navigate("/signup");
+
+      // Firebase 신규 유저 여부 확인
+      const additionalInfo = getAdditionalUserInfo(result);
+      const isNewUser = additionalInfo?.isNewUser;
+
+      // 토큰 저장 (필요하면)
+      const token = await user.getIdToken();
+      localStorage.setItem("accessToken", token);
+
+      if (isNewUser) {
+        navigate("/signup");
+      } else {
+        navigate(-1);
+      }
     } catch (error: any) {
       console.error("소셜 로그인 실패: ", error);
 
