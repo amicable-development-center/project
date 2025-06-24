@@ -1,6 +1,11 @@
 import type { JSX } from "react";
 
+import useProjectList from "@entities/projects/queries/useProjectList";
+
 const HomePage = (): JSX.Element => {
+  const { data } = useProjectList();
+
+  console.log(data);
   console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
 
   return (
