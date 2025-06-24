@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { auth } from "@shared/firebase/firebase";
 import { useAuthStore } from "@shared/stores/authStore";
 
-export const useAuthObserver = () => {
+export const useAuthObserver = (): void => {
   const setUser = useAuthStore((state) => state.setUser);
   const setLoading = useAuthStore((state) => state.setLoading);
 
