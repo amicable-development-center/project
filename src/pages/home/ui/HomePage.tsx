@@ -1,14 +1,25 @@
+import { Container, styled } from "@mui/material";
 import type { JSX } from "react";
+
+import Hero from "@widgets/hero/ui/Hero";
+
+import ProjectStats from "@entities/project/ui/project-stats/ProjectStats";
 
 const HomePage = (): JSX.Element => {
   console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
 
   return (
-    <div>
-      <h1>홈 페이지</h1>
-      <p>환영합니다! 이곳은 홈 페이지입니다.</p>
-    </div>
+    <MainContainer>
+      <Hero />
+      <ProjectStats />
+    </MainContainer>
   );
 };
 
 export default HomePage;
+
+const MainContainer = styled(Container)(({ theme }) => ({
+  flexGrow: 1,
+  minHeight: "100vh",
+  backgroundColor: theme.palette.background.default,
+}));

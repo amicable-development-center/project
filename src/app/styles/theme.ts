@@ -163,6 +163,30 @@ const theme = createTheme({
         fontSize: "1.4rem",
       },
     },
+    subtitle1: {
+      fontSize: "4.8rem",
+      fontWeight: 700,
+      lineHeight: 1.2,
+      letterSpacing: "-0.025em",
+      "@media (min-width:600px)": {
+        fontSize: "5.6rem",
+      },
+      "@media (min-width:960px)": {
+        fontSize: "6.4rem",
+      },
+    },
+    subtitle2: {
+      fontSize: "3rem",
+      fontWeight: 700,
+      lineHeight: 1.2,
+      letterSpacing: "-0.025em",
+      "@media (min-width:600px)": {
+        fontSize: "3.2rem",
+      },
+      "@media (min-width:960px)": {
+        fontSize: "3.6rem",
+      },
+    },
   },
 
   shape: {
@@ -360,15 +384,12 @@ const theme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          paddingLeft: "1.6rem",
-          paddingRight: "1.6rem",
+          paddingInline: "1.6rem",
           "@media (min-width:600px)": {
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
+            paddingInline: "2rem",
           },
           "@media (min-width:960px)": {
-            paddingLeft: "2.4rem",
-            paddingRight: "2.4rem",
+            paddingInline: "2.4rem",
           },
         },
       },
