@@ -1,4 +1,5 @@
 import {
+  getCountFromServer,
   collection,
   getDocs,
   limit,
@@ -7,11 +8,23 @@ import {
   QueryDocumentSnapshot,
   startAfter,
   type DocumentData,
-} from "firebase/firestore/lite";
+} from "firebase/firestore";
 
 import type { ProjectListRes } from "@entities/projects/types/projects";
 
 import { db } from "@shared/firebase/firebase";
+
+/** projects의 total 수 */
+export const getProjectsTotalCount = async (): Promise<number> => {
+  try {
+    const q = query(collection(db, "projects"));
+    const querySnapshot = await getCountFromServer(q);
+    return querySnapshot.data().count;
+  } catch (err) {
+    console.log(err);
+    return 0;
+  }
+};
 
 /** firebase project 목록 불러오기 */
 export const getProjectList = async ({
@@ -19,7 +32,7 @@ export const getProjectList = async ({
   lastDoc = null,
 }: {
   pageSize?: number;
-  lastDoc?: QueryDocumentSnapshot<DocumentData> | null;
+  lastDoc: QueryDocumentSnapshot<DocumentData> | null;
 }): Promise<{
   projects: ProjectListRes[];
   lastVisible: QueryDocumentSnapshot<DocumentData> | null;

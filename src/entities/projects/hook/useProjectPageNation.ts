@@ -1,39 +1,71 @@
-import type {
-  DocumentData,
-  QueryDocumentSnapshot,
-} from "firebase/firestore/lite";
 import { useState } from "react";
 
+import useProjectList from "@entities/projects/queries/useProjectList";
+import type { LastVisibleType } from "@entities/projects/types/firebase";
+import type { ProjectListRes } from "@entities/projects/types/projects";
+
+interface ReturnProjectPageNation {
+  projects: ProjectListRes[];
+  currentPage: number;
+  paging: {
+    prev: () => void;
+    next: () => void;
+    reset: () => void;
+    disablePrev: boolean;
+    disableNext: boolean;
+  };
+}
+
 const useProjectPageNation = ({
-  lastVisible,
+  totalCount,
+  perPage = 6,
 }: {
-  lastVisible: QueryDocumentSnapshot<DocumentData> | null;
-}) => {
-  const [pageStack, setPageStack] = useState<
-    (QueryDocumentSnapshot<DocumentData> | null)[]
-  >([null]);
+  totalCount: number;
+  perPage?: number;
+}): ReturnProjectPageNation => {
+  const [lastVisibleStack, setLastVisibleStack] = useState<LastVisibleType>([
+    null,
+  ]);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const handleNext = (): void => {
-    if (lastVisible) {
-      if (currentPage === pageStack.length - 1) {
-        setPageStack((prev) => [...prev, lastVisible]);
+  const cursor = lastVisibleStack[currentPage] ?? null;
+  const { data: projects, isLoading } = useProjectList(cursor);
+
+  const disablePrev = currentPage === 0 || isLoading;
+  const disableNext =
+    currentPage === Math.floor(totalCount / perPage) || isLoading;
+
+  const pagingPrev = (): void => {
+    if (disablePrev) return;
+
+    setCurrentPage((prev) => prev - 1);
+  };
+
+  const pagingNext = (): void => {
+    if (disableNext) return;
+
+    if (projects?.lastVisible) {
+      if (currentPage === lastVisibleStack.length - 1) {
+        setLastVisibleStack((prev) => [...prev, projects.lastVisible]);
       }
       setCurrentPage((prev) => prev + 1);
     }
   };
 
-  const handlePrevious = () => {
-    if (currentPage > 0) {
-      setCurrentPage((prev) => prev - 1);
-    }
+  const pagingReset = (): void => {
+    setLastVisibleStack([null]);
+    setCurrentPage(0);
   };
 
   return {
+    projects: projects?.projects || [],
     currentPage,
-    handle: {
-      prev: handlePrevious,
-      next: handleNext,
+    paging: {
+      prev: pagingPrev,
+      next: pagingNext,
+      reset: pagingReset,
+      disablePrev,
+      disableNext,
     },
   };
 };

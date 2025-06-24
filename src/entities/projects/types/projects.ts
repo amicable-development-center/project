@@ -1,4 +1,4 @@
-import type { Timestamp } from "firebase/firestore/lite";
+import type { CreatedAt } from "@entities/projects/types/firebase";
 
 export interface ProjectItemInsertReq {
   userId: string; // 작성자 id
@@ -16,7 +16,6 @@ export interface ProjectItemInsertReq {
   preferentialTreatment: string[]; //  우대사항
   positions: Positions[]; // 모집 포지션
 }
-
 interface Positions {
   position: string;
   count: number;
@@ -25,5 +24,5 @@ interface Positions {
 
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
-  createdAt: Timestamp;
+  createdAt: CreatedAt;
 }
