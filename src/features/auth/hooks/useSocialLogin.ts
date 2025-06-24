@@ -15,7 +15,7 @@ export const useSocialLogin = (): {
       const user = result.user;
 
       console.log("소셜 로그인 성공: ", user);
-      navigate("/");
+      navigate("/signup");
     } catch (error: any) {
       console.error("소셜 로그인 실패: ", error);
 
