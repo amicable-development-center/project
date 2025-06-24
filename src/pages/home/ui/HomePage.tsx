@@ -43,36 +43,36 @@ const HeroContainer = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   backgroundColor: theme.palette.background.default,
   padding: "2rem 0rem",
-  "@media (min-width:600px)": {
+  [theme.breakpoints.up("sm")]: {
     padding: "4rem 2rem",
   },
-  "@media (min-width:960px)": {
+  [theme.breakpoints.up("md")]: {
     padding: "6rem 2.4rem",
   },
 }));
 
-const ProjectStatsContainer = styled(Box)(() => ({
+const ProjectStatsContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: "3.2rem",
   justifyContent: "center",
   padding: "2rem 0rem",
-  "@media (min-width:600px)": {
+  [theme.breakpoints.up("sm")]: {
     flexDirection: "row",
     padding: "4rem 2rem",
   },
-  "@media (min-width:960px)": {
+  [theme.breakpoints.up("md")]: {
     padding: "6rem 2.4rem",
   },
 }));
 
-const ProjectCardContainer = styled(Box)(() => ({
+const ProjectCardContainer = styled(Box)(({ theme }) => ({
   padding: "2rem 0rem",
-  "@media (min-width:600px)": {
+  [theme.breakpoints.up("sm")]: {
     flexDirection: "row",
     padding: "4rem 2rem",
   },
-  "@media (min-width:960px)": {
+  [theme.breakpoints.up("md")]: {
     padding: "6rem 2.4rem",
   },
 }));
