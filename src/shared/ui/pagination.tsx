@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import type { JSX } from "react";
 
-import { makePagingArr } from "@shared/libs/utils/paginNation";
+import { makePagingArr } from "@shared/libs/utils/paginnation";
 
 interface PaginationProps {
   totalCount?: number;
