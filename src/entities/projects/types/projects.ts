@@ -1,5 +1,3 @@
-import type { CreatedAt } from "@entities/projects/types/firebase";
-
 // 나중에 Project Owner 정보가 타입으로 들어가야할 것 같음 + expectedPeriod 타입 수정 or 포맷팅해서 DB 저장
 import type { UserRole } from "@shared/user/types/user";
 
@@ -33,5 +31,4 @@ interface Positions {
 // 팀원 목록들도 타입으로 들어가야할 것 같음
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
-  createdAt: CreatedAt;
 }
