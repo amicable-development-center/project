@@ -1,22 +1,23 @@
 import { signInWithPopup, fetchSignInMethodsForEmail } from "firebase/auth";
+import type { AuthProvider } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-import { auth, githubProvider } from "@shared/firebase/firebase";
+import { auth } from "@shared/firebase/firebase";
 
-// ✅ 반환 타입 명시
-const useGithubLogin = (): { githubLogin: () => Promise<void> } => {
+export const useSocialLogin = (): {
+  socialLogin: (provider: AuthProvider) => Promise<void>;
+} => {
   const navigate = useNavigate();
 
-  // ✅ 함수 타입 명시
-  const githubLogin = async (): Promise<void> => {
+  const socialLogin = async (provider: AuthProvider): Promise<void> => {
     try {
-      const result = await signInWithPopup(auth, githubProvider);
+      const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      console.log("GitHub 로그인 성공: ", user);
+      console.log("소셜 로그인 성공: ", user);
       navigate("/");
     } catch (error: any) {
-      console.error("GitHub 로그인 실패: ", error);
+      console.error("소셜 로그인 실패: ", error);
 
       if (error.code !== "auth/account-exists-with-different-credential")
         return;
@@ -34,14 +35,14 @@ const useGithubLogin = (): { githubLogin: () => Promise<void> } => {
       }
 
       if (methods.includes("google.com")) {
-        alert("이미 Google 계정으로 가입된 이메일입니다.");
+        alert(
+          "이미 Google 계정으로 가입된 이메일입니다. Google 로그인을 이용해주세요."
+        );
       } else {
         alert(`이미 가입된 로그인 방법: ${methods.join(", ")}`);
       }
     }
   };
 
-  return { githubLogin };
+  return { socialLogin };
 };
-
-export { useGithubLogin };
