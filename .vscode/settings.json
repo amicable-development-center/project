@@ -1,5 +1,16 @@
 {
-  "cSpell.words": ["ACMRTUXB", "eslintcache", "isrc", "TTFB"],
+  "cSpell.words": [
+    "ACMRTUXB",
+    "Cantarell",
+    "coments",
+    "eslintcache",
+    "Fira",
+    "isrc",
+    "Neue",
+    "Pretendard",
+    "Segoe",
+    "TTFB"
+  ],
   "css.lint.unknownAtRules": "ignore",
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.suggest.autoImports": true,
