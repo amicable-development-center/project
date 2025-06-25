@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material/styles";
-import type { ChangeEvent, CSSProperties } from "react";
+import type { ChangeEvent, CSSProperties, JSX } from "react";
 
 interface ProjectSimpleDescCardProps {
   value: string;
@@ -13,7 +13,7 @@ const ProjectSimpleDescCard = ({
   onChange,
   large,
   style,
-}: ProjectSimpleDescCardProps) => {
+}: ProjectSimpleDescCardProps): JSX.Element => {
   const theme = useTheme();
   return (
     <div

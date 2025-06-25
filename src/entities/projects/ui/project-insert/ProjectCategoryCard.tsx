@@ -1,7 +1,7 @@
 import { FormControl, Select, MenuItem } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import type { CSSProperties } from "react";
+import type { CSSProperties, JSX } from "react";
 
 interface ProjectCategoryCardProps {
   value: string;
@@ -18,7 +18,7 @@ const ProjectCategoryCard = ({
   onChange,
   large,
   style,
-}: ProjectCategoryCardProps) => {
+}: ProjectCategoryCardProps): JSX.Element => {
   const theme = useTheme();
   return (
     <div

@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material/styles";
-import type { ChangeEvent, CSSProperties } from "react";
+import type { ChangeEvent, CSSProperties, JSX } from "react";
 
 interface ProjectTitleCardProps {
   value: string;
@@ -16,7 +16,7 @@ const ProjectTitleCard = ({
   onChange,
   large,
   style,
-}: ProjectTitleCardProps) => {
+}: ProjectTitleCardProps): JSX.Element => {
   const theme = useTheme();
   return (
     <div
