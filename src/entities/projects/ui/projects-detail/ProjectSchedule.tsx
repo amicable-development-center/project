@@ -3,22 +3,18 @@ import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import type { ProjectListRes } from "@shared/types/project";
+import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
 type ProjectScheduleType = Pick<ProjectListRes, "schedules">;
 
 const ProjectSchedule = ({ schedules }: ProjectScheduleType): JSX.Element => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} gap={1} marginBottom={2}>
-        <RocketLaunchIcon fontSize="large" color="primary" />
-        <Typography variant="h3">프로젝트 일정</Typography>
-      </Box>
+      <TitleWithIcon Icon={RocketLaunchIcon} title="프로젝트 일정" />
 
       {schedules.map((item, i) => (
-        <Box display="flex" alignItems="center" marginTop={2}>
-          <IndexBox color="primary" fontWeight={500}>
-            {i + 1}
-          </IndexBox>
+        <Box key={i} display="flex" alignItems="flex-start" marginTop={2}>
+          <IndexBox>{i + 1}</IndexBox>
           <div>
             <Box display="flex" alignItems="center">
               <Typography variant="h5">{item.stageName}</Typography>
@@ -44,12 +40,13 @@ const IndexBox = styled(Typography)`
   justify-content: center;
   width: 3.5rem;
   height: 3.5rem;
-  margin-right: 1rem;
+  margin-right: 2rem;
+  color: ${({ theme }) => theme.palette.primary.main};
   background-color: #d7e4ff;
   border-radius: 50px;
 `;
 const PeriodBox = styled(Typography)`
-  border: 1px solid #dddddd;
+  border: 1px solid #ededed;
   padding: 0.3rem 1rem;
   margin-left: 1rem;
   border-radius: 50px;
