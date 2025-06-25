@@ -11,7 +11,7 @@ const Header = (): JSX.Element => {
 
   return (
     <HeaderContainer>
-      <h1>🔥 Project Jam</h1>
+      <h1>Project Jam</h1>
       {user ? <LogoutButton /> : <LoginButton />}
     </HeaderContainer>
   );

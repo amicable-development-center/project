@@ -2,7 +2,7 @@ import CodeIcon from "@mui/icons-material/Code";
 import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
+import type { ProjectListRes } from "@shared/types/project";
 
 type TechStackType = Pick<ProjectListRes, "techStack">;
 

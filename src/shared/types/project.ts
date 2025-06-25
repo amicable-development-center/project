@@ -1,22 +1,11 @@
-import type { Timestamp } from "firebase/firestore/lite";
+import type { Timestamp } from "firebase/firestore";
 
 import type { ExpectedPeriod, ProjectSchedule } from "@shared/types/schedule";
-import type { User } from "@shared/types/user";
+import type { User, UserRole } from "@shared/types/user";
 
-export enum ProjectCategory {
-  webDevelopment = "웹 개발",
-  mobileDevelopment = "모바일 개발",
-  aiMl = "AI/ML",
-  blockchain = "블록체인",
-  gameDevelopment = "게임 개발",
-  dataScience = "데이터 사이언스",
-  iotHardware = "IoT/하드웨어",
-  webDesign = "웹 디자인",
-  etc = "기타",
-}
 export interface ProjectItemInsertReq {
   projectOwner: User; // 프로젝트 오너 유저 정보
-  status: "모집중" | "모집완료";
+  status: RecruitmentStatus;
   category: ProjectCategory; // 프로젝트 분야
   title: string; // 타이틀
   oneLineInfo: string; // 프로젝트 한줄 소개
@@ -34,15 +23,17 @@ export interface ProjectItemInsertReq {
   applicants: string[]; // 지원자들
   likedUsers: string[]; // 좋아요 누른 사람들
 }
-export interface Positions {
-  position: string; // 포지션
-  count: number; // 모집 인원
-  experience: string; // 경력
-  status?: "recruiting" | "completed";
-  applicants: string[];
-}
-export interface ProjectListRes extends ProjectItemInsertReq {
-  id: string; // firebase 문서 id
+
+export enum ProjectCategory {
+  webDevelopment = "웹 개발",
+  mobileDevelopment = "모바일 개발",
+  aiMl = "AI/ML",
+  blockchain = "블록체인",
+  gameDevelopment = "게임 개발",
+  dataScience = "데이터 사이언스",
+  iotHardware = "IoT/하드웨어",
+  webDesign = "웹 디자인",
+  etc = "기타",
 }
 
 export enum Workflow {
@@ -51,4 +42,20 @@ export enum Workflow {
   offlineInSeoul = "오프라인 (서울)",
   offlineInAnywhere = "오프라인 (자유)",
   hybrid = "하이브리드(온라인 + 오프라인)",
+}
+
+export interface Positions {
+  position: UserRole; // 포지션
+  count: number; // 모집 인원
+  experience: string; // 경력
+  status?: RecruitmentStatus;
+  applicants: string[];
+}
+export interface ProjectListRes extends ProjectItemInsertReq {
+  id: string; // firebase 문서 id
+}
+
+export enum RecruitmentStatus {
+  recruiting = "모집중",
+  completed = "모집완료",
 }

@@ -2,7 +2,8 @@ import { useState } from "react";
 
 import useProjectList from "@entities/projects/queries/useProjectList";
 import type { LastVisibleType } from "@entities/projects/types/firebase";
-import type { ProjectListRes } from "@entities/projects/types/projects";
+
+import type { ProjectListRes } from "@shared/types/project";
 
 interface ReturnProjectPageNation {
   projects: ProjectListRes[];

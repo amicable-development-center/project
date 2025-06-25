@@ -14,128 +14,58 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Timestamp } from "firebase/firestore/lite";
 import type { JSX } from "react";
 import { Link } from "react-router-dom";
 
-import {
-  ProjectCategory,
-  Workflow,
-  type ProjectListRes,
-} from "@entities/projects/types/projects";
-
-import { ExpectedPeriod } from "@shared/types/schedule";
+import { type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
-const ProjectCard = (): JSX.Element => {
+interface ProjectCardProps {
+  project: ProjectListRes;
+}
+
+const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
-
-  const mock: ProjectListRes = {
-    id: "1",
-    projectOwner: {
-      id: "1",
-      name: "John Doe",
-      userRole: "frontend",
-      email: "john.doe@example.com",
-      experience: "1년 이상",
-      avatar: "https://via.placeholder.com/150",
-    },
-    status: "모집중",
-    title: "Project Title",
-    oneLineInfo: "Project One Line Info",
-    simpleInfo: "Project Simple Info",
-    techStack: [
-      "React",
-      "Node.js",
-      "MongoDB",
-      "TypeScript",
-      "JavaScript",
-      "Vue.js",
-      "Angular",
-      "Svelte",
-      "Next.js",
-      "Nuxt.js",
-      "Tailwind CSS",
-      "Bootstrap",
-      "Material UI",
-      "Chakra UI",
-      "Ant Design",
-      "Styled Components",
-      "Emotion",
-      "Tailwind CSS",
-      "Bootstrap",
-      "Material UI",
-      "Chakra UI",
-      "Ant Design",
-      "Styled Components",
-      "Emotion",
-    ],
-    teamSize: 4,
-    expectedPeriod: ExpectedPeriod.oneMonth,
-    description: "Project Description",
-    workflow: Workflow.online,
-    requirements: ["React", "Node.js", "MongoDB"],
-    preferentialTreatment: ["React", "Node.js", "MongoDB"],
-    positions: [
-      {
-        position: "Frontend",
-        count: 2,
-        experience: "1년 이상",
-        applicants: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],
-      },
-    ],
-    applicants: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],
-    likedUsers: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],
-    category: ProjectCategory.webDevelopment,
-    closedDate: Timestamp.now(),
-    schedules: [
-      {
-        stageName: "기획",
-        period: ExpectedPeriod.oneMonth,
-        description: "기획 단계",
-      },
-    ],
-  };
 
   return (
     <StyledCard>
       <StyledCardContent>
         <ProjectHeader>
-          <StatusChip label={mock.status} color="primary" size="small" />
+          <StatusChip label={project.status} color="primary" size="small" />
         </ProjectHeader>
 
         <ContentSection>
           <ProjectTitle variant="h5" fontWeight={700}>
-            {mock.title}
+            {project.title}
           </ProjectTitle>
           <OneLineInfo variant="body1" color="primary" fontWeight={600}>
-            {mock.oneLineInfo}
+            {project.oneLineInfo}
           </OneLineInfo>
           <SimpleInfo variant="body2" color="text.secondary">
-            {mock.simpleInfo}
+            {project.simpleInfo}
           </SimpleInfo>
         </ContentSection>
         <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
           {isMobile ? (
             <UserProfileAvatar
-              name={mock.projectOwner.name}
-              userRole={mock.projectOwner.userRole}
-              avatar={mock.projectOwner.avatar}
+              name={project.projectOwner.name}
+              userRole={project.projectOwner.userRole}
+              avatar={project.projectOwner.avatar}
               flexDirection="row"
             />
           ) : (
             <UserProfileWithNamePosition
-              name={mock.projectOwner.name}
-              userRole={mock.projectOwner.userRole}
+              name={project.projectOwner.name}
+              userRole={project.projectOwner.userRole}
               flexDirection="row"
             />
           )}
         </Stack>
         <DragScrollContainer>
-          {mock.techStack.map((stack, index) => (
+          {project.techStack.map((stack, index) => (
             <TechChip key={index} label={stack} size="small" />
           ))}
         </DragScrollContainer>
@@ -144,13 +74,13 @@ const ProjectCard = (): JSX.Element => {
           <DetailItem>
             <PeopleAltIcon fontSize="small" color="action" />
             <Typography variant="body2" color="text.secondary">
-              {mock.teamSize}명
+              {project.teamSize}명
             </Typography>
           </DetailItem>
           <DetailItem>
             <AccessTimeIcon fontSize="small" color="action" />
             <Typography variant="body2" color="text.secondary">
-              {mock.expectedPeriod}
+              {project.expectedPeriod}
             </Typography>
           </DetailItem>
           <DetailItem>
@@ -165,9 +95,9 @@ const ProjectCard = (): JSX.Element => {
 
         <FooterSection>
           <Typography variant="body1" color="textPrimary">
-            <TextHighlight>{mock.applicants.length}명</TextHighlight> 지원
+            <TextHighlight>{project.applicants.length}명</TextHighlight> 지원
           </Typography>
-          <StyledLink to={`/project/${mock.id}`}>
+          <StyledLink to={`/project/${project.id}`}>
             <ActionButton variant="contained" color="primary" size="medium">
               자세히 보기
             </ActionButton>

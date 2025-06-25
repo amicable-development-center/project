@@ -3,11 +3,13 @@ import type { JSX } from "react";
 
 import Hero from "@widgets/hero/ui/Hero";
 
+import useGetProjects from "@entities/projects/hook/useGetProjects";
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import ProjectsStats from "@entities/projects/ui/projects-stats/ProjectsStats";
 
 const HomePage = (): JSX.Element => {
   console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
+  const { data: projects } = useGetProjects({ pageSize: 3 });
 
   return (
     <MainContainer>
@@ -18,7 +20,9 @@ const HomePage = (): JSX.Element => {
         <ProjectsStats />
       </ProjectStatsContainer>
       <ProjectCardContainer>
-        <ProjectCard />
+        {projects?.projects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
       </ProjectCardContainer>
     </MainContainer>
   );
@@ -63,12 +67,16 @@ const ProjectStatsContainer = styled(Box)(({ theme }) => ({
 }));
 
 const ProjectCardContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr",
+  gap: "1.6rem",
   padding: "2rem 0rem",
   [theme.breakpoints.up("sm")]: {
-    flexDirection: "row",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
     padding: "4rem 2rem",
   },
   [theme.breakpoints.up("md")]: {
+    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
     padding: "6rem 2.4rem",
   },
 }));
