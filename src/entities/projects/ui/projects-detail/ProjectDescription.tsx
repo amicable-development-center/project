@@ -1,8 +1,10 @@
 import AdjustIcon from "@mui/icons-material/Adjust";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import type { JSX } from "react";
 
 import type { ProjectListRes } from "@entities/projects/types/projects";
+
+import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
 type ProjectDescriptionType = Pick<ProjectListRes, "description">;
 
@@ -11,11 +13,7 @@ const ProjectDescription = ({
 }: ProjectDescriptionType): JSX.Element => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} gap={1}>
-        <AdjustIcon fontSize="large" color="primary" />
-        <Typography variant="h3">프로젝트 상세</Typography>
-      </Box>
-
+      <TitleWithIcon Icon={AdjustIcon} title="프로젝트 상세" />
       <Box marginY={2}>{description}</Box>
     </>
   );
