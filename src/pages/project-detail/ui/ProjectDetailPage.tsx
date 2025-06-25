@@ -3,6 +3,7 @@ import { type JSX } from "react";
 import { useParams } from "react-router-dom";
 
 import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
+import ProjectDelete from "@features/projects/ui/ProjectDelete";
 
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
 import ProjectApply from "@entities/projects/ui/post-info/ProjectApply";
@@ -16,8 +17,11 @@ import ProjectRequirements from "@entities/projects/ui/projects-detail/ProjectRe
 import ProjectSchedule from "@entities/projects/ui/projects-detail/ProjectSchedule";
 import TechStack from "@entities/projects/ui/projects-detail/TechStack";
 
+import { useAuthStore } from "@shared/stores/authStore";
+
 const ProjectDetailPage = (): JSX.Element => {
   const { id } = useParams();
+  const user = useAuthStore((state) => state.user);
   const {
     data: project,
     isLoading,
@@ -104,7 +108,11 @@ const ProjectDetailPage = (): JSX.Element => {
           </CardBox>
           <CardBox>
             <ProjectApply applicants={project.applicants.length} />
-            <ProjectApplyForm />
+            {user?.uid === project.projectOwner.id ? (
+              <ProjectDelete projectOwnerID={project?.projectOwner.id} />
+            ) : (
+              <ProjectApplyForm />
+            )}
           </CardBox>
           <CardBox>
             <ProjectPostInfo values={postInfoValues} />
