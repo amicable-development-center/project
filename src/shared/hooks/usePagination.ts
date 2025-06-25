@@ -26,7 +26,6 @@ interface UsePaginationWithStateReturn extends UsePaginationReturn {
   goToReset: () => void;
 }
 
-// 기본 페이지네이션 로직 (UI만)
 const usePagination = ({
   currentPage,
   totalPages,
@@ -129,10 +128,25 @@ export const usePaginationWithState = ({
     const urlPage = pageParam ? parseInt(pageParam, 10) : 1;
     const validPage = urlPage > 0 ? urlPage : 1;
 
-    if (validPage !== currentPage) {
-      setCurrentPage(validPage);
+    setCurrentPage((prevPage) => {
+      if (validPage !== prevPage) {
+        return validPage;
+      }
+      return prevPage;
+    });
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (totalPages > 0) {
+      setCurrentPage((prevPage) => {
+        if (prevPage > totalPages) {
+          updatePageInURL(totalPages);
+          return totalPages;
+        }
+        return prevPage;
+      });
     }
-  }, [searchParams, currentPage]);
+  }, [totalPages]);
 
   const { pageNumbers, canGoPrev, canGoNext } = usePagination({
     currentPage,

@@ -6,7 +6,7 @@ import useProjectListPage from "@entities/search/hooks/useProjectListPage";
 import ProjectSearchForm from "@entities/search/ui/ProjectSearchForm";
 
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
-import Pagination from "@shared/ui/Pagination";
+import Pagination from "@shared/ui/pagination";
 
 const ProjectListPage = (): JSX.Element => {
   const {
@@ -28,7 +28,7 @@ const ProjectListPage = (): JSX.Element => {
 
       {isLoading && (
         <LoadingContainer>
-          <LoadingSpinner message="프로젝트를 불러오는 중..." />
+          <LoadingSpinner />
         </LoadingContainer>
       )}
 

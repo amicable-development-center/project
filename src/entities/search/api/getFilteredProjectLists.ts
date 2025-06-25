@@ -18,7 +18,7 @@ interface ProjectListWithPagination {
   totalCount?: number;
 }
 
-export const getFilteredProjectsCount = async (
+export const getFilteredProjectCount = async (
   collectionName: string,
   filter: ProjectSearchFilterOption
 ): Promise<number> => {
@@ -29,17 +29,19 @@ export const getFilteredProjectsCount = async (
     .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow);
 
   const query = queryBuilder.build();
+
   const snapshot = await getCountFromServer(query);
 
-  // Position 필터가 있는 경우 클라이언트 사이드에서 계산해야 함
   if (filter.position && filter.position !== "all") {
     const allDocs = await getDocs(query);
+
     const filteredProjects = allDocs.docs.filter((doc) => {
       const data = doc.data() as ProjectListRes;
       return data.positions.some(
         (position) => position.position === filter.position
       );
     });
+
     return filteredProjects.length;
   }
 
@@ -59,7 +61,15 @@ export const getFilteredProjectsByPage = async (
     .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow)
     .setSortBy(filter.sortBy || "latest");
 
+  if (filter.position && filter.position !== "all") {
+    queryBuilder.addLimit(pageSize * 5);
+  } else {
+    const offset = (page - 1) * pageSize;
+    queryBuilder.addLimit(offset + pageSize * 2);
+  }
+
   const query = queryBuilder.build();
+
   const snapshot = await getDocs(query);
 
   let projects = snapshot.docs.map((doc) => ({
@@ -75,12 +85,13 @@ export const getFilteredProjectsByPage = async (
     );
   }
 
-  // 페이지네이션 적용
   const offset = (page - 1) * pageSize;
   const startIndex = offset;
   const endIndex = startIndex + pageSize;
 
-  return projects.slice(startIndex, endIndex);
+  const result = projects.slice(startIndex, endIndex);
+
+  return result;
 };
 
 const getFilteredProjectLists = async (
