@@ -87,15 +87,6 @@ export class SearchFilterBuilder implements FilterBuilder {
       );
     }
 
-    if (this.filter.position) {
-      builtQuery = query(
-        builtQuery,
-        where("positions", "array-contains", {
-          position: this.filter.position,
-        })
-      );
-    }
-
     if (this.filter.status) {
       builtQuery = query(builtQuery, where("status", "==", this.filter.status));
     }

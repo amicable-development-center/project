@@ -12,18 +12,26 @@ const getFilteredProjectLists = async (
   const query = new SearchFilterBuilder(collectionName)
     .setTitle(filter.title || undefined)
     .setCategory(filter.category === "all" ? undefined : filter.category)
-    .setPosition(filter.position === "all" ? undefined : filter.position)
     .setStatus(filter.status === "all" ? undefined : filter.status)
     .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow)
     .setSortBy(filter.sortBy || "latest")
     .build();
 
   const snapshot = await getDocs(query);
-
-  return snapshot.docs.map((doc) => ({
+  let projects = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as ProjectListRes[];
+
+  if (filter.position && filter.position !== "all") {
+    projects = projects.filter((project) =>
+      project.positions.some(
+        (position) => position.position === filter.position
+      )
+    );
+  }
+
+  return projects;
 };
 
 export default getFilteredProjectLists;
