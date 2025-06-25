@@ -1,7 +1,10 @@
+import type { CSSObject } from "@emotion/react";
 import { Box, Button, Typography, Container } from "@mui/material";
+import type { ContainerProps } from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
+import type { Theme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import type { JSX } from "react";
 
 import useProjectInsert from "@features/projects/hook/useProjectInsert";
@@ -38,16 +41,14 @@ const ProjectInsertPage = (): JSX.Element => {
   const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: any): void => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNext = () => setCurrentStep((prev) => prev + 1);
+  const handleNext = (): void => setCurrentStep((prev) => prev + 1);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent): void => {
     e.preventDefault();
     submit();
     alert("프로젝트 등록!");
@@ -322,8 +323,10 @@ const ProjectInsertPage = (): JSX.Element => {
 
 export default ProjectInsertPage;
 
-const MainContainer = styled(Container)(({ theme }) => ({
-  flexGrow: 1,
-  minHeight: "100vh",
-  backgroundColor: theme.palette.background.default,
-}));
+const MainContainer = styled(Container)<ContainerProps>(
+  ({ theme }: { theme: Theme }): CSSObject => ({
+    flexGrow: 1,
+    minHeight: "100vh",
+    backgroundColor: theme.palette.background.default,
+  })
+);
