@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const SignupGuide = (): JSX.Element => {
   const navigate = useNavigate();
 
-  const handleNavigateToJoin = () => {
+  const handleNavigateToJoin = (): void => {
     navigate("/join"); // 신규 회원가입 유도 페이지로 이동
   };
 
