@@ -54,7 +54,7 @@ export function useSignUpForm(): UseSignUpFormReturn {
       }
     };
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     if (name === "" || userRole === "" || experience === "") {
       setErrors({
         name: name === "",
