@@ -2,15 +2,24 @@ import { Box, Typography, type SvgIconProps } from "@mui/material";
 import type { JSX } from "react";
 
 const TitleWithIcon = ({
-  Icon,
   title,
+  Icon,
+  color = "primary",
+  marginBottom = 2,
 }: {
-  Icon: React.ElementType<SvgIconProps>;
   title: string;
+  Icon: React.ElementType<SvgIconProps>;
+  color?: "primary" | "success" | "warning";
+  marginBottom?: number;
 }): JSX.Element => {
   return (
-    <Box display={"flex"} alignItems={"center"} gap={1}>
-      <Icon fontSize="large" color="primary" />
+    <Box
+      gap={1}
+      display={"flex"}
+      alignItems={"center"}
+      marginBottom={marginBottom}
+    >
+      <Icon fontSize="large" color={color} />
       <Typography variant="h3">{title}</Typography>
     </Box>
   );

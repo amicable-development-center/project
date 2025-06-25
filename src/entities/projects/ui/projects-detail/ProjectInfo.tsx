@@ -103,10 +103,11 @@ const HeadIconBox = styled(Box)`
   margin-left: 10px;
   border: 1px solid #dddddd;
   border-radius: 4px;
+  transition: background-color 0.3s;
   cursor: pointer;
 
   &:hover {
-    background-color: #eeeeee;
+    background-color: #f4f4f4;
   }
 `;
 

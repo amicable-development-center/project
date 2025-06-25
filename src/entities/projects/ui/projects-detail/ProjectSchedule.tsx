@@ -14,7 +14,7 @@ const ProjectSchedule = ({ schedules }: ProjectScheduleType): JSX.Element => {
       <TitleWithIcon Icon={RocketLaunchIcon} title="프로젝트 일정" />
 
       {schedules.map((item, i) => (
-        <Box display="flex" alignItems="flex-start" marginTop={2}>
+        <Box key={i} display="flex" alignItems="flex-start" marginTop={2}>
           <IndexBox>{i + 1}</IndexBox>
           <div>
             <Box display="flex" alignItems="center">
