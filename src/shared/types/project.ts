@@ -53,6 +53,7 @@ export interface Positions {
 }
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
+  createdAt: Timestamp; // 게시글 등록일자
 }
 
 export enum RecruitmentStatus {
