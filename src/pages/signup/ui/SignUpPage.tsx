@@ -3,7 +3,7 @@ import type { JSX } from "react";
 
 import BackToHome from "@widgets/BackToHome/BackToHome";
 
-import UserInfoForm from "@features/user/ui/UserInfoForm";
+import UserInfoForm from "@entities/user/ui/UserInfoForm";
 
 const SignUpPage = (): JSX.Element => {
   return (
