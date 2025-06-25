@@ -6,11 +6,12 @@ import {
   Typography,
   FormControl,
   FormHelperText,
+  InputLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useState, type JSX } from "react";
 
-import { useSignUp } from "@features/user/hooks/userSignUp";
+import { useSignUp } from "@features/user/hooks/useSignUp";
 import SubmitButton from "@features/user/ui/SubmitButton";
 
 import type { UserExperience, UserRole } from "@shared/types/user";
@@ -53,9 +54,9 @@ const UserInfoForm = (): JSX.Element => {
       <Title variant="h5">회원 정보 입력</Title>
       {/* 이름 입력 */}
 
-      <FormControl error={errors.name}>
+      <FormControl error={errors.name} variant="outlined" fullWidth>
         <StyledTextField
-          label="이름"
+          label="🙋 이름 *"
           variant="outlined"
           value={name}
           onChange={(e) => {
@@ -70,12 +71,16 @@ const UserInfoForm = (): JSX.Element => {
               setErrors((prev) => ({ ...prev, name: false }));
             }
           }}
+          placeholder="이름"
+          InputLabelProps={{ shrink: true }}
         />
         {errors.name && <ErrorText>이름을 입력해주세요.</ErrorText>}
       </FormControl>
       {/* 직무 선택 */}
-      <FormControl error={errors.userRole}>
+      <FormControl error={errors.userRole} variant="outlined" fullWidth>
+        <InputLabel shrink>👔 직무 *</InputLabel>
         <StyledSelect
+          label="👔 직무 *"
           value={userRole}
           onChange={(e) => {
             setUserRole(e.target.value as string);
@@ -96,8 +101,10 @@ const UserInfoForm = (): JSX.Element => {
       </FormControl>
 
       {/* 경력 선택 */}
-      <FormControl error={errors.experience}>
+      <FormControl error={errors.experience} variant="outlined" fullWidth>
+        <InputLabel shrink>💼 경력 *</InputLabel>
         <StyledSelect
+          label="💼 경력 *"
           value={experience}
           onChange={(e) => {
             setExperience(e.target.value as string);
@@ -116,13 +123,14 @@ const UserInfoForm = (): JSX.Element => {
       </FormControl>
 
       <StyledTextField
-        label="자기소개"
+        label="💬 자기소개"
         variant="outlined"
         value={introduceMyself}
         onChange={(e) => setIntroduceMyself(e.target.value)}
         placeholder="코딩하고 싶은 밤이에요~😘"
         multiline
         rows={4}
+        InputLabelProps={{ shrink: true }}
       />
       <SubmitButton onClick={handleSubmit} />
     </FormContainer>
