@@ -14,16 +14,16 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Timestamp } from "firebase/firestore/lite";
+import { Timestamp } from "firebase/firestore";
 import type { JSX } from "react";
 import { Link } from "react-router-dom";
 
 import {
   ProjectCategory,
+  RecruitmentStatus,
   Workflow,
   type ProjectListRes,
-} from "@entities/projects/types/projects";
-
+} from "@shared/types/project";
 import { ExpectedPeriod } from "@shared/types/schedule";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
@@ -43,7 +43,7 @@ const ProjectCard = (): JSX.Element => {
       experience: "1년 이상",
       avatar: "https://via.placeholder.com/150",
     },
-    status: "모집중",
+    status: RecruitmentStatus.recruiting,
     title: "Project Title",
     oneLineInfo: "Project One Line Info",
     simpleInfo: "Project Simple Info",
@@ -81,7 +81,7 @@ const ProjectCard = (): JSX.Element => {
     preferentialTreatment: ["React", "Node.js", "MongoDB"],
     positions: [
       {
-        position: "Frontend",
+        position: "frontend",
         count: 2,
         experience: "1년 이상",
         applicants: ["asdfasdfsf2", "asdzxc1er", "bsdfgh12", "cbvscbatfg"],

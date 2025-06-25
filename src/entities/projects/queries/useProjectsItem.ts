@@ -1,7 +1,8 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 import { getProjectItem } from "@entities/projects/api/projectsAPi";
-import type { ProjectListRes } from "@entities/projects/types/projects";
+
+import type { ProjectListRes } from "@shared/types/project";
 
 const useProjectsItem = ({
   id,
