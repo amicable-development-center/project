@@ -11,10 +11,10 @@ import type { UserRole } from "@shared/types/user";
 
 const INITIAL_FILTER_STATE: ProjectSearchFilterOption = {
   title: "",
-  category: "all",
-  position: "all",
-  status: "all",
-  workflow: "all",
+  category: undefined,
+  position: undefined,
+  status: undefined,
+  workflow: undefined,
   sortBy: "latest",
 };
 
@@ -25,7 +25,7 @@ interface UseFilteredProjects {
   updatePosition: (position: UserRole | "all") => void;
   updateStatus: (status: RecruitmentStatus | "all") => void;
   updateWorkflow: (workflow: Workflow | "all") => void;
-  updateSortBy: (sortBy: SortBy | "latest") => void;
+  updateSortBy: (sortBy: SortBy) => void;
   resetFilters: () => void;
   getActiveFiltersCount: () => number;
   getCleanFilter: () => ProjectSearchFilterOption;
@@ -35,29 +35,58 @@ const useFilteredProjects = (): UseFilteredProjects => {
   const [filterState, setFilterState] =
     useState<ProjectSearchFilterOption>(INITIAL_FILTER_STATE);
 
+  const updateFilter = useCallback(
+    <K extends keyof ProjectSearchFilterOption>(
+      key: K,
+      value: ProjectSearchFilterOption[K]
+    ) => {
+      const safeValue =
+        value && typeof value === "string" && value.trim() !== ""
+          ? value
+          : undefined;
+      setFilterState((prev) => ({ ...prev, [key]: safeValue }));
+    },
+    []
+  );
+
   const updateTitle = useCallback((title: string) => {
     setFilterState((prev) => ({ ...prev, title }));
   }, []);
 
-  const updateCategory = useCallback((category: ProjectCategory | "all") => {
-    setFilterState((prev) => ({ ...prev, category }));
-  }, []);
+  const updateCategory = useCallback(
+    (category: ProjectCategory | "all") => {
+      updateFilter("category", category === "all" ? undefined : category);
+    },
+    [updateFilter]
+  );
 
-  const updatePosition = useCallback((position: UserRole | "all") => {
-    setFilterState((prev) => ({ ...prev, position }));
-  }, []);
+  const updatePosition = useCallback(
+    (position: UserRole | "all") => {
+      updateFilter("position", position === "all" ? undefined : position);
+    },
+    [updateFilter]
+  );
 
-  const updateStatus = useCallback((status: RecruitmentStatus | "all") => {
-    setFilterState((prev) => ({ ...prev, status }));
-  }, []);
+  const updateStatus = useCallback(
+    (status: RecruitmentStatus | "all") => {
+      updateFilter("status", status === "all" ? undefined : status);
+    },
+    [updateFilter]
+  );
 
-  const updateWorkflow = useCallback((workflow: Workflow | "all") => {
-    setFilterState((prev) => ({ ...prev, workflow }));
-  }, []);
+  const updateWorkflow = useCallback(
+    (workflow: Workflow | "all") => {
+      updateFilter("workflow", workflow === "all" ? undefined : workflow);
+    },
+    [updateFilter]
+  );
 
-  const updateSortBy = useCallback((sortBy: SortBy | "latest") => {
-    setFilterState((prev) => ({ ...prev, sortBy }));
-  }, []);
+  const updateSortBy = useCallback(
+    (sortBy: SortBy) => {
+      updateFilter("sortBy", sortBy);
+    },
+    [updateFilter]
+  );
 
   const resetFilters = useCallback(() => {
     setFilterState(INITIAL_FILTER_STATE);
@@ -65,17 +94,19 @@ const useFilteredProjects = (): UseFilteredProjects => {
 
   const getActiveFiltersCount = useCallback((): number => {
     let count = 0;
+
     if (filterState.title) count++;
-    if (filterState.category && filterState.category !== "all") count++;
-    if (filterState.position && filterState.position !== "all") count++;
-    if (filterState.status && filterState.status !== "all") count++;
-    if (filterState.workflow && filterState.workflow !== "all") count++;
-    if (filterState.sortBy && filterState.sortBy !== "latest") count++;
+    if (filterState.category) count++;
+    if (filterState.position) count++;
+    if (filterState.status) count++;
+    if (filterState.workflow) count++;
+    if (filterState.sortBy !== "latest") count++;
     return count;
   }, [filterState]);
 
   const getCleanFilter = useCallback((): ProjectSearchFilterOption => {
     const filter: ProjectSearchFilterOption = {};
+
     if (filterState.title) filter.title = filterState.title;
     if (filterState.category) filter.category = filterState.category;
     if (filterState.position) filter.position = filterState.position;

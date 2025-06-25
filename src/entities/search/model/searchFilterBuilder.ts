@@ -3,7 +3,11 @@ import {
   collection,
   where,
   orderBy,
+  limit,
+  startAfter,
   type Query,
+  type QueryDocumentSnapshot,
+  type DocumentData,
 } from "firebase/firestore";
 
 import type { ProjectSearchFilterOption, SortBy } from "@entities/search/types";
@@ -20,6 +24,8 @@ import type { UserRole } from "@shared/types/user";
 export class SearchFilterBuilder implements FilterBuilder {
   private filter: ProjectSearchFilterOption;
   private baseQuery: Query;
+  private limitValue?: number;
+  private startAfterCursor?: QueryDocumentSnapshot<DocumentData>;
 
   constructor(collectionName: string) {
     this.baseQuery = query(collection(db, collectionName));
@@ -68,6 +74,16 @@ export class SearchFilterBuilder implements FilterBuilder {
     return this;
   }
 
+  addLimit(limitValue: number): this {
+    this.limitValue = limitValue;
+    return this;
+  }
+
+  addStartAfter(cursor: QueryDocumentSnapshot<DocumentData>): this {
+    this.startAfterCursor = cursor;
+    return this;
+  }
+
   build(): Query {
     let builtQuery: Query = this.baseQuery;
 
@@ -113,6 +129,14 @@ export class SearchFilterBuilder implements FilterBuilder {
           builtQuery = query(builtQuery, orderBy("likedUsers", "desc"));
           break;
       }
+    }
+
+    if (this.startAfterCursor) {
+      builtQuery = query(builtQuery, startAfter(this.startAfterCursor));
+    }
+
+    if (this.limitValue) {
+      builtQuery = query(builtQuery, limit(this.limitValue));
     }
 
     return builtQuery;

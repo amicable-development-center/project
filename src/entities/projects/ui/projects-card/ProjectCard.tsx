@@ -112,8 +112,7 @@ export default ProjectCard;
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
-  maxWidth: "40rem",
-  maxHeight: "50rem",
+  flex: 1,
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -129,8 +128,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 
   [theme.breakpoints.up("sm")]: {
-    maxWidth: "44rem",
-    maxHeight: "52rem",
+    flex: 1,
     "&:hover": {
       transform: "translateY(-0.6rem)",
     },

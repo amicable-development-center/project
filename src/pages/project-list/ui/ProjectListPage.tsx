@@ -1,39 +1,24 @@
 import { Box, Typography, Container, styled } from "@mui/material";
-import type { JSX } from "react";
-import { useState } from "react";
+import { type JSX } from "react";
 
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
-import getFilteredProjectLists from "@entities/search/api/getFilteredProjectLists";
-import type { ProjectSearchFilterOption } from "@entities/search/types";
+import useProjectListPage from "@entities/search/hooks/useProjectListPage";
 import ProjectSearchForm from "@entities/search/ui/ProjectSearchForm";
 
-import type { ProjectListRes } from "@shared/types/project";
+import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
+import Pagination from "@shared/ui/Pagination";
 
 const ProjectListPage = (): JSX.Element => {
-  const [projects, setProjects] = useState<ProjectListRes[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-
-  const handleSearch = async (
-    filter: ProjectSearchFilterOption
-  ): Promise<void> => {
-    setIsLoading(true);
-    setHasSearched(true);
-
-    try {
-      console.log("🔍 검색 조건:", filter);
-
-      const results = await getFilteredProjectLists("projects", filter);
-      setProjects(results);
-
-      console.log("✅ 검색 결과:", results);
-    } catch (error) {
-      console.error("❌ 검색 에러:", error);
-      alert(`검색 실패: ${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    projects,
+    totalCount,
+    currentPage,
+    totalPages,
+    isLoading,
+    isError,
+    handleSearch,
+    handlePageChange,
+  } = useProjectListPage();
 
   return (
     <MainContainer>
@@ -41,32 +26,50 @@ const ProjectListPage = (): JSX.Element => {
         <ProjectSearchForm onSearch={handleSearch} isLoading={isLoading} />
       </SearchContainer>
 
-      {hasSearched && (
+      {isLoading && (
+        <LoadingContainer>
+          <LoadingSpinner message="프로젝트를 불러오는 중..." />
+        </LoadingContainer>
+      )}
+
+      {!isLoading && (
         <ResultsContainer>
           <ResultsHeader variant="h6">
-            📊 검색 결과: {projects.length}개
+            📊 전체 프로젝트: 총 {totalCount}개{" "}
+            {totalPages > 1 && `(${currentPage}/${totalPages} 페이지)`}
           </ResultsHeader>
 
           {projects.length > 0 ? (
-            <ProjectListContainer>
-              {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </ProjectListContainer>
+            <>
+              <ProjectListContainer>
+                {projects.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </ProjectListContainer>
+
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  disabled={isLoading}
+                />
+              )}
+            </>
           ) : (
             <EmptyState variant="body1">
-              검색 결과가 없습니다. 다른 조건으로 검색해보세요.
+              조건에 맞는 프로젝트가 없습니다. 다른 조건으로 검색해보세요.
             </EmptyState>
           )}
         </ResultsContainer>
       )}
 
-      {!hasSearched && (
-        <WelcomeContainer>
-          <WelcomeText variant="body1">
-            위의 검색 폼을 사용해서 프로젝트를 검색해보세요! 🔍
-          </WelcomeText>
-        </WelcomeContainer>
+      {isError && (
+        <ErrorContainer>
+          <ErrorText variant="body1">
+            데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.
+          </ErrorText>
+        </ErrorContainer>
       )}
     </MainContainer>
   );
@@ -128,7 +131,7 @@ const EmptyState = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-const WelcomeContainer = styled(Box)(({ theme }) => ({
+const LoadingContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -141,8 +144,18 @@ const WelcomeContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const WelcomeText = styled(Typography)(({ theme }) => ({
+const ErrorContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "4rem 0rem",
+  [theme.breakpoints.up("sm")]: {
+    padding: "6rem 2rem",
+  },
+}));
+
+const ErrorText = styled(Typography)(({ theme }) => ({
   textAlign: "center",
-  color: theme.palette.text.secondary,
+  color: theme.palette.error.main,
   fontWeight: 500,
 }));
