@@ -7,20 +7,25 @@ import type { ApiResMessage } from "@entities/projects/types/firebase";
 
 import { useAuthStore } from "@shared/stores/authStore";
 
+interface IDsType {
+  postID: string;
+  projectOwnerID: string;
+}
+
 const useProjectDelete = (): UseMutationResult<
   ApiResMessage,
   Error,
-  string
+  IDsType
 > => {
   const Navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
 
   return useMutation({
-    mutationFn: (id: string) => {
-      if (user?.uid !== id) {
+    mutationFn: ({ postID, projectOwnerID }: IDsType) => {
+      if (user?.uid !== projectOwnerID) {
         throw new Error("삭제 권한이 없습니다.");
       }
-      return deleteProjectItem(id);
+      return deleteProjectItem(postID);
     },
     onSuccess: (data) => {
       if (data.message) {

@@ -4,13 +4,17 @@ import { useParams } from "react-router-dom";
 
 import useProjectDelete from "@features/projects/queries/useProjectDelete";
 
-const ProjectDelete = (): JSX.Element => {
-  const { id } = useParams();
+const ProjectDelete = ({
+  projectOwnerID,
+}: {
+  projectOwnerID: string;
+}): JSX.Element => {
+  const { id: postID } = useParams();
   const { mutate: projectdelete, isPending } = useProjectDelete();
 
   const handleDeleteBtn = (): void => {
-    if (id && !isPending) {
-      projectdelete(id);
+    if (postID && !isPending) {
+      projectdelete({ postID, projectOwnerID });
     }
   };
 
