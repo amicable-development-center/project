@@ -7,6 +7,7 @@ import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
 import ProjectApply from "@entities/projects/ui/post-info/ProjectApply";
 import ProjectLeader from "@entities/projects/ui/post-info/ProjectLeader";
+import ProjectPostInfo from "@entities/projects/ui/post-info/ProjectPostInfo";
 import ProjectDescription from "@entities/projects/ui/projects-detail/ProjectDescription";
 import DetailHeader from "@entities/projects/ui/projects-detail/ProjectHeader";
 import ProjectInfo from "@entities/projects/ui/projects-detail/ProjectInfo";
@@ -57,6 +58,14 @@ const ProjectDetailPage = (): JSX.Element => {
     preferentialTreatment: project?.preferentialTreatment || [],
   };
 
+  const postInfoValues = !project
+    ? null
+    : {
+        createdAt: project.createdAt,
+        applicants: project.applicants,
+        likedUsers: project.likedUsers,
+      };
+
   if (isLoading) {
     return <div>로딩중</div>;
   }
@@ -94,10 +103,12 @@ const ProjectDetailPage = (): JSX.Element => {
             <ProjectLeader projectOwner={project?.projectOwner} />
           </CardBox>
           <CardBox>
-            <ProjectApply />
+            <ProjectApply applicants={project.applicants.length} />
             <ProjectApplyForm />
           </CardBox>
-          <CardBox>dsdfsd</CardBox>
+          <CardBox>
+            <ProjectPostInfo values={postInfoValues} />
+          </CardBox>
         </Box>
       </CardContainer>
     </MainContainer>
