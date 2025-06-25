@@ -1,5 +1,8 @@
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import GroupIcon from "@mui/icons-material/Group";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import ShareIcon from "@mui/icons-material/Share";
 import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
@@ -9,6 +12,7 @@ import {
   getStatusClassname,
 } from "@shared/libs/utils/projectDetail";
 import type { ProjectListRes } from "@shared/types/project";
+import InfoWithIcon from "@shared/ui/project-detail/InfoWithIcon";
 
 type ProjectInfoType = Pick<
   ProjectListRes,
@@ -51,40 +55,26 @@ const ProjectInfo = ({
       <Typography>{values.simpleInfo}</Typography>
 
       <InfoBox>
-        <Box display="flex" alignItems="center" flex={1}>
-          <GroupIcon fontSize="large" color="primary" />
-          <div>
-            <Typography variant="body2" color="gray">
-              팀 규모
-            </Typography>
-            <Typography variant="h6">{values.teamSize}명</Typography>
-          </div>
-        </Box>
-        <Box display="flex" alignItems="center" flex={1}>
-          <GroupIcon fontSize="large" color="primary" />
-          <div>
-            <Typography variant="body2" color="gray">
-              예상 기간
-            </Typography>
-            <Typography variant="h6">{values.expectedPeriod}</Typography>
-          </div>
-        </Box>
-        <Box display="flex" alignItems="center" flex={1}>
-          <GroupIcon fontSize="large" color="primary" />
-          <div>
-            <Typography color="gray">모집 마감</Typography>
-            <Typography variant="h6">
-              {formatDate(values.closedDate)}
-            </Typography>
-          </div>
-        </Box>
-        <Box display="flex" alignItems="center" flex={1}>
-          <GroupIcon fontSize="large" color="primary" />
-          <div>
-            <Typography color="gray">진행 방식</Typography>
-            <Typography variant="h6">{values.workflow}</Typography>
-          </div>
-        </Box>
+        <InfoWithIcon
+          item="팀 규모"
+          Icon={GroupIcon}
+          content={`${values.teamSize}명`}
+        />
+        <InfoWithIcon
+          item="예상 기간"
+          Icon={AccessTimeOutlinedIcon}
+          content={values.expectedPeriod}
+        />
+        <InfoWithIcon
+          item="예상 기간"
+          Icon={CalendarTodayOutlinedIcon}
+          content={formatDate(values.closedDate)}
+        />
+        <InfoWithIcon
+          item="진행 방식"
+          Icon={RoomOutlinedIcon}
+          content={values.workflow}
+        />
       </InfoBox>
     </>
   );
