@@ -24,14 +24,20 @@ import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosi
 
 interface ProjectCardProps {
   project: ProjectListRes;
+  simple?: boolean;
+  sx?: any;
 }
 
-const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
+const ProjectCard = ({
+  project,
+  simple = false,
+  sx,
+}: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
 
   return (
-    <StyledCard>
+    <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
       <StyledCardContent>
         <ProjectHeader>
           <StatusChip label={project.status} color="primary" size="small" />
@@ -41,12 +47,16 @@ const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
           <ProjectTitle variant="h5" fontWeight={700}>
             {project.title}
           </ProjectTitle>
-          <OneLineInfo variant="body1" color="primary" fontWeight={600}>
-            {project.oneLineInfo}
-          </OneLineInfo>
-          <SimpleInfo variant="body2" color="text.secondary">
-            {project.simpleInfo}
-          </SimpleInfo>
+          {!simple && (
+            <>
+              <OneLineInfo variant="body1" color="primary" fontWeight={600}>
+                {project.oneLineInfo}
+              </OneLineInfo>
+              <SimpleInfo variant="body2" color="text.secondary">
+                {project.simpleInfo}
+              </SimpleInfo>
+            </>
+          )}
         </ContentSection>
         <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
           {isMobile ? (
@@ -64,32 +74,36 @@ const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
             />
           )}
         </Stack>
-        <DragScrollContainer>
-          {project.techStack.map((stack, index) => (
-            <TechChip key={index} label={stack} size="small" />
-          ))}
-        </DragScrollContainer>
+        {!simple && (
+          <DragScrollContainer>
+            {project.techStack.map((stack, index) => (
+              <TechChip key={index} label={stack} size="small" />
+            ))}
+          </DragScrollContainer>
+        )}
 
-        <ProjectDetails>
-          <DetailItem>
-            <PeopleAltIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {project.teamSize}명
-            </Typography>
-          </DetailItem>
-          <DetailItem>
-            <AccessTimeIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {project.expectedPeriod}
-            </Typography>
-          </DetailItem>
-          <DetailItem>
-            <LocationPinIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              온라인
-            </Typography>
-          </DetailItem>
-        </ProjectDetails>
+        {!simple && (
+          <ProjectDetails>
+            <DetailItem>
+              <PeopleAltIcon fontSize="small" color="action" />
+              <Typography variant="body2" color="text.secondary">
+                {project.teamSize}명
+              </Typography>
+            </DetailItem>
+            <DetailItem>
+              <AccessTimeIcon fontSize="small" color="action" />
+              <Typography variant="body2" color="text.secondary">
+                {project.expectedPeriod}
+              </Typography>
+            </DetailItem>
+            <DetailItem>
+              <LocationPinIcon fontSize="small" color="action" />
+              <Typography variant="body2" color="text.secondary">
+                온라인
+              </Typography>
+            </DetailItem>
+          </ProjectDetails>
+        )}
 
         <StyledDivider />
 
