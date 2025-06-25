@@ -1,14 +1,15 @@
-import { Timestamp } from "firebase/firestore/lite";
+import { Timestamp } from "firebase/firestore";
 
-import { insertProjectItem } from "@features/projects/api/projdectsApi";
+import { insertProjectItem } from "@features/projects/api/projectsApi";
 
 import {
   ProjectCategory,
+  RecruitmentStatus,
   Workflow,
   type ProjectItemInsertReq,
-} from "@entities/projects/types/projects";
-
+} from "@shared/types/project";
 import { ExpectedPeriod } from "@shared/types/schedule";
+import { UserExperience } from "@shared/types/user";
 
 const useProjectInsert = (): { submit: () => Promise<void> } => {
   const submit = async (): Promise<void> => {
@@ -33,11 +34,11 @@ const TestData: ProjectItemInsertReq = {
     name: "홍길동",
     userRole: "frontend",
     email: "test@test.com",
-    experience: ExpectedPeriod.oneMonth,
+    experience: UserExperience.junior,
     avatar: "https://via.placeholder.com/150",
   },
   applicants: [],
-  status: "모집중",
+  status: RecruitmentStatus.recruiting,
   title: "AI 기반 음악 추천 서비스 개발",
   oneLineInfo: "AI로 사용자 취향을 분석하는 음악 추천 프로젝트입니다.",
   simpleInfo: "음악 취향 데이터를 기반으로 개인화 추천 시스템을 구현합니다.",

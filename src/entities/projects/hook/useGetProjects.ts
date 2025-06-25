@@ -5,16 +5,18 @@ import { getProjectList } from "@entities/projects/api/projectsAPi";
 
 import type { ProjectListRes } from "@shared/types/project";
 
-const useProjectList = (
-  lastDoc: QueryDocumentSnapshot<DocumentData> | null
-): UseQueryResult<{
+const useGetProjects = ({
+  pageSize = 6,
+}: {
+  pageSize?: number;
+}): UseQueryResult<{
   projects: ProjectListRes[];
   lastVisible: QueryDocumentSnapshot<DocumentData> | null;
 }> => {
   return useQuery({
-    queryKey: ["project-list", lastDoc?.id ?? "none"],
-    queryFn: () => getProjectList({ pageSize: 6, lastDoc }),
+    queryKey: ["projects"],
+    queryFn: () => getProjectList({ pageSize, lastDoc: null }),
   });
 };
 
-export default useProjectList;
+export default useGetProjects;
