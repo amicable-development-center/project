@@ -4,7 +4,7 @@ import type { JSX } from "react";
 
 import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
-const ProjectApply = (): JSX.Element => {
+const ProjectApply = ({ applicants }: { applicants: number }): JSX.Element => {
   return (
     <>
       <TitleWithIcon
@@ -14,7 +14,7 @@ const ProjectApply = (): JSX.Element => {
         marginBottom={0}
       />
       <Typography variant="body2" marginBottom={2}>
-        현재 {12}명이 지원했습니다
+        현재 {applicants}명이 지원했습니다
       </Typography>
     </>
   );
