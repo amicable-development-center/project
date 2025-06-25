@@ -1,10 +1,10 @@
 import { Timestamp } from "firebase/firestore";
 
-import { insertProjectItem } from "@features/projects/api/projdectsApi";
+import { insertProjectItem } from "@features/projects/api/projectsApi";
 
 import {
   ProjectCategory,
-  ProjectStatus,
+  RecruitmentStatus,
   Workflow,
   type ProjectItemInsertReq,
 } from "@shared/types/project";
@@ -37,7 +37,7 @@ const TestData: ProjectItemInsertReq = {
     avatar: "https://via.placeholder.com/150",
   },
   applicants: [],
-  status: ProjectStatus.recruiting,
+  status: RecruitmentStatus.recruiting,
   title: "AI 기반 음악 추천 서비스 개발",
   oneLineInfo: "AI로 사용자 취향을 분석하는 음악 추천 프로젝트입니다.",
   simpleInfo: "음악 취향 데이터를 기반으로 개인화 추천 시스템을 구현합니다.",

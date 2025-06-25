@@ -1,32 +1,21 @@
-import { Search, Clear, FilterList, TuneRounded } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Chip,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
-  Typography,
   Paper,
-  Divider,
   useTheme,
   alpha,
+  Typography,
+  Chip,
 } from "@mui/material";
 import type { JSX } from "react";
 
 import useFilteredProjects from "@entities/search/hooks/useFilteredProjects";
-import type { ProjectSearchFilterOption, SortBy } from "@entities/search/types";
-
-import {
-  ProjectCategory,
-  RecruitmentStatus,
-  Workflow,
-} from "@shared/types/project";
-import type { UserRole } from "@shared/types/user";
+import { SELECT_FIELD_CONFIGS } from "@entities/search/model/selectFieldConfigs";
+import type { ProjectSearchFilterOption } from "@entities/search/types";
+import ProjectSearchSelectBox from "@entities/search/ui/project-search-input/ProjectSearchSelectBox";
 
 interface ProjectSearchFormProps {
   onSearch: (filter: ProjectSearchFilterOption) => void;
@@ -60,75 +49,56 @@ const ProjectSearchForm = ({
     resetFilters();
   };
 
-  const positionOptions: { value: UserRole; label: string }[] = [
-    { value: "frontend", label: "프론트앤드" },
-    { value: "backend", label: "백엔드" },
-    { value: "fullstack", label: "풀스택" },
-    { value: "designer", label: "디자이너" },
-    { value: "pm", label: "PM" },
-  ];
-
   return (
     <Paper
       elevation={0}
       sx={{
         background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
         border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-        borderRadius: 0,
         overflow: "hidden",
         mb: 4,
       }}
     >
-      {/* 헤더 영역 */}
       <Box
         sx={{
-          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-          color: "white",
+          background: theme.palette.background.paper,
+          color: theme.palette.text.primary,
           p: 3,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          borderBottom: `1px solid ${theme.palette.divider}`,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <TuneRounded sx={{ fontSize: 28 }} />
-          <Typography variant="h5" fontWeight="600">
-            프로젝트 검색
-          </Typography>
-        </Box>
+        <>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="h5" fontWeight="600">
+              검색 및 필터
+            </Typography>
+          </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {getActiveFiltersCount() > 0 && (
-            <Chip
-              label={`${getActiveFiltersCount()}개 필터 적용중`}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {getActiveFiltersCount() > 0 && (
+              <Chip
+                label={`${getActiveFiltersCount()}개 필터 적용중`}
+                size="small"
+                color="primary"
+              />
+            )}
+            <Button
+              variant="outlined"
               size="small"
-              sx={{
-                backgroundColor: alpha(theme.palette.common.white, 0.2),
-                color: "white",
-                fontWeight: "bold",
-              }}
-            />
-          )}
-          <IconButton
-            onClick={handleReset}
-            disabled={isLoading}
-            sx={{
-              color: "white",
-              border: `1px solid ${alpha(theme.palette.common.white, 0.3)}`,
-              "&:hover": {
-                backgroundColor: alpha(theme.palette.common.white, 0.1),
-                borderColor: alpha(theme.palette.common.white, 0.5),
-              },
-            }}
-          >
-            <Clear />
-          </IconButton>
-        </Box>
+              onClick={handleReset}
+              disabled={isLoading}
+            >
+              필터 초기화
+            </Button>
+          </Box>
+        </>
       </Box>
 
-      <Box sx={{ p: 4 }}>
+      <Box sx={{ p: 3 }}>
         <Stack spacing={4}>
-          {/* 프로젝트 제목 검색 */}
           <TextField
             fullWidth
             label="프로젝트 제목 검색"
@@ -141,7 +111,6 @@ const ProjectSearchForm = ({
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
-                borderRadius: 5,
                 transition: "all 0.3s ease",
                 "&:hover": {
                   boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
@@ -153,7 +122,6 @@ const ProjectSearchForm = ({
             }}
           />
 
-          {/* 필터 옵션들 - 한 줄로 배치 */}
           <Box
             sx={{
               display: "grid",
@@ -166,258 +134,37 @@ const ProjectSearchForm = ({
               gap: 3,
             }}
           >
-            {/* 프로젝트 분야 */}
-            <FormControl
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 5,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`,
-                  },
-                },
-              }}
-            >
-              <InputLabel>🎯 프로젝트 분야</InputLabel>
-              <Select
-                value={filterState.category || "all"}
-                label="🎯 프로젝트 분야"
-                onChange={(e) =>
-                  updateCategory(
-                    e.target.value === "all"
-                      ? "all"
-                      : (e.target.value as ProjectCategory)
-                  )
-                }
-              >
-                <MenuItem value="all">전체 카테고리</MenuItem>
-                {Object.values(ProjectCategory).map((category) => (
-                  <MenuItem key={category} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <ProjectSearchSelectBox
+              config={SELECT_FIELD_CONFIGS.category}
+              value={filterState.category || "all"}
+              onChange={(value) => updateCategory(value as any)}
+            />
 
-            {/* 모집 포지션 */}
-            <FormControl
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 5,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    boxShadow: `0 2px 8px ${alpha(theme.palette.secondary.main, 0.1)}`,
-                  },
-                },
-              }}
-            >
-              <InputLabel>👥 모집 포지션</InputLabel>
-              <Select
-                value={filterState.position || "all"}
-                label="👥 모집 포지션"
-                onChange={(e) =>
-                  updatePosition(
-                    e.target.value === "all"
-                      ? "all"
-                      : (e.target.value as UserRole)
-                  )
-                }
-              >
-                <MenuItem value="all">전체 직무</MenuItem>
-                {positionOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <ProjectSearchSelectBox
+              config={SELECT_FIELD_CONFIGS.position}
+              value={filterState.position || "all"}
+              onChange={(value) => updatePosition(value as any)}
+            />
 
-            {/* 모집 상태 */}
-            <FormControl
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 5,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    boxShadow: `0 2px 8px ${alpha(theme.palette.success.main, 0.1)}`,
-                  },
-                },
-              }}
-            >
-              <InputLabel>📢 모집 상태</InputLabel>
-              <Select
-                value={filterState.status || "all"}
-                label="📢 모집 상태"
-                onChange={(e) =>
-                  updateStatus(
-                    e.target.value === "all"
-                      ? "all"
-                      : (e.target.value as RecruitmentStatus)
-                  )
-                }
-              >
-                <MenuItem value="all">전체 상태</MenuItem>
-                {Object.values(RecruitmentStatus).map((status) => (
-                  <MenuItem key={status} value={status}>
-                    {status}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <ProjectSearchSelectBox
+              config={SELECT_FIELD_CONFIGS.status}
+              value={filterState.status || "all"}
+              onChange={(value) => updateStatus(value as any)}
+            />
 
-            {/* 진행 방식 */}
-            <FormControl
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 5,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    boxShadow: `0 2px 8px ${alpha(theme.palette.info.main, 0.1)}`,
-                  },
-                },
-              }}
-            >
-              <InputLabel>🌍 진행 방식</InputLabel>
-              <Select
-                value={filterState.workflow || "all"}
-                label="🌍 진행 방식"
-                onChange={(e) =>
-                  updateWorkflow(
-                    e.target.value === "all"
-                      ? "all"
-                      : (e.target.value as Workflow)
-                  )
-                }
-              >
-                <MenuItem value="all">전체 지역</MenuItem>
-                {Object.values(Workflow).map((workflow) => (
-                  <MenuItem key={workflow} value={workflow}>
-                    {workflow}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <ProjectSearchSelectBox
+              config={SELECT_FIELD_CONFIGS.workflow}
+              value={filterState.workflow || "all"}
+              onChange={(value) => updateWorkflow(value as any)}
+            />
 
-            {/* 정렬 방식 */}
-            <FormControl
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 5,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    boxShadow: `0 2px 8px ${alpha(theme.palette.warning.main, 0.1)}`,
-                  },
-                },
-              }}
-            >
-              <InputLabel>📊 정렬 방식</InputLabel>
-              <Select
-                value={filterState.sortBy || "latest"}
-                label="📊 정렬 방식"
-                onChange={(e) => updateSortBy(e.target.value as SortBy)}
-              >
-                <MenuItem value="latest">최신순</MenuItem>
-                <MenuItem value="deadline">마감순</MenuItem>
-                <MenuItem value="applicants">지원자순</MenuItem>
-                <MenuItem value="popularity">인기순</MenuItem>
-              </Select>
-            </FormControl>
+            <ProjectSearchSelectBox
+              config={SELECT_FIELD_CONFIGS.sortBy}
+              value={filterState.sortBy || "latest"}
+              onChange={(value) => updateSortBy(value as any)}
+            />
           </Box>
 
-          {/* 선택된 필터 표시 */}
-          {getActiveFiltersCount() > 0 && (
-            <>
-              <Divider sx={{ opacity: 0.3 }} />
-              <Box>
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
-                >
-                  <FilterList sx={{ color: "primary.main" }} />
-                  <Typography
-                    variant="body2"
-                    fontWeight="600"
-                    color="primary.main"
-                  >
-                    활성 필터 ({getActiveFiltersCount()}개)
-                  </Typography>
-                </Box>
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                  {filterState.title && (
-                    <Chip
-                      label={`제목: ${filterState.title}`}
-                      onDelete={() => updateTitle("")}
-                      size="small"
-                      variant="outlined"
-                      color="primary"
-                      sx={{
-                        borderRadius: 5,
-                        "& .MuiChip-deleteIcon": {
-                          color: "primary.main",
-                        },
-                      }}
-                    />
-                  )}
-                  {filterState.position && filterState.position !== "all" && (
-                    <Chip
-                      label={`포지션: ${positionOptions.find((p) => p.value === filterState.position)?.label}`}
-                      onDelete={() => updatePosition("all")}
-                      size="small"
-                      variant="outlined"
-                      color="secondary"
-                      sx={{ borderRadius: 5 }}
-                    />
-                  )}
-                  {filterState.category && filterState.category !== "all" && (
-                    <Chip
-                      label={`분야: ${filterState.category}`}
-                      onDelete={() => updateCategory("all")}
-                      size="small"
-                      variant="outlined"
-                      color="primary"
-                      sx={{ borderRadius: 5 }}
-                    />
-                  )}
-                  {filterState.status && filterState.status !== "all" && (
-                    <Chip
-                      label={`상태: ${filterState.status}`}
-                      onDelete={() => updateStatus("all")}
-                      size="small"
-                      variant="outlined"
-                      color="success"
-                      sx={{ borderRadius: 5 }}
-                    />
-                  )}
-                  {filterState.workflow && filterState.workflow !== "all" && (
-                    <Chip
-                      label={`방식: ${filterState.workflow}`}
-                      onDelete={() => updateWorkflow("all")}
-                      size="small"
-                      variant="outlined"
-                      color="info"
-                      sx={{ borderRadius: 5 }}
-                    />
-                  )}
-                  {filterState.sortBy && filterState.sortBy !== "latest" && (
-                    <Chip
-                      label={`정렬: ${filterState.sortBy}`}
-                      onDelete={() => updateSortBy("latest")}
-                      size="small"
-                      variant="outlined"
-                      color="warning"
-                      sx={{ borderRadius: 5 }}
-                    />
-                  )}
-                </Stack>
-              </Box>
-            </>
-          )}
-
-          {/* 검색 버튼 */}
           <Box sx={{ display: "flex", justifyContent: "center", pt: 2 }}>
             <Button
               variant="contained"
@@ -428,7 +175,6 @@ const ProjectSearchForm = ({
               sx={{
                 minWidth: 200,
                 height: 56,
-                borderRadius: 0,
                 fontSize: "1.1rem",
                 fontWeight: "bold",
                 background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,

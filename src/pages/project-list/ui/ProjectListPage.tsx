@@ -1,7 +1,8 @@
-import { Box, Typography, Container, styled, Card } from "@mui/material";
+import { Box, Typography, Container, styled } from "@mui/material";
 import type { JSX } from "react";
 import { useState } from "react";
 
+import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import getFilteredProjectLists from "@entities/search/api/getFilteredProjectLists";
 import type { ProjectSearchFilterOption } from "@entities/search/types";
 import ProjectSearchForm from "@entities/search/ui/ProjectSearchForm";
@@ -49,15 +50,7 @@ const ProjectListPage = (): JSX.Element => {
           {projects.length > 0 ? (
             <ProjectListContainer>
               {projects.map((project) => (
-                <ProjectItem key={project.id}>
-                  <ProjectTitle variant="h6">{project.title}</ProjectTitle>
-                  <ProjectMeta variant="body2">
-                    {project.category} | {project.status} | {project.workflow}
-                  </ProjectMeta>
-                  <ProjectDescription variant="body2">
-                    {project.oneLineInfo}
-                  </ProjectDescription>
-                </ProjectItem>
+                <ProjectCard key={project.id} project={project} />
               ))}
             </ProjectListContainer>
           ) : (
@@ -113,50 +106,19 @@ const ResultsHeader = styled(Typography)(({ theme }) => ({
   marginBottom: "2rem",
 }));
 
-const ProjectListContainer = styled(Box)(() => ({
-  display: "flex",
-  flexDirection: "column",
+const ProjectListContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
   gap: "1.6rem",
-}));
-
-const ProjectItem = styled(Card)(({ theme }) => ({
-  padding: "2rem",
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 0,
-  backgroundColor: theme.palette.background.paper,
-  transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-  cursor: "pointer",
-
-  "&:hover": {
-    backgroundColor: theme.palette.background.default,
-    borderColor: theme.palette.primary.light,
-    transform: "translateY(-2px)",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-  },
-
   [theme.breakpoints.up("sm")]: {
-    borderRadius: 0,
+    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
   },
   [theme.breakpoints.up("md")]: {
-    borderRadius: 0,
+    gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
   },
-}));
-
-const ProjectTitle = styled(Typography)(({ theme }) => ({
-  fontWeight: 600,
-  color: theme.palette.text.primary,
-  marginBottom: "0.8rem",
-}));
-
-const ProjectMeta = styled(Typography)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  marginBottom: "1rem",
-  fontWeight: 500,
-}));
-
-const ProjectDescription = styled(Typography)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  lineHeight: 1.6,
+  [theme.breakpoints.up("lg")]: {
+    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+  },
 }));
 
 const EmptyState = styled(Typography)(({ theme }) => ({
