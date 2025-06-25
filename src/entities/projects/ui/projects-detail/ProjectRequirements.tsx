@@ -2,7 +2,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
+import type { ProjectListRes } from "@shared/types/project";
 
 import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 

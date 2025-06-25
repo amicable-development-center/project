@@ -1,7 +1,7 @@
 import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-import { deleteProjectItem } from "@features/projects/api/projdectsApi";
+import { deleteProjectItem } from "@features/projects/api/projectsApi";
 
 import type { ApiResMessage } from "@entities/projects/types/firebase";
 

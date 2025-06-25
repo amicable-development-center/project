@@ -2,7 +2,7 @@ import AdjustIcon from "@mui/icons-material/Adjust";
 import { Box } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
+import type { ProjectListRes } from "@shared/types/project";
 
 import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 

@@ -4,12 +4,11 @@ import ShareIcon from "@mui/icons-material/Share";
 import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
-
 import {
   formatDate,
   getStatusClassname,
 } from "@shared/libs/utils/projectDetail";
+import type { ProjectListRes } from "@shared/types/project";
 
 type ProjectInfoType = Pick<
   ProjectListRes,

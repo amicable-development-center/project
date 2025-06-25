@@ -3,14 +3,13 @@ import {
   collection,
   doc,
   serverTimestamp,
-  setDoc,
   deleteDoc,
 } from "firebase/firestore";
 
 import type { ApiResMessage } from "@entities/projects/types/firebase";
-import type { ProjectItemInsertReq } from "@entities/projects/types/projects";
 
 import { db } from "@shared/firebase/firebase";
+import type { ProjectItemInsertReq } from "@shared/types/project";
 
 /** firebase projects에 item 등록 */
 export const insertProjectItem = async (
@@ -63,6 +62,4 @@ export const deleteProjectItem = async (id: string): Promise<ApiResMessage> => {
 /** firebase projectsItem 수정 */
 export const updateProjectItem = async (): Promise<void> => {
   return;
-  const docRef = doc(db, "coments", "test");
-  await setDoc(docRef, { title: "" }, { merge: true });
 };

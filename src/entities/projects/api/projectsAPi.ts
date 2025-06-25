@@ -12,9 +12,8 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
-
 import { db } from "@shared/firebase/firebase";
+import type { ProjectListRes } from "@shared/types/project";
 
 /** projects의 total 수 */
 export const getProjectsTotalCount = async (): Promise<number> => {
