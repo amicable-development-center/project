@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-import { insertProjectItem } from "@features/projects/api/projectsApi";
+import useProjectInsert from "@features/projects/queries/useProjectInsert";
 
 import {
   ProjectCategory,
@@ -11,21 +11,19 @@ import {
 import { ExpectedPeriod } from "@shared/types/schedule";
 import { UserExperience } from "@shared/types/user";
 
-const useProjectInsert = (): { submit: () => Promise<void> } => {
-  const submit = async (): Promise<void> => {
-    const res = await insertProjectItem(TestData);
+const useProjectInsertForm = (): { submit: () => Promise<void> } => {
+  const { mutate: insertItem, isPending } = useProjectInsert();
 
-    if (res.success) {
-      alert(res.message);
-    } else {
-      alert(res.message);
-    }
+  const submit = async (): Promise<void> => {
+    if (isPending) return;
+    // form 검사 추가 바람
+    insertItem(TestData);
   };
 
   return { submit };
 };
 
-export default useProjectInsert;
+export default useProjectInsertForm;
 
 // 테스트용 form 입니다.
 const TestData: ProjectItemInsertReq = {

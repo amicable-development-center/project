@@ -7,7 +7,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useState, type FormEvent } from "react";
 import type { JSX } from "react";
 
-import useProjectInsert from "@features/projects/hook/useProjectInsert";
+import useProjectInsert from "@features/projects/hook/useProjectInsertForm";
 
 import ProjectCategoryCard from "@entities/projects/ui/project-insert/ProjectCategoryCard";
 import ProjectDeadlineCard from "@entities/projects/ui/project-insert/ProjectDeadlineCard";

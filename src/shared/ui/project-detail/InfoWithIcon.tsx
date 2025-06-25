@@ -11,13 +11,7 @@ const InfoWithIcon = ({
   content: string;
 }): JSX.Element => {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      flex={1}
-      gap={1}
-      sx={{ backgroundColor: "red" }}
-    >
+    <Box display="flex" alignItems="center" flex={1} gap={1}>
       <Icon fontSize="large" color="primary" />
       <div>
         <Typography variant="body2" color="gray">
