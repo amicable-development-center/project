@@ -30,13 +30,6 @@ const useProjectListPage = (): UseProjectListPageReturn => {
   const [currentFilter, setCurrentFilter] = useState<ProjectSearchFilterOption>(
     {}
   );
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const {
-    data: projects = [],
-    isLoading: isProjectsLoading,
-    isError: isProjectsError,
-  } = useGetFilteredProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
 
   const {
     data: totalCount = 0,
@@ -44,23 +37,28 @@ const useProjectListPage = (): UseProjectListPageReturn => {
     isError: isCountError,
   } = useGetFilteredProjectsCount(currentFilter);
 
-  const { totalPages, setPage, goToReset } = usePaginationWithState({
-    totalCount,
-    perPage: ITEMS_PER_PAGE,
-  });
+  const { currentPage, totalPages, setPage, goToReset } =
+    usePaginationWithState({
+      totalCount,
+      perPage: ITEMS_PER_PAGE,
+    });
+
+  const {
+    data: projects = [],
+    isLoading: isProjectsLoading,
+    isError: isProjectsError,
+  } = useGetFilteredProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
 
   const isLoading = isProjectsLoading || isCountLoading;
   const isError = isProjectsError || isCountError;
 
   const handleSearch = (filter: ProjectSearchFilterOption): void => {
     setCurrentFilter(filter);
-    setCurrentPage(1);
     goToReset();
   };
 
   const handlePageChange = (page: number): void => {
     if (page === currentPage || isLoading) return;
-    setCurrentPage(page);
     setPage(page);
   };
 

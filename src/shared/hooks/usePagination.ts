@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface UsePaginationProps {
@@ -96,16 +96,19 @@ export const usePaginationWithState = ({
 
   const totalPages = Math.ceil(totalCount / perPage);
 
-  const updatePageInURL = (page: number): void => {
-    isInternalUpdate.current = true;
-    const newParams = new URLSearchParams(searchParams);
-    if (page > 1) {
-      newParams.set("page", page.toString());
-    } else {
-      newParams.delete("page");
-    }
-    setSearchParams(newParams);
-  };
+  const updatePageInURL = useCallback(
+    (page: number): void => {
+      isInternalUpdate.current = true;
+      const newParams = new URLSearchParams(searchParams);
+      if (page > 1) {
+        newParams.set("page", page.toString());
+      } else {
+        newParams.delete("page");
+      }
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams]
+  );
 
   const setPage = (page: number): void => {
     if (page < 1 || page > totalPages) return;
