@@ -8,11 +8,12 @@ import {
   QueryDocumentSnapshot,
   startAfter,
   type DocumentData,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 
-import type { ProjectListRes } from "@entities/projects/types/projects";
-
 import { db } from "@shared/firebase/firebase";
+import type { ProjectListRes } from "@shared/types/project";
 
 /** projects의 total 수 */
 export const getProjectsTotalCount = async (): Promise<number> => {
@@ -59,5 +60,24 @@ export const getProjectList = async ({
   } catch (err) {
     console.log(err);
     return { projects: [], lastVisible: null };
+  }
+};
+
+/** firebase project item 상세 조회 */
+export const getProjectItem = async (
+  id: string
+): Promise<ProjectListRes | null> => {
+  try {
+    const docRef = doc(db, "projects", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      return null;
+    }
+
+    return docSnap.data() as ProjectListRes;
+  } catch (err) {
+    console.log(err);
+    return null;
   }
 };
