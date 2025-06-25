@@ -146,7 +146,7 @@ export const usePaginationWithState = ({
         return prevPage;
       });
     }
-  }, [totalPages]);
+  }, [totalPages, updatePageInURL]);
 
   const { pageNumbers, canGoPrev, canGoNext } = usePagination({
     currentPage,
