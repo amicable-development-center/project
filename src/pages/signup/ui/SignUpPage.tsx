@@ -1,6 +1,8 @@
 import { Box, Paper, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
+import BackToHome from "@widgets/BackToHome/BackToHome";
+
 import UserInfoForm from "@features/user/ui/UserInfoForm";
 
 const SignUpPage = (): JSX.Element => {
@@ -15,6 +17,7 @@ const SignUpPage = (): JSX.Element => {
       <FormCard elevation={3}>
         <UserInfoForm />
       </FormCard>
+      <BackToHome />
     </PageContainer>
   );
 };
