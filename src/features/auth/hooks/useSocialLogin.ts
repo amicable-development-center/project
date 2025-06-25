@@ -24,14 +24,10 @@ export const useSocialLogin = (): {
       const additionalInfo = getAdditionalUserInfo(result);
       const isNewUser = additionalInfo?.isNewUser;
 
-      // 토큰 저장 (필요하면)
-      const token = await user.getIdToken();
-      localStorage.setItem("accessToken", token);
-
       if (isNewUser) {
         navigate("/signup");
       } else {
-        navigate(-1);
+        navigate("/");
       }
     } catch (error: any) {
       console.error("소셜 로그인 실패: ", error);
