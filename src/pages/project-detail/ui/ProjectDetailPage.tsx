@@ -1,8 +1,12 @@
-import { Card, Container, styled } from "@mui/material";
+import { Box, Card, Container, styled } from "@mui/material";
 import { type JSX } from "react";
 import { useParams } from "react-router-dom";
 
+import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
+
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
+import ProjectApply from "@entities/projects/ui/post-info/ProjectApply";
+import ProjectLeader from "@entities/projects/ui/post-info/ProjectLeader";
 import ProjectDescription from "@entities/projects/ui/projects-detail/ProjectDescription";
 import DetailHeader from "@entities/projects/ui/projects-detail/ProjectHeader";
 import ProjectInfo from "@entities/projects/ui/projects-detail/ProjectInfo";
@@ -18,8 +22,6 @@ const ProjectDetailPage = (): JSX.Element => {
     isLoading,
     isError,
   } = useProjectsItem({ id: id || null });
-
-  const HeaderValues = project?.title || "";
 
   const projectInfoValues = !project
     ? null
@@ -63,25 +65,41 @@ const ProjectDetailPage = (): JSX.Element => {
   }
   return (
     <MainContainer>
-      <DetailHeader title={HeaderValues} />
-      <CardBox>
-        <ProjectInfo values={projectInfoValues} />
-      </CardBox>
-      <CardBox>
-        <TechStack {...techStackValues} />
-      </CardBox>
-      <CardBox>
-        <ProjectDescription {...descriptionlValues} />
-      </CardBox>
-      <CardBox>
-        <ProjectPositions {...positionsValues} />
-      </CardBox>
-      <CardBox>
-        <ProjectSchedule {...schedulesValues} />
-      </CardBox>
-      <CardBox>
-        <ProjectRequirements {...requirementsValues} />
-      </CardBox>
+      <DetailHeader title={project?.title || ""} />
+
+      <CardContainer>
+        <Box flex={3}>
+          <CardBox>
+            <ProjectInfo values={projectInfoValues} />
+          </CardBox>
+          <CardBox>
+            <TechStack {...techStackValues} />
+          </CardBox>
+          <CardBox>
+            <ProjectDescription {...descriptionlValues} />
+          </CardBox>
+          <CardBox>
+            <ProjectPositions {...positionsValues} />
+          </CardBox>
+          <CardBox>
+            <ProjectSchedule {...schedulesValues} />
+          </CardBox>
+          <CardBox>
+            <ProjectRequirements {...requirementsValues} />
+          </CardBox>
+        </Box>
+
+        <Box flex={1.5}>
+          <CardBox>
+            <ProjectLeader projectOwner={project?.projectOwner} />
+          </CardBox>
+          <CardBox>
+            <ProjectApply />
+            <ProjectApplyForm />
+          </CardBox>
+          <CardBox>dsdfsd</CardBox>
+        </Box>
+      </CardContainer>
     </MainContainer>
   );
 };
@@ -92,6 +110,15 @@ const MainContainer = styled(Container)(({ theme }) => ({
   flexGrow: 1,
   minHeight: "100vh",
   backgroundColor: theme.palette.background.default,
+}));
+
+const CardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: "2rem",
+
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+  },
 }));
 
 const CardBox = styled(Card)`
