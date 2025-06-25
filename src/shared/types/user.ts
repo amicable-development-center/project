@@ -16,3 +16,8 @@ export enum UserExperience {
   mid = "미들 (3년 이상 10년 이하)",
   senior = "시니어 (10년 이상)",
 }
+
+export type UserInput = Pick<
+  User,
+  "name" | "userRole" | "experience" | "introduceMyself"
+>;
