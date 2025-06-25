@@ -2,14 +2,13 @@ import { Card, Container, styled } from "@mui/material";
 import { useMemo, type JSX } from "react";
 import { useParams } from "react-router-dom";
 
-import DetailHeader from "@pages/project-detail/ui/ProjectHeader";
-import ProjectInfo from "@pages/project-detail/ui/ProjectInfo";
-import ProjectPositions from "@pages/project-detail/ui/ProjectPositions";
-import ProjectRequirements from "@pages/project-detail/ui/ProjectRequirements";
-import ProjectSchedule from "@pages/project-detail/ui/ProjectSchedule";
-import TechStack from "@pages/project-detail/ui/TechStack";
-
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
+import DetailHeader from "@entities/projects/ui/projects-detail/ProjectHeader";
+import ProjectInfo from "@entities/projects/ui/projects-detail/ProjectInfo";
+import ProjectPositions from "@entities/projects/ui/projects-detail/ProjectPositions";
+import ProjectRequirements from "@entities/projects/ui/projects-detail/ProjectRequirements";
+import ProjectSchedule from "@entities/projects/ui/projects-detail/ProjectSchedule";
+import TechStack from "@entities/projects/ui/projects-detail/TechStack";
 
 const ProjectDetailPage = (): JSX.Element => {
   const { id } = useParams();

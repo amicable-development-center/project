@@ -11,7 +11,7 @@ const TechStack = ({ values }: { values: TechStackType }): JSX.Element => {
     <>
       <Box display={"flex"} alignItems={"center"} gap={1}>
         <CodeIcon fontSize="large" color="primary" />
-        <Typography variant="h2">기술 스택</Typography>
+        <Typography variant="h3">기술 스택</Typography>
       </Box>
 
       <Box display={"flex"} marginTop={1} flexWrap={"wrap"}>

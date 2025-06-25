@@ -1,4 +1,6 @@
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import GroupIcon from "@mui/icons-material/Group";
+import ShareIcon from "@mui/icons-material/Share";
 import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
@@ -35,44 +37,52 @@ const ProjectInfo = ({
           {values.status}
         </StatusBox>
 
-        <Box display={"flex"}>
-          <div>좋아요</div>
-          <div>공유</div>
+        <Box display="flex">
+          <HeadIconBox>
+            <FavoriteBorderIcon />
+          </HeadIconBox>
+          <HeadIconBox>
+            <ShareIcon />
+          </HeadIconBox>
         </Box>
       </Head>
 
-      <Typography variant="h1">{values.title}</Typography>
+      <Typography variant="h2">{values.title}</Typography>
       <OneLineInfo>{values.oneLineInfo}</OneLineInfo>
       <Typography>{values.simpleInfo}</Typography>
 
       <InfoBox>
-        <Box display={"flex"} alignItems={"center"} flex={1}>
+        <Box display="flex" alignItems="center" flex={1}>
           <GroupIcon fontSize="large" color="primary" />
           <div>
-            <div>팀 규모</div>
+            <Typography variant="body2" color="gray">
+              팀 규모
+            </Typography>
             <Typography variant="h6">{values.teamSize}</Typography>
           </div>
         </Box>
-        <Box display={"flex"} alignItems={"center"} flex={1}>
+        <Box display="flex" alignItems="center" flex={1}>
           <GroupIcon fontSize="large" color="primary" />
           <div>
-            <div>예상 기간</div>
+            <Typography variant="body2" color="gray">
+              예상 기간
+            </Typography>
             <Typography variant="h6">{values.expectedPeriod}</Typography>
           </div>
         </Box>
-        <Box display={"flex"} alignItems={"center"} flex={1}>
+        <Box display="flex" alignItems="center" flex={1}>
           <GroupIcon fontSize="large" color="primary" />
           <div>
-            <div>모집 마감</div>
+            <Typography color="gray">모집 마감</Typography>
             <Typography variant="h6">
               {formatDate(values.closedDate)}
             </Typography>
           </div>
         </Box>
-        <Box display={"flex"} alignItems={"center"} flex={1}>
+        <Box display="flex" alignItems="center" flex={1}>
           <GroupIcon fontSize="large" color="primary" />
           <div>
-            <div>진행 방식</div>
+            <Typography color="gray">진행 방식</Typography>
             <Typography variant="h6">{values.workflow}</Typography>
           </div>
         </Box>
@@ -88,6 +98,23 @@ const Head = styled(Box)`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
+`;
+
+const HeadIconBox = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  margin-left: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eeeeee;
+  }
 `;
 
 const StatusBox = styled("div")`
