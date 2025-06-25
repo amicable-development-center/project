@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface UsePaginationProps {
@@ -80,12 +80,14 @@ const usePagination = ({
     canGoNext,
   };
 };
+
 export const usePaginationWithState = ({
   totalCount,
   perPage = 6,
   maxVisiblePages = 5,
 }: UsePaginationWithStateProps): UsePaginationWithStateReturn => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const isInternalUpdate = useRef(false);
 
   const [currentPage, setCurrentPage] = useState(() => {
     const pageParam = searchParams.get("page");
@@ -96,6 +98,7 @@ export const usePaginationWithState = ({
   const totalPages = Math.ceil(totalCount / perPage);
 
   const updatePageInURL = (page: number): void => {
+    isInternalUpdate.current = true;
     const newParams = new URLSearchParams(searchParams);
     if (page > 1) {
       newParams.set("page", page.toString());
@@ -117,6 +120,11 @@ export const usePaginationWithState = ({
   };
 
   useEffect(() => {
+    if (isInternalUpdate.current) {
+      isInternalUpdate.current = false;
+      return;
+    }
+
     const pageParam = searchParams.get("page");
     const urlPage = pageParam ? parseInt(pageParam, 10) : 1;
     const validPage = urlPage > 0 ? urlPage : 1;
@@ -124,7 +132,7 @@ export const usePaginationWithState = ({
     if (validPage !== currentPage) {
       setCurrentPage(validPage);
     }
-  }, [searchParams]);
+  }, [searchParams, currentPage]);
 
   const { pageNumbers, canGoPrev, canGoNext } = usePagination({
     currentPage,

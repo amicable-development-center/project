@@ -28,24 +28,24 @@ const Pagination = ({
 
   return (
     <PaginationContainer>
-      <IconButton
+      <NavButton
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!canGoPrev || disabled}
-        size="small"
+        size="medium"
       >
         <ChevronLeft />
-      </IconButton>
+      </NavButton>
       <PageNumbersContainer>
         {pageNumbers.map((page, index) => (
           <Box key={index}>
             {page === "ellipsis" ? (
               <EllipsisButton disabled>
-                <MoreHoriz fontSize="small" />
+                <MoreHoriz fontSize="medium" />
               </EllipsisButton>
             ) : (
               <PageButton
                 variant={page === currentPage ? "contained" : "outlined"}
-                size="small"
+                size="medium"
                 onClick={() => onPageChange(page)}
                 disabled={disabled}
                 $isActive={page === currentPage}
@@ -56,13 +56,13 @@ const Pagination = ({
           </Box>
         ))}
       </PageNumbersContainer>
-      <IconButton
+      <NavButton
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!canGoNext || disabled}
-        size="small"
+        size="medium"
       >
         <ChevronRight />
-      </IconButton>
+      </NavButton>
     </PaginationContainer>
   );
 };
@@ -73,23 +73,24 @@ const PaginationContainer = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "0.5rem",
+  gap: "0.75rem",
   padding: "2rem 0",
 }));
 
 const PageNumbersContainer = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
-  gap: "0.25rem",
+  gap: "0.5rem",
 }));
 
 const PageButton = styled(Button)<{ $isActive: boolean }>(
   ({ theme, $isActive }) => ({
-    minWidth: "2.5rem",
-    height: "2.5rem",
+    minWidth: "3rem",
+    height: "3rem",
     padding: "0",
-    fontSize: "0.875rem",
-    fontWeight: $isActive ? 600 : 400,
+    fontSize: "1rem",
+    fontWeight: $isActive ? 600 : 500,
+    borderRadius: "0.5rem",
     ...($isActive && {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.primary.contrastText,
@@ -97,12 +98,30 @@ const PageButton = styled(Button)<{ $isActive: boolean }>(
         backgroundColor: theme.palette.primary.dark,
       },
     }),
+    "&:not(.Mui-disabled):hover": {
+      transform: "translateY(-1px)",
+      boxShadow: theme.shadows[2],
+    },
+    transition: "all 0.2s ease-in-out",
   })
 );
 
+const NavButton = styled(IconButton)(({ theme }) => ({
+  minWidth: "3rem",
+  height: "3rem",
+  borderRadius: "0.5rem",
+  border: `1px solid ${theme.palette.divider}`,
+  "&:not(.Mui-disabled):hover": {
+    backgroundColor: theme.palette.action.hover,
+    transform: "translateY(-1px)",
+    boxShadow: theme.shadows[1],
+  },
+  transition: "all 0.2s ease-in-out",
+}));
+
 const EllipsisButton = styled(IconButton)(() => ({
-  minWidth: "2.5rem",
-  height: "2.5rem",
+  minWidth: "3rem",
+  height: "3rem",
   cursor: "default",
   "&:hover": {
     backgroundColor: "transparent",
