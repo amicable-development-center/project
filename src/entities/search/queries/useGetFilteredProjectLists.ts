@@ -30,8 +30,9 @@ const useGetFilteredProjectLists = (
     queryKey: ["filteredProjects", filter],
     queryFn: () => getFilteredProjectListsSimple("projects", filter),
     enabled,
-    staleTime: 5 * 60 * 1000, // 5분간 신선한 데이터로 간주
-    gcTime: 10 * 60 * 1000, // 10분간 캐시 유지
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 };
 
@@ -54,6 +55,7 @@ export const useGetFilteredProjectListsWithPagination = (
     enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 };
 
@@ -65,8 +67,9 @@ export const useGetFilteredProjectsCount = (
     queryKey: ["filteredProjectsCount", filter],
     queryFn: () => getFilteredProjectCount("projects", filter),
     enabled,
-    staleTime: 10 * 60 * 1000, // 카운트는 더 오래 캐시 (10분)
-    gcTime: 15 * 60 * 1000, // 15분간 캐시 유지
+    staleTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 };
 
@@ -81,10 +84,11 @@ export const useGetFilteredProjectsByPage = (
     queryFn: () =>
       getFilteredProjectsByPage("projects", filter, page, pageSize),
     enabled,
-    staleTime: 3 * 60 * 1000, // 3분간 신선한 데이터로 간주
-    gcTime: 10 * 60 * 1000, // 10분간 캐시 유지
-    refetchOnWindowFocus: false, // 윈도우 포커스 시 자동 리페치 방지
-    retry: 1, // 재시도 횟수 제한
+    staleTime: 3 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
+    placeholderData: (previousData) => previousData,
   });
 };
 
