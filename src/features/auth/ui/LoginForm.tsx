@@ -1,9 +1,7 @@
-import { Divider } from "@mui/material";
 import type { JSX } from "react";
 
 import { useSocialLogin } from "@features/auth/hooks/useSocialLogin";
 import { LoginTitle } from "@features/auth/ui/LoginTitle";
-import { SignupGuide } from "@features/auth/ui/SignupGuide";
 import { SocialLoginButton } from "@features/auth/ui/SocialLoginButton";
 
 import { githubProvider, googleProvider } from "@shared/firebase/firebase";
@@ -25,10 +23,6 @@ const LoginForm = (): JSX.Element => {
         logo="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
         onClick={() => socialLogin(githubProvider)}
       />
-
-      <Divider sx={{ mb: 3 }}>또는</Divider>
-
-      <SignupGuide />
     </>
   );
 };

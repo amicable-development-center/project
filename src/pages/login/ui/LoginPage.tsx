@@ -1,6 +1,8 @@
 import { Box, Typography, styled } from "@mui/material";
 import type { JSX } from "react";
 
+import BackToHome from "@widgets/BackToHome/BackToHome";
+
 import { LoginForm } from "@features/auth/ui/LoginForm";
 
 const LoginPage = (): JSX.Element => {
@@ -17,6 +19,7 @@ const LoginPage = (): JSX.Element => {
       <LoginBox>
         <LoginForm />
       </LoginBox>
+      <BackToHome />
     </PageWrapper>
   );
 };
