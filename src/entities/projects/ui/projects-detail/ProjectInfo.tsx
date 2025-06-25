@@ -54,7 +54,7 @@ const ProjectInfo = ({
       <OneLineInfo>{values.oneLineInfo}</OneLineInfo>
       <Typography>{values.simpleInfo}</Typography>
 
-      <InfoBox>
+      <Box display="flex" marginTop={2} gap={1}>
         <InfoWithIcon
           item="팀 규모"
           Icon={GroupIcon}
@@ -66,7 +66,7 @@ const ProjectInfo = ({
           content={values.expectedPeriod}
         />
         <InfoWithIcon
-          item="예상 기간"
+          item="모집 마감"
           Icon={CalendarTodayOutlinedIcon}
           content={formatDate(values.closedDate)}
         />
@@ -75,7 +75,7 @@ const ProjectInfo = ({
           Icon={RoomOutlinedIcon}
           content={values.workflow}
         />
-      </InfoBox>
+      </Box>
     </>
   );
 };
@@ -119,13 +119,4 @@ const StatusBox = styled("div")`
 const OneLineInfo = styled("div")`
   margin: 1rem 0 1.5rem 0;
   font-size: 18px;
-`;
-
-const InfoBox = styled(Box)`
-  display: flex;
-  align-items: flex-start;
-  margin-top: 2rem;
-  svg {
-    margin-right: 1rem;
-  }
 `;
