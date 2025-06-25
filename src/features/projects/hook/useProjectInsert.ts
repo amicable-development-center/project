@@ -9,6 +9,7 @@ import {
   type ProjectItemInsertReq,
 } from "@shared/types/project";
 import { ExpectedPeriod } from "@shared/types/schedule";
+import { UserExperience } from "@shared/types/user";
 
 const useProjectInsert = (): { submit: () => Promise<void> } => {
   const submit = async (): Promise<void> => {
@@ -33,7 +34,7 @@ const TestData: ProjectItemInsertReq = {
     name: "홍길동",
     userRole: "frontend",
     email: "test@test.com",
-    experience: ExpectedPeriod.oneMonth,
+    experience: UserExperience.junior,
     avatar: "https://via.placeholder.com/150",
   },
   applicants: [],
