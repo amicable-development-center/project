@@ -32,7 +32,7 @@ const ProjectInfo = ({
 
   return (
     <>
-      <Head>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
         <StatusBox className={getStatusClassname(values.status)}>
           {values.status}
         </StatusBox>
@@ -45,7 +45,7 @@ const ProjectInfo = ({
             <ShareIcon />
           </HeadIconBox>
         </Box>
-      </Head>
+      </Box>
 
       <Typography variant="h2">{values.title}</Typography>
       <OneLineInfo>{values.oneLineInfo}</OneLineInfo>
@@ -58,7 +58,7 @@ const ProjectInfo = ({
             <Typography variant="body2" color="gray">
               팀 규모
             </Typography>
-            <Typography variant="h6">{values.teamSize}</Typography>
+            <Typography variant="h6">{values.teamSize}명</Typography>
           </div>
         </Box>
         <Box display="flex" alignItems="center" flex={1}>
@@ -92,13 +92,6 @@ const ProjectInfo = ({
 };
 
 export default ProjectInfo;
-
-const Head = styled(Box)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-`;
 
 const HeadIconBox = styled(Box)`
   display: flex;

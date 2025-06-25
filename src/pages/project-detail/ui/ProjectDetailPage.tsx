@@ -3,6 +3,7 @@ import { useMemo, type JSX } from "react";
 import { useParams } from "react-router-dom";
 
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
+import ProjectDetail from "@entities/projects/ui/projects-detail/ProjectDetail";
 import DetailHeader from "@entities/projects/ui/projects-detail/ProjectHeader";
 import ProjectInfo from "@entities/projects/ui/projects-detail/ProjectInfo";
 import ProjectPositions from "@entities/projects/ui/projects-detail/ProjectPositions";
@@ -50,6 +51,34 @@ const ProjectDetailPage = (): JSX.Element => {
     [project]
   );
 
+  const detailValues = useMemo(
+    () => ({
+      description: project?.description || "",
+    }),
+    [project]
+  );
+
+  const positionsValues = useMemo(
+    () => ({
+      positions: project?.positions || [],
+    }),
+    [project]
+  );
+
+  const schedulesValues = useMemo(
+    () => ({
+      schedules: project?.schedules || [],
+    }),
+    [project]
+  );
+
+  const requirementsValues = useMemo(
+    () => ({
+      requirements: project?.requirements || [],
+    }),
+    [project]
+  );
+
   if (isLoading) {
     return <div>로딩중</div>;
   }
@@ -60,21 +89,23 @@ const ProjectDetailPage = (): JSX.Element => {
   return (
     <MainContainer>
       <DetailHeader title={HeaderValues} />
-
       <CardBox>
         <ProjectInfo values={projectInfoValues} />
       </CardBox>
       <CardBox>
-        <TechStack values={techStackValues} />
+        <TechStack {...techStackValues} />
       </CardBox>
       <CardBox>
-        <ProjectSchedule />
+        <ProjectDetail {...detailValues} />
       </CardBox>
       <CardBox>
-        <ProjectPositions />
+        <ProjectPositions {...positionsValues} />
       </CardBox>
       <CardBox>
-        <ProjectRequirements />
+        <ProjectSchedule {...schedulesValues} />
+      </CardBox>
+      <CardBox>
+        <ProjectRequirements {...requirementsValues} />
       </CardBox>
     </MainContainer>
   );

@@ -6,16 +6,16 @@ import type { ProjectListRes } from "@entities/projects/types/projects";
 
 type TechStackType = Pick<ProjectListRes, "techStack">;
 
-const TechStack = ({ values }: { values: TechStackType }): JSX.Element => {
+const TechStack = ({ techStack }: TechStackType): JSX.Element => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} gap={1}>
+      <Box display={"flex"} alignItems={"center"} gap={1} marginBottom={2}>
         <CodeIcon fontSize="large" color="primary" />
         <Typography variant="h3">기술 스택</Typography>
       </Box>
 
       <Box display={"flex"} marginTop={1} flexWrap={"wrap"}>
-        {values.techStack.map((item, i) => (
+        {techStack.map((item, i) => (
           <Tag key={i} variant="h6">
             {item}
           </Tag>
