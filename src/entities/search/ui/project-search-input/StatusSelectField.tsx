@@ -1,12 +1,12 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import type { JSX } from "react";
 
-import { RecruitmentStatus } from "@shared/types/project";
-
 import {
-  SEARCH_FORM_LABELS,
   DROPDOWN_DEFAULTS,
-} from "../../model/searchOptions";
+  SEARCH_FORM_LABELS,
+} from "@entities/search/model/searchOptions";
+
+import { RecruitmentStatus } from "@shared/types/project";
 
 interface StatusSelectFieldProps {
   value: RecruitmentStatus | "all";
