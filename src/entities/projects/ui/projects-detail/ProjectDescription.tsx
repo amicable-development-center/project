@@ -4,9 +4,11 @@ import type { JSX } from "react";
 
 import type { ProjectListRes } from "@entities/projects/types/projects";
 
-type ProjectDetailType = Pick<ProjectListRes, "description">;
+type ProjectDescriptionType = Pick<ProjectListRes, "description">;
 
-const ProjectDetail = ({ description }: ProjectDetailType): JSX.Element => {
+const ProjectDescription = ({
+  description,
+}: ProjectDescriptionType): JSX.Element => {
   return (
     <>
       <Box display={"flex"} alignItems={"center"} gap={1}>
@@ -19,4 +21,4 @@ const ProjectDetail = ({ description }: ProjectDetailType): JSX.Element => {
   );
 };
 
-export default ProjectDetail;
+export default ProjectDescription;
