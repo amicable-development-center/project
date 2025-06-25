@@ -4,16 +4,14 @@ import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import type { ProjectListRes } from "@shared/types/project";
+import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
 type ProjectPositionsType = Pick<ProjectListRes, "positions">;
 
 const ProjectPositions = ({ positions }: ProjectPositionsType): JSX.Element => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} gap={1} marginBottom={2}>
-        <WorkOutlineIcon fontSize="large" color="primary" />
-        <Typography variant="h3">모집 포지션</Typography>
-      </Box>
+      <TitleWithIcon Icon={WorkOutlineIcon} title="모집 포지션" />
 
       {positions.map((item, i) => (
         <PositionBox key={i}>

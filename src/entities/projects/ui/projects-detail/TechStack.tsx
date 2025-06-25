@@ -3,16 +3,14 @@ import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import type { ProjectListRes } from "@shared/types/project";
+import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
 type TechStackType = Pick<ProjectListRes, "techStack">;
 
 const TechStack = ({ techStack }: TechStackType): JSX.Element => {
   return (
     <>
-      <Box display={"flex"} alignItems={"center"} gap={1} marginBottom={2}>
-        <CodeIcon fontSize="large" color="primary" />
-        <Typography variant="h3">기술 스택</Typography>
-      </Box>
+      <TitleWithIcon Icon={CodeIcon} title="기술 스택" />
 
       <Box display={"flex"} marginTop={1} flexWrap={"wrap"}>
         {techStack.map((item, i) => (
