@@ -23,6 +23,7 @@ const ProjectInsertPage = lazy(
 );
 const LoginPage = lazy(() => import("@pages/login/ui/LoginPage"));
 const SignUpPage = lazy(() => import("@pages/signup/ui/SignUpPage"));
+const JoinPage = lazy(() => import("@pages/join/ui/JoinPage"));
 
 function App(): JSX.Element {
   useAuthObserver();
@@ -34,6 +35,7 @@ function App(): JSX.Element {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/join" element={<JoinPage />} />
         </Route>
 
         {/* 헤더 포함 레이아웃 (메인 페이지) */}
