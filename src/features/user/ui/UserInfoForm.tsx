@@ -9,68 +9,34 @@ import {
   InputLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState, type JSX } from "react";
+import { type JSX } from "react";
 
-import { useSignUp } from "@features/user/hooks/useSignUp";
+import { useSignUpForm } from "@features/user/hooks/useSignUpForm";
 import SubmitButton from "@features/user/ui/SubmitButton";
 
-import type { UserExperience, UserRole } from "@shared/types/user";
-
 const UserInfoForm = (): JSX.Element => {
-  const { signUp } = useSignUp();
-
-  const [name, setName] = useState("");
-  const [userRole, setUserRole] = useState("");
-  const [experience, setExperience] = useState("");
-  const [introduceMyself, setIntroduceMyself] = useState("");
-
-  // 에러 상태
-  const [errors, setErrors] = useState({
-    name: false,
-    userRole: false,
-    experience: false,
-  });
-
-  const handleSubmit = (): void => {
-    if (name === "" || userRole === "" || experience === "") {
-      setErrors({
-        name: name === "",
-        userRole: userRole === "",
-        experience: experience === "",
-      });
-      return;
-    }
-
-    signUp({
-      name,
-      userRole: userRole as UserRole,
-      experience: experience as UserExperience,
-      introduceMyself,
-    });
-  };
+  const {
+    name,
+    userRole,
+    experience,
+    introduceMyself,
+    errors,
+    handleChange,
+    handleSubmit,
+  } = useSignUpForm();
 
   return (
     <FormContainer>
       <Title variant="h5">회원 정보 입력</Title>
       {/* 이름 입력 */}
-
       <FormControl error={errors.name} variant="outlined" fullWidth>
         <StyledTextField
           label="🙋 이름 *"
           variant="outlined"
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            if (errors.name) {
-              setErrors((prev) => ({ ...prev, name: false }));
-            }
-          }}
+          onChange={(e) => handleChange("name")(e.target.value)}
           error={errors.name}
-          onFocus={() => {
-            if (errors.name) {
-              setErrors((prev) => ({ ...prev, name: false }));
-            }
-          }}
+          onFocus={() => errors.name && handleChange("name")(name)}
           placeholder="이름"
           InputLabelProps={{ shrink: true }}
         />
@@ -82,12 +48,7 @@ const UserInfoForm = (): JSX.Element => {
         <StyledSelect
           label="👔 직무 *"
           value={userRole}
-          onChange={(e) => {
-            setUserRole(e.target.value as string);
-            if (errors.userRole) {
-              setErrors((prev) => ({ ...prev, userRole: false }));
-            }
-          }}
+          onChange={(e) => handleChange("userRole")(e.target.value as string)}
           displayEmpty
         >
           <MenuItem value="">직무 선택</MenuItem>
@@ -99,19 +60,13 @@ const UserInfoForm = (): JSX.Element => {
         </StyledSelect>
         {errors.userRole && <ErrorText>직무를 선택해주세요.</ErrorText>}
       </FormControl>
-
       {/* 경력 선택 */}
       <FormControl error={errors.experience} variant="outlined" fullWidth>
         <InputLabel shrink>💼 경력 *</InputLabel>
         <StyledSelect
           label="💼 경력 *"
           value={experience}
-          onChange={(e) => {
-            setExperience(e.target.value as string);
-            if (errors.experience) {
-              setErrors((prev) => ({ ...prev, experience: false }));
-            }
-          }}
+          onChange={(e) => handleChange("experience")(e.target.value as string)}
           displayEmpty
         >
           <MenuItem value="">경력 선택</MenuItem>
@@ -121,12 +76,11 @@ const UserInfoForm = (): JSX.Element => {
         </StyledSelect>
         {errors.experience && <ErrorText>경력을 선택해주세요.</ErrorText>}
       </FormControl>
-
       <StyledTextField
         label="💬 자기소개"
         variant="outlined"
         value={introduceMyself}
-        onChange={(e) => setIntroduceMyself(e.target.value)}
+        onChange={(e) => handleChange("introduceMyself")(e.target.value)}
         placeholder="코딩하고 싶은 밤이에요~😘"
         multiline
         rows={4}
