@@ -17,10 +17,10 @@ interface UseSignUpFormReturn {
   handleSubmit: () => void;
 }
 
-export function useSignUpForm(): UseSignUpFormReturn {
+export function useSignUpForm(defaultName = ""): UseSignUpFormReturn {
   const { signUp } = useSignUp();
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState(defaultName);
   const [userRole, setUserRole] = useState("");
   const [experience, setExperience] = useState("");
   const [introduceMyself, setIntroduceMyself] = useState("");
