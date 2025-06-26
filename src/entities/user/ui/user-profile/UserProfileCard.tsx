@@ -80,7 +80,6 @@ const UserProfileCard = ({
           <Typography>{userProfile.introduceMyself}</Typography>
         </Box>
         <Divider sx={{ my: 2 }} />
-        <ProfileEmail>💌 • {userProfile.email}</ProfileEmail>
         <TabBadgeContainer>
           {PROFILE_TABS.map((tabInfo, idx) => (
             <TabWithBadge
@@ -97,6 +96,7 @@ const UserProfileCard = ({
             />
           ))}
         </TabBadgeContainer>
+        <ProfileEmail>💌 • {userProfile.email}</ProfileEmail>
       </ProfileCardContent>
     </ProfileCard>
   );
