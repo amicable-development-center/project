@@ -1,6 +1,6 @@
 # Project
 
-React + TypeScript + Vite 기반의 FSD(Feature-Sliced Design) 아키텍처를 적용한 프로젝트입니다.
+프로젝트 잼 - 함께 만들어가는 사이드 프로젝트
 
 ## 📋 목차
 
