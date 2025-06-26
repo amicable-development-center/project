@@ -2,8 +2,7 @@ import { Box, Typography, styled } from "@mui/material";
 import type { JSX } from "react";
 
 import SearchLoadingSpinner from "@entities/search/ui/SearchLoadingSpinner";
-
-import Pagination from "@shared/ui/pagination/Pagination";
+import SearchPagination from "@entities/search/ui/SearchPagination";
 
 interface SearchListResultHandlerProps {
   isLoading: boolean;
@@ -26,16 +25,12 @@ const SearchListResultHandler = ({
     return (
       <>
         <SearchLoadingSpinner />
-        {totalPages > 0 && (
-          <Box display="flex" justifyContent="center" mt={4}>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={onPageChange}
-              disabled={true}
-            />
-          </Box>
-        )}
+        <SearchPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          disabled={true}
+        />
       </>
     );
   }
@@ -58,19 +53,13 @@ const SearchListResultHandler = ({
     );
   }
 
-  if (totalPages > 0) {
-    return (
-      <Box display="flex" justifyContent="center" mt={4}>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />
-      </Box>
-    );
-  }
-
-  return null;
+  return (
+    <SearchPagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={onPageChange}
+    />
+  );
 };
 
 const EmptyState = styled(Typography)(({ theme }) => ({
