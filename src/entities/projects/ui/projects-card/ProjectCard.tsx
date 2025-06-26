@@ -28,20 +28,18 @@ import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosi
 interface ProjectCardProps {
   project: ProjectListRes;
   simple?: boolean;
-  sx?: any;
 }
 
 const ProjectCard = ({
   project,
   simple = false,
-  sx,
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
   const isRecruiting = project.status === RecruitmentStatus.recruiting;
 
   return (
-    <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
+    <StyledCard $simple={simple}>
       <StyledCardContent>
         <ProjectHeader>
           <StatusChip
@@ -66,7 +64,7 @@ const ProjectCard = ({
             </>
           )}
         </ContentSection>
-        <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
+        <UserProfileContainer>
           {isMobile ? (
             <UserProfileAvatar
               name={project.projectOwner.name}
@@ -81,7 +79,7 @@ const ProjectCard = ({
               flexDirection="row"
             />
           )}
-        </Stack>
+        </UserProfileContainer>
         {!simple && (
           <DragScrollContainer>
             {project.techStack.map((stack, index) => (
@@ -132,35 +130,38 @@ const ProjectCard = ({
 
 export default memo(ProjectCard);
 
-const StyledCard = styled(Card)(({ theme }) => ({
-  height: "100%",
-  flex: 1,
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  cursor: "pointer",
-  border: `1px solid ${theme.palette.divider}`,
-
-  "&:hover": {
-    transform: "translateY(-0.4rem)",
-    boxShadow:
-      "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-    borderColor: theme.palette.primary.light,
-  },
-
-  [theme.breakpoints.up("sm")]: {
+const StyledCard = styled(Card)<{ $simple?: boolean }>(
+  ({ theme, $simple }) => ({
+    height: "100%",
     flex: 1,
-    "&:hover": {
-      transform: "translateY(-0.6rem)",
-    },
-  },
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    cursor: "pointer",
+    border: `1px solid ${theme.palette.divider}`,
+    ...($simple && { minHeight: 260 }),
 
-  [theme.breakpoints.up("md")]: {
-    maxWidth: "48rem",
-    maxHeight: "54rem",
-  },
-}));
+    "&:hover": {
+      transform: "translateY(-0.4rem)",
+      boxShadow:
+        "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+      borderColor: theme.palette.primary.light,
+    },
+
+    [theme.breakpoints.up("sm")]: {
+      flex: 1,
+      "&:hover": {
+        transform: "translateY(-0.6rem)",
+      },
+    },
+
+    [theme.breakpoints.up("md")]: {
+      maxWidth: "48rem",
+      maxHeight: "54rem",
+    },
+  })
+);
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   height: "100%",
@@ -207,6 +208,12 @@ const SimpleInfo = styled(Typography)(() => ({
   display: "-webkit-box",
   WebkitLineClamp: 2,
   WebkitBoxOrient: "vertical",
+}));
+
+const UserProfileContainer = styled(Stack)(({ theme }) => ({
+  flexDirection: "row",
+  gap: theme.spacing(1),
+  alignItems: "flex-start",
 }));
 
 const TechChip = styled(Chip)(({ theme }) => ({
