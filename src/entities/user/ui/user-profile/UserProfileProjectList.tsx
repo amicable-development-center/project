@@ -1,10 +1,9 @@
 import { Box, Tabs, Tab } from "@mui/material";
 import type { JSX } from "react";
 
-import type { ProjectListRes } from "@shared/types/project";
-import ProjectCard from "@shared/ui/ProjectCard";
+import ProjectTabPanel from "@entities/user/ui/user-profile/ProjectTabPanel";
 
-import EmptyProjectCard from "./EmptyProjectCard";
+import type { ProjectListRes } from "@shared/types/project";
 
 interface UserProfileProjectListProps {
   PROFILE_TABS: { label: string; color: string }[];
@@ -28,42 +27,18 @@ const UserProfileProjectList = ({
           <Tab key={tabInfo.label} label={tabInfo.label} />
         ))}
       </Tabs>
-      {tab === 0 &&
-        (likeProjects && likeProjects.length > 0 ? (
-          <Box
-            display="grid"
-            gridTemplateColumns={{
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
-            }}
-            gap={2}
-          >
-            {likeProjects.slice(0, 3).map((project) => (
-              <ProjectCard key={project.id} project={project} simple />
-            ))}
-          </Box>
-        ) : (
-          <EmptyProjectCard message="아직 관심 프로젝트가 없습니다." />
-        ))}
-      {tab === 1 &&
-        (appliedProjects && appliedProjects.length > 0 ? (
-          <Box
-            display="grid"
-            gridTemplateColumns={{
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
-            }}
-            gap={2}
-          >
-            {appliedProjects.slice(0, 3).map((project) => (
-              <ProjectCard key={project.id} project={project} simple />
-            ))}
-          </Box>
-        ) : (
-          <EmptyProjectCard message="아직 지원한 프로젝트가 없습니다." />
-        ))}
+      {tab === 0 && (
+        <ProjectTabPanel
+          projects={likeProjects}
+          emptyMessage="아직 관심 프로젝트가 없습니다."
+        />
+      )}
+      {tab === 1 && (
+        <ProjectTabPanel
+          projects={appliedProjects}
+          emptyMessage="아직 지원한 프로젝트가 없습니다."
+        />
+      )}
     </Box>
   );
 };
