@@ -1,5 +1,7 @@
 import { useState, type ChangeEvent } from "react";
 
+import useProjectApply from "@features/projects/queries/useProjectApply";
+
 interface ApplyFormResult {
   openForm: {
     isOpen: boolean;
@@ -13,7 +15,9 @@ interface ApplyFormResult {
   submit: () => void;
 }
 
-const useApplyFrom = (): ApplyFormResult => {
+const useApplyFrom = (projectID: string): ApplyFormResult => {
+  const { mutate: updateApply } = useProjectApply();
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [applyMessage, setApplyMessage] = useState("");
 
@@ -24,11 +28,12 @@ const useApplyFrom = (): ApplyFormResult => {
     setApplyMessage(e.target.value);
 
   const submit = (): void => {
+    if (!projectID) return;
     if (!applyMessage.trim()) {
       alert("메세지를 적어주세요");
       return;
     }
-    alert("api가 없어요");
+    updateApply(projectID);
   };
 
   return {

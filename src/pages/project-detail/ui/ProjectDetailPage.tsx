@@ -111,7 +111,7 @@ const ProjectDetailPage = (): JSX.Element => {
             {user?.uid === project.projectOwner.id ? (
               <ProjectDelete projectOwnerID={project?.projectOwner.id} />
             ) : (
-              <ProjectApplyForm />
+              <ProjectApplyForm applicants={project?.applicants || []} />
             )}
           </CardBox>
           <CardBox>
