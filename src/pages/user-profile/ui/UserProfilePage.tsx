@@ -11,6 +11,7 @@ import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader"
 import UserProfileProjectList from "@entities/user/ui/user-profile/UserProfileProjectList";
 
 import { useAuthStore } from "@shared/stores/authStore";
+import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
 // 탭 이름 상수 배열
 const PROFILE_TABS = [
@@ -35,13 +36,18 @@ const UserProfilePage = (): JSX.Element => {
 
   const [tab, setTab] = useState(0);
   if (!userProfile) {
-    return <div>UserProfilePage</div>;
+    return <LoadingSpinner />;
   }
 
   return (
     <MainContainer maxWidth="lg">
       <UserProfileHeader />
-      <Box display="flex" gap={4}>
+      <Box
+        display="flex"
+        gap={4}
+        flexDirection={{ xs: "column", sm: "row" }}
+        position="relative"
+      >
         {/* 왼쪽 프로필 사이드바 */}
         <UserProfileCard
           userProfile={userProfile}
