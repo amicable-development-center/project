@@ -1,6 +1,6 @@
 import { Box, Card, Container, styled } from "@mui/material";
 import { type JSX } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
 import ProjectDelete from "@features/projects/ui/ProjectDelete";
@@ -19,8 +19,9 @@ import TechStack from "@entities/projects/ui/projects-detail/TechStack";
 
 import { useAuthStore } from "@shared/stores/authStore";
 
-const ProjectDetailPage = (): JSX.Element => {
+const ProjectDetailPage = (): JSX.Element | null => {
   const { id } = useParams();
+  const Navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const {
     data: project,
@@ -74,7 +75,8 @@ const ProjectDetailPage = (): JSX.Element => {
     return <div>로딩중</div>;
   }
   if (!project || isError) {
-    return <div>404</div>;
+    Navigate("/error");
+    return null;
   }
   return (
     <MainContainer>
