@@ -15,6 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import type { JSX } from "react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 
 import { type ProjectListRes } from "@shared/types/project";
@@ -122,12 +123,11 @@ const ProjectCard = ({
   );
 };
 
-export default ProjectCard;
+export default memo(ProjectCard);
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
-  maxWidth: "40rem",
-  maxHeight: "50rem",
+  flex: 1,
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -143,8 +143,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 
   [theme.breakpoints.up("sm")]: {
-    maxWidth: "44rem",
-    maxHeight: "52rem",
+    flex: 1,
     "&:hover": {
       transform: "translateY(-0.6rem)",
     },

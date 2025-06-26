@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 import type { ProjectSearchFilterOption, SortBy } from "@entities/search/types";
 
@@ -9,84 +9,108 @@ import {
 } from "@shared/types/project";
 import type { UserRole } from "@shared/types/user";
 
-const INITIAL_FILTER_STATE: ProjectSearchFilterOption = {
-  title: "",
-  category: "all",
-  position: "all",
-  status: "all",
-  workflow: "all",
-  sortBy: "latest",
-};
-
 interface UseFilteredProjects {
   filterState: ProjectSearchFilterOption;
-  updateTitle: (title: string) => void;
-  updateCategory: (category: ProjectCategory | "all") => void;
-  updatePosition: (position: UserRole | "all") => void;
-  updateStatus: (status: RecruitmentStatus | "all") => void;
-  updateWorkflow: (workflow: Workflow | "all") => void;
-  updateSortBy: (sortBy: SortBy | "latest") => void;
+  title: string;
+  category: ProjectCategory | "all";
+  position: UserRole | "all";
+  status: RecruitmentStatus | "all";
+  workflow: Workflow | "all";
+  sortBy: SortBy | "latest";
+  updateTitle: (newTitle: string) => void;
+  updateCategory: (newCategory: ProjectCategory | "all") => void;
+  updatePosition: (newPosition: UserRole | "all") => void;
+  updateStatus: (newStatus: RecruitmentStatus | "all") => void;
+  updateWorkflow: (newWorkflow: Workflow | "all") => void;
+  updateSortBy: (newSortBy: SortBy | "latest") => void;
   resetFilters: () => void;
   getActiveFiltersCount: () => number;
   getCleanFilter: () => ProjectSearchFilterOption;
 }
 
 const useFilteredProjects = (): UseFilteredProjects => {
-  const [filterState, setFilterState] =
-    useState<ProjectSearchFilterOption>(INITIAL_FILTER_STATE);
+  const [title, setTitle] = useState<string>("");
+  const [category, setCategory] = useState<ProjectCategory | "all">("all");
+  const [position, setPosition] = useState<UserRole | "all">("all");
+  const [status, setStatus] = useState<RecruitmentStatus | "all">("all");
+  const [workflow, setWorkflow] = useState<Workflow | "all">("all");
+  const [sortBy, setSortBy] = useState<SortBy | "latest">("latest");
 
-  const updateTitle = useCallback((title: string) => {
-    setFilterState((prev) => ({ ...prev, title }));
-  }, []);
+  const updateTitle = (newTitle: string): void => {
+    setTitle(newTitle);
+  };
 
-  const updateCategory = useCallback((category: ProjectCategory | "all") => {
-    setFilterState((prev) => ({ ...prev, category }));
-  }, []);
+  const updateCategory = (newCategory: ProjectCategory | "all"): void => {
+    setCategory(newCategory);
+  };
 
-  const updatePosition = useCallback((position: UserRole | "all") => {
-    setFilterState((prev) => ({ ...prev, position }));
-  }, []);
+  const updatePosition = (newPosition: UserRole | "all"): void => {
+    setPosition(newPosition);
+  };
 
-  const updateStatus = useCallback((status: RecruitmentStatus | "all") => {
-    setFilterState((prev) => ({ ...prev, status }));
-  }, []);
+  const updateStatus = (newStatus: RecruitmentStatus | "all"): void => {
+    setStatus(newStatus);
+  };
 
-  const updateWorkflow = useCallback((workflow: Workflow | "all") => {
-    setFilterState((prev) => ({ ...prev, workflow }));
-  }, []);
+  const updateWorkflow = (newWorkflow: Workflow | "all"): void => {
+    setWorkflow(newWorkflow);
+  };
 
-  const updateSortBy = useCallback((sortBy: SortBy | "latest") => {
-    setFilterState((prev) => ({ ...prev, sortBy }));
-  }, []);
+  const updateSortBy = (newSortBy: SortBy | "latest"): void => {
+    setSortBy(newSortBy);
+  };
 
-  const resetFilters = useCallback(() => {
-    setFilterState(INITIAL_FILTER_STATE);
-  }, []);
+  const resetFilters = (): void => {
+    setTitle("");
+    setCategory("all");
+    setPosition("all");
+    setStatus("all");
+    setWorkflow("all");
+    setSortBy("latest");
+  };
 
-  const getActiveFiltersCount = useCallback((): number => {
+  const getActiveFiltersCount = (): number => {
     let count = 0;
-    if (filterState.title) count++;
-    if (filterState.category && filterState.category !== "all") count++;
-    if (filterState.position && filterState.position !== "all") count++;
-    if (filterState.status && filterState.status !== "all") count++;
-    if (filterState.workflow && filterState.workflow !== "all") count++;
-    if (filterState.sortBy && filterState.sortBy !== "latest") count++;
+    if (title) count++;
+    if (category !== "all") count++;
+    if (position !== "all") count++;
+    if (status !== "all") count++;
+    if (workflow !== "all") count++;
     return count;
-  }, [filterState]);
+  };
 
-  const getCleanFilter = useCallback((): ProjectSearchFilterOption => {
-    const filter: ProjectSearchFilterOption = {};
-    if (filterState.title) filter.title = filterState.title;
-    if (filterState.category) filter.category = filterState.category;
-    if (filterState.position) filter.position = filterState.position;
-    if (filterState.status) filter.status = filterState.status;
-    if (filterState.workflow) filter.workflow = filterState.workflow;
-    if (filterState.sortBy) filter.sortBy = filterState.sortBy;
-    return filter;
-  }, [filterState]);
+  const getCleanFilter = (): ProjectSearchFilterOption => {
+    const cleanFilter: ProjectSearchFilterOption = {
+      title: title || "",
+      category: category === "all" ? undefined : category,
+      position: position === "all" ? undefined : position,
+      status: status === "all" ? undefined : status,
+      workflow: workflow === "all" ? undefined : workflow,
+      sortBy: sortBy || "latest",
+    };
+
+    return Object.fromEntries(
+      Object.entries(cleanFilter).filter(([_, value]) => value !== undefined)
+    ) as ProjectSearchFilterOption;
+  };
+
+  const filterState = {
+    title,
+    category,
+    position,
+    status,
+    workflow,
+    sortBy,
+  };
 
   return {
     filterState,
+    title,
+    category,
+    position,
+    status,
+    workflow,
+    sortBy,
     updateTitle,
     updateCategory,
     updatePosition,
