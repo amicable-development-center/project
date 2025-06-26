@@ -36,47 +36,37 @@ interface SearchState {
   getFilterStatus: () => ProjectSearchFilterOption;
 }
 
-// 로컬 스토리지에서 검색 히스토리 불러오기
-const getInitialSearchHistory = (): string[] => {
+const getInitialSearchHistory = (): string[] | undefined => {
   try {
     const stored = localStorage.getItem("search-history");
     if (stored) {
       return JSON.parse(stored);
-    } else {
-      // 개발용 더미 데이터 (나중에 제거)
-      return ["React 프로젝트", "TypeScript", "Frontend"];
     }
   } catch {
-    // 개발용 더미 데이터 (나중에 제거)
-    return ["React 프로젝트", "TypeScript", "Frontend"];
+    return [];
   }
 };
 
-// 로컬 스토리지에서 히스토리 활성화 상태 불러오기
 const getInitialHistoryEnabled = (): boolean => {
   try {
     const stored = localStorage.getItem("search-history-enabled");
-    return stored ? JSON.parse(stored) : true; // 기본값은 true
+    return stored ? JSON.parse(stored) : true;
   } catch {
     return true;
   }
 };
 
-// 로컬 스토리지에 히스토리 활성화 상태 저장
 const saveHistoryEnabled = (enabled: boolean): void => {
   try {
     localStorage.setItem("search-history-enabled", JSON.stringify(enabled));
-  } catch {
-    // 저장 실패 시 무시
-  }
+  } catch {}
 };
 
-// 로컬 스토리지에 검색 히스토리 저장
 const saveSearchHistory = (history: string[]): void => {
   try {
     localStorage.setItem("search-history", JSON.stringify(history));
   } catch {
-    // 저장 실패 시 무시
+    return;
   }
 };
 
@@ -88,7 +78,7 @@ export const useSearchStore = create<SearchState>()(
     status: "all",
     workflow: "all",
     sortBy: "latest",
-    searchHistory: getInitialSearchHistory(),
+    searchHistory: getInitialSearchHistory() || [],
     isHistoryEnabled: getInitialHistoryEnabled(),
 
     updateTitle: (title) => set({ title }),
@@ -110,7 +100,7 @@ export const useSearchStore = create<SearchState>()(
 
     addToHistory: (searchTerm) => {
       const { isHistoryEnabled } = get();
-      if (!isHistoryEnabled) return; // 히스토리가 비활성화되어 있으면 추가하지 않음
+      if (!isHistoryEnabled) return;
 
       const trimmedTerm = searchTerm.trim();
       if (!trimmedTerm) return;
@@ -126,16 +116,13 @@ export const useSearchStore = create<SearchState>()(
     },
 
     clearHistory: () => {
-      console.log("스토어: 전체 히스토리 삭제");
       set({ searchHistory: [] });
       saveSearchHistory([]);
     },
 
     removeFromHistory: (searchTerm) => {
-      console.log("스토어: 개별 히스토리 삭제", searchTerm);
       const currentHistory = get().searchHistory;
       const newHistory = currentHistory.filter((term) => term !== searchTerm);
-      console.log("삭제 전:", currentHistory, "삭제 후:", newHistory);
       set({ searchHistory: newHistory });
       saveSearchHistory(newHistory);
     },
@@ -143,13 +130,10 @@ export const useSearchStore = create<SearchState>()(
     toggleHistoryEnabled: () => {
       const currentEnabled = get().isHistoryEnabled;
       const newEnabled = !currentEnabled;
-      console.log("스토어: 히스토리 토글", currentEnabled, "->", newEnabled);
       set({ isHistoryEnabled: newEnabled });
       saveHistoryEnabled(newEnabled);
 
-      // 히스토리를 비활성화할 때 기존 히스토리도 삭제
       if (!newEnabled) {
-        console.log("히스토리 비활성화로 인한 전체 삭제");
         set({ searchHistory: [] });
         saveSearchHistory([]);
       }
