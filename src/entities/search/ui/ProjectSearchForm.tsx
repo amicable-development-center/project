@@ -19,9 +19,8 @@ import { memo } from "react";
 import useFilteredProjects from "@entities/search/hooks/useFilteredProjects";
 import { SELECT_FIELD_CONFIGS } from "@entities/search/model/selectFieldConfigs";
 import type { ProjectSearchFilterOption } from "@entities/search/types";
-
-import MemoizedSelectBox from "./project-search-input/MemoizedSelectBox";
-import SearchInputSection from "./SearchInputSection";
+import MemoizedSelectBox from "@entities/search/ui/project-search-input/MemoizedSelectBox";
+import SearchInputSection from "@entities/search/ui/SearchInputSection";
 
 interface ProjectSearchFormProps {
   onSearch: (filter: ProjectSearchFilterOption) => void;

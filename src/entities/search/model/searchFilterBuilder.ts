@@ -88,6 +88,13 @@ export class SearchFilterBuilder implements FilterBuilder {
     let builtQuery: Query = this.baseQuery;
 
     if (this.filter.title) {
+      // 🔍 Title 검색 디버깅 로그 추가
+      console.log("📝 Title 검색 요청:", {
+        originalTitle: this.filter.title,
+        searchQuery: this.filter.title.toLowerCase(),
+        timestamp: new Date().toISOString(),
+      });
+
       const titleLower = this.filter.title.toLowerCase();
       builtQuery = query(
         builtQuery,
