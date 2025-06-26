@@ -6,9 +6,9 @@ import getFilteredProjectLists, {
   getFilteredProjectCount,
   getFilteredProjectsByPage,
 } from "@entities/search/api/getFilteredProjectLists";
-import type { ProjectSearchFilterOption } from "@entities/search/types";
 
 import type { ProjectListRes } from "@shared/types/project";
+import type { ProjectSearchFilterOption } from "@shared/types/search";
 
 interface PaginatedSearchOptions {
   filter: ProjectSearchFilterOption;
@@ -67,9 +67,8 @@ export const useGetFilteredProjectsCount = (
     queryKey: ["filteredProjectsCount", filter],
     queryFn: () => getFilteredProjectCount("projects", filter),
     enabled,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 15 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
+    staleTime: 0,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -84,11 +83,10 @@ export const useGetFilteredProjectsByPage = (
     queryFn: () =>
       getFilteredProjectsByPage("projects", filter, page, pageSize),
     enabled,
-    staleTime: 3 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     retry: 1,
-    placeholderData: (previousData) => previousData,
   });
 };
 

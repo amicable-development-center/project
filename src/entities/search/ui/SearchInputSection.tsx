@@ -1,36 +1,31 @@
 import Search from "@mui/icons-material/Search";
 import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState, useCallback, useEffect, memo } from "react";
+import { useCallback, memo } from "react";
 import type { JSX } from "react";
 
+import {
+  useSearchTitle,
+  useSearchTitleActions,
+} from "@shared/stores/searchStore";
+
 interface SearchInputSectionProps {
-  title: string;
-  onTitleChange: (title: string) => void;
+  onEnterPress?: () => void;
 }
 
 const SearchInputSection = memo(
-  ({ title, onTitleChange }: SearchInputSectionProps): JSX.Element => {
-    const [localTitle, setLocalTitle] = useState(title);
+  ({ onEnterPress }: SearchInputSectionProps): JSX.Element => {
+    const title = useSearchTitle();
+    const { updateTitle } = useSearchTitleActions();
 
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        onTitleChange(localTitle);
-        console.log("title", localTitle);
-      }, 300);
-
-      return () => clearTimeout(timer);
-    }, [localTitle, onTitleChange]);
-
-    useEffect(() => {
-      setLocalTitle(title);
-    }, [title]);
-
-    const handleTitleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLocalTitle(e.target.value);
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && onEnterPress) {
+          e.preventDefault();
+          onEnterPress();
+        }
       },
-      []
+      [onEnterPress]
     );
 
     return (
@@ -38,8 +33,9 @@ const SearchInputSection = memo(
         fullWidth
         label="프로젝트 제목 검색"
         placeholder="어떤 프로젝트를 찾고 계신가요?"
-        value={localTitle}
-        onChange={handleTitleChange}
+        value={title}
+        onChange={(e) => updateTitle(e.target.value)}
+        onKeyDown={handleKeyDown}
         variant="outlined"
         InputProps={{
           startAdornment: <StyledSearchIcon />,

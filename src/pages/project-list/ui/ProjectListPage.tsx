@@ -1,4 +1,4 @@
-import { Box, Typography, Container, styled } from "@mui/material";
+import { Box, Typography, Container, styled, keyframes } from "@mui/material";
 import { type JSX } from "react";
 
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
@@ -6,7 +6,7 @@ import useProjectListPage from "@entities/search/hooks/useProjectListPage";
 import ProjectSearchForm from "@entities/search/ui/ProjectSearchForm";
 
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
-import Pagination from "@shared/ui/pagination";
+import Pagination from "@shared/ui/Pagination";
 
 const ProjectListPage = (): JSX.Element => {
   const {
@@ -20,57 +20,71 @@ const ProjectListPage = (): JSX.Element => {
     handlePageChange,
   } = useProjectListPage();
 
+  const renderLoadingState = (): JSX.Element => {
+    return (
+      <LoadingContainer>
+        <LoadingSpinner size={60} />
+        <Typography variant="h6" color="text.secondary" mt={2}>
+          프로젝트를 불러오는 중...
+        </Typography>
+      </LoadingContainer>
+    );
+  };
+
   return (
     <MainContainer>
       <SearchContainer>
         <ProjectSearchForm onSearch={handleSearch} isLoading={isLoading} />
       </SearchContainer>
 
-      {isLoading && (
-        <LoadingContainer>
-          <LoadingSpinner />
-        </LoadingContainer>
-      )}
+      <ResultsContainer>
+        <ResultsHeader variant="h4">
+          {isLoading
+            ? "검색 중..."
+            : `총 ${totalCount}개의 프로젝트를 찾았습니다`}
+        </ResultsHeader>
 
-      {!isLoading && (
-        <ResultsContainer>
-          <ResultsHeader variant="h6">
-            📊 전체 프로젝트: 총 {totalCount}개{" "}
-            {totalPages > 1 && `(${currentPage}/${totalPages} 페이지)`}
-          </ResultsHeader>
+        {isLoading ? (
+          renderLoadingState()
+        ) : (
+          <ProjectListContainer>
+            {projects.map((project, index) => (
+              <AnimatedProjectCard
+                key={project.id}
+                style={{
+                  animationDelay: `${index * 0.1}s`,
+                }}
+              >
+                <ProjectCard project={project} />
+              </AnimatedProjectCard>
+            ))}
+          </ProjectListContainer>
+        )}
 
-          {projects.length > 0 ? (
-            <>
-              <ProjectListContainer>
-                {projects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
-              </ProjectListContainer>
+        {!isLoading && !isError && projects.length === 0 && (
+          <EmptyState variant="h6">
+            검색 조건에 맞는 프로젝트가 없습니다. 다른 조건으로 검색해보세요.
+          </EmptyState>
+        )}
 
-              {totalPages > 1 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                  disabled={isLoading}
-                />
-              )}
-            </>
-          ) : (
-            <EmptyState variant="body1">
-              조건에 맞는 프로젝트가 없습니다. 다른 조건으로 검색해보세요.
-            </EmptyState>
-          )}
-        </ResultsContainer>
-      )}
+        {isError && (
+          <ErrorContainer>
+            <Typography variant="h6" color="error">
+              프로젝트를 불러오는 중 오류가 발생했습니다.
+            </Typography>
+          </ErrorContainer>
+        )}
 
-      {isError && (
-        <ErrorContainer>
-          <ErrorText variant="body1">
-            데이터를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.
-          </ErrorText>
-        </ErrorContainer>
-      )}
+        {!isError && totalPages > 0 && (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </Box>
+        )}
+      </ResultsContainer>
     </MainContainer>
   );
 };
@@ -78,9 +92,12 @@ const ProjectListPage = (): JSX.Element => {
 export default ProjectListPage;
 
 const MainContainer = styled(Container)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
   flexGrow: 1,
   minHeight: "100vh",
   backgroundColor: theme.palette.background.default,
+  paddingTop: "3rem",
 }));
 
 const SearchContainer = styled(Box)(({ theme }) => ({
@@ -131,19 +148,6 @@ const EmptyState = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-const LoadingContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "4rem 0rem",
-  [theme.breakpoints.up("sm")]: {
-    padding: "6rem 2rem",
-  },
-  [theme.breakpoints.up("md")]: {
-    padding: "8rem 2.4rem",
-  },
-}));
-
 const ErrorContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
@@ -154,8 +158,30 @@ const ErrorContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ErrorText = styled(Typography)(({ theme }) => ({
-  textAlign: "center",
-  color: theme.palette.error.main,
-  fontWeight: 500,
+const LoadingContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "4rem 0rem",
+  minHeight: "400px",
+  [theme.breakpoints.up("sm")]: {
+    padding: "6rem 2rem",
+  },
+}));
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const AnimatedProjectCard = styled(Box)(() => ({
+  animation: `${fadeInUp} 0.6s ease-out forwards`,
+  opacity: 0,
 }));

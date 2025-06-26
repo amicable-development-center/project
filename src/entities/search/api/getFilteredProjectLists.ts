@@ -2,9 +2,9 @@ import { getDocs, getCountFromServer } from "firebase/firestore";
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
 import { SearchFilterBuilder } from "@entities/search/model/searchFilterBuilder";
-import type { ProjectSearchFilterOption } from "@entities/search/types";
 
 import type { ProjectListRes } from "@shared/types/project";
+import type { ProjectSearchFilterOption } from "@shared/types/search";
 
 interface GetFilteredProjectListsOptions {
   cursor?: QueryDocumentSnapshot<DocumentData> | null;
@@ -23,28 +23,39 @@ export const getFilteredProjectCount = async (
   filter: ProjectSearchFilterOption
 ): Promise<number> => {
   const queryBuilder = new SearchFilterBuilder(collectionName)
-    .setTitle(filter.title || undefined)
     .setCategory(filter.category === "all" ? undefined : filter.category)
     .setStatus(filter.status === "all" ? undefined : filter.status)
     .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow);
 
   const query = queryBuilder.build();
 
-  const snapshot = await getCountFromServer(query);
-
-  if (filter.position && filter.position !== "all") {
+  if (filter.title || (filter.position && filter.position !== "all")) {
     const allDocs = await getDocs(query);
 
-    const filteredProjects = allDocs.docs.filter((doc) => {
-      const data = doc.data() as ProjectListRes;
-      return data.positions.some(
-        (position) => position.position === filter.position
-      );
-    });
+    let projects = allDocs.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as ProjectListRes[];
 
-    return filteredProjects.length;
+    if (filter.title && filter.title.trim()) {
+      const searchTitle = filter.title.toLowerCase().trim();
+      projects = projects.filter((project) =>
+        project.title.toLowerCase().includes(searchTitle)
+      );
+    }
+
+    if (filter.position && filter.position !== "all") {
+      projects = projects.filter((project) =>
+        project.positions.some(
+          (position) => position.position === filter.position
+        )
+      );
+    }
+
+    return projects.length;
   }
 
+  const snapshot = await getCountFromServer(query);
   return snapshot.data().count;
 };
 
@@ -55,27 +66,33 @@ export const getFilteredProjectsByPage = async (
   pageSize: number = 6
 ): Promise<ProjectListRes[]> => {
   const queryBuilder = new SearchFilterBuilder(collectionName)
-    .setTitle(filter.title || undefined)
     .setCategory(filter.category === "all" ? undefined : filter.category)
     .setStatus(filter.status === "all" ? undefined : filter.status)
     .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow)
     .setSortBy(filter.sortBy || "latest");
 
-  if (filter.position && filter.position !== "all") {
-    queryBuilder.addLimit(pageSize * 5);
+  if (filter.title || (filter.position && filter.position !== "all")) {
+    queryBuilder.addLimit(pageSize * 10);
   } else {
     const offset = (page - 1) * pageSize;
     queryBuilder.addLimit(offset + pageSize * 2);
   }
 
   const query = queryBuilder.build();
-
   const snapshot = await getDocs(query);
 
   let projects = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as ProjectListRes[];
+
+  if (filter.title && filter.title.trim()) {
+    const searchTitle = filter.title.toLowerCase().trim();
+
+    projects = projects.filter((project) =>
+      project.title.toLowerCase().includes(searchTitle)
+    );
+  }
 
   if (filter.position && filter.position !== "all") {
     projects = projects.filter((project) =>
@@ -102,7 +119,6 @@ const getFilteredProjectLists = async (
   const { cursor, pageSize = 6 } = options;
 
   let queryBuilder = new SearchFilterBuilder(collectionName)
-    .setTitle(filter.title || undefined)
     .setCategory(filter.category === "all" ? undefined : filter.category)
     .setStatus(filter.status === "all" ? undefined : filter.status)
     .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow)
@@ -121,6 +137,13 @@ const getFilteredProjectLists = async (
     id: doc.id,
     ...doc.data(),
   })) as ProjectListRes[];
+
+  if (filter.title && filter.title.trim()) {
+    const searchTitle = filter.title.toLowerCase().trim();
+    projects = projects.filter((project) =>
+      project.title.toLowerCase().includes(searchTitle)
+    );
+  }
 
   if (filter.position && filter.position !== "all") {
     projects = projects.filter((project) =>

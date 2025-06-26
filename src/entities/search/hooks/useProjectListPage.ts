@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import {
   useGetFilteredProjectsByPage,
   useGetFilteredProjectsCount,
 } from "@entities/search/queries/useGetFilteredProjectLists";
-import type { ProjectSearchFilterOption } from "@entities/search/types";
 
 import { usePaginationWithState } from "@shared/hooks/usePagination";
 import type { ProjectListRes } from "@shared/types/project";
+import type { ProjectSearchFilterOption } from "@shared/types/search";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -35,6 +35,7 @@ const useProjectListPage = (): UseProjectListPageReturn => {
     data: totalCount = 0,
     isLoading: isCountLoading,
     isError: isCountError,
+    refetch: refetchCount,
   } = useGetFilteredProjectsCount(currentFilter);
 
   const { currentPage, totalPages, setPage, goToReset } =
@@ -47,15 +48,30 @@ const useProjectListPage = (): UseProjectListPageReturn => {
     data: projects = [],
     isLoading: isProjectsLoading,
     isError: isProjectsError,
+    refetch: refetchProjects,
   } = useGetFilteredProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
 
   const isLoading = isProjectsLoading || isCountLoading;
   const isError = isProjectsError || isCountError;
 
-  const handleSearch = (filter: ProjectSearchFilterOption): void => {
-    setCurrentFilter(filter);
-    goToReset();
-  };
+  // 필터가 변경되면 즉시 refetch
+  useEffect(() => {
+    if (Object.keys(currentFilter).length > 0) {
+      refetchProjects();
+      refetchCount();
+    }
+  }, [currentFilter, refetchProjects, refetchCount]);
+
+  const handleSearch = useCallback(
+    (filter: ProjectSearchFilterOption): void => {
+      console.log("검색 필터 받음:", filter);
+
+      // 상태 업데이트만 하면 useEffect가 자동으로 refetch
+      setCurrentFilter(filter);
+      goToReset();
+    },
+    [goToReset]
+  );
 
   const handlePageChange = (page: number): void => {
     if (page === currentPage || isLoading) return;

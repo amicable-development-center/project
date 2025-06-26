@@ -1,12 +1,11 @@
-import { useState, useMemo } from "react";
-
-import type { ProjectSearchFilterOption, SortBy } from "@entities/search/types";
+import { useState, useMemo, useCallback } from "react";
 
 import {
   RecruitmentStatus,
   type ProjectCategory,
   type Workflow,
 } from "@shared/types/project";
+import type { ProjectSearchFilterOption, SortBy } from "@shared/types/search";
 import type { UserRole } from "@shared/types/user";
 
 interface UseFilteredProjects {
@@ -25,7 +24,7 @@ interface UseFilteredProjects {
   updateSortBy: (newSortBy: SortBy | "latest") => void;
   resetFilters: () => void;
   getActiveFiltersCount: () => number;
-  getCleanFilter: () => ProjectSearchFilterOption;
+  getFilterStatus: () => ProjectSearchFilterOption;
 }
 
 const useFilteredProjects = (): UseFilteredProjects => {
@@ -36,7 +35,6 @@ const useFilteredProjects = (): UseFilteredProjects => {
   const [workflow, setWorkflow] = useState<Workflow | "all">("all");
   const [sortBy, setSortBy] = useState<SortBy | "latest">("latest");
 
-  // 🚀 단순한 함수들 - setState는 이미 안정적이므로 useCallback 불필요
   const updateTitle = (newTitle: string): void => {
     setTitle(newTitle);
   };
@@ -80,7 +78,7 @@ const useFilteredProjects = (): UseFilteredProjects => {
     return count;
   };
 
-  const getCleanFilter = (): ProjectSearchFilterOption => {
+  const getFilterStatus = useCallback((): ProjectSearchFilterOption => {
     const cleanFilter: ProjectSearchFilterOption = {
       title: title || "",
       category: category === "all" ? undefined : category,
@@ -93,7 +91,7 @@ const useFilteredProjects = (): UseFilteredProjects => {
     return Object.fromEntries(
       Object.entries(cleanFilter).filter(([_, value]) => value !== undefined)
     ) as ProjectSearchFilterOption;
-  };
+  }, [title, category, position, status, workflow, sortBy]);
 
   const filterState = useMemo(
     () => ({
@@ -123,7 +121,7 @@ const useFilteredProjects = (): UseFilteredProjects => {
     updateSortBy,
     resetFilters,
     getActiveFiltersCount,
-    getCleanFilter,
+    getFilterStatus,
   };
 };
 

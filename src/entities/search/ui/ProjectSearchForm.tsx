@@ -16,11 +16,21 @@ import {
 import type { JSX } from "react";
 import { memo } from "react";
 
-import useFilteredProjects from "@entities/search/hooks/useFilteredProjects";
 import { SELECT_FIELD_CONFIGS } from "@entities/search/model/selectFieldConfigs";
-import type { ProjectSearchFilterOption } from "@entities/search/types";
 import MemoizedSelectBox from "@entities/search/ui/project-search-input/MemoizedSelectBox";
 import SearchInputSection from "@entities/search/ui/SearchInputSection";
+
+import {
+  useSearchCategory,
+  useSearchPosition,
+  useSearchStatus,
+  useSearchWorkflow,
+  useSearchSortBy,
+  useSearchFilterActions,
+  useSearchUtils,
+  useActiveFiltersCount,
+} from "@shared/stores/searchStore";
+import type { ProjectSearchFilterOption } from "@shared/types/search";
 
 interface ProjectSearchFormProps {
   onSearch: (filter: ProjectSearchFilterOption) => void;
@@ -34,121 +44,135 @@ const ProjectSearchForm = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const category = useSearchCategory();
+  const position = useSearchPosition();
+  const status = useSearchStatus();
+  const workflow = useSearchWorkflow();
+  const sortBy = useSearchSortBy();
+
   const {
-    title,
-    category,
-    position,
-    status,
-    workflow,
-    sortBy,
-    updateTitle,
     updateCategory,
     updatePosition,
     updateStatus,
     updateWorkflow,
     updateSortBy,
-    resetFilters,
-    getActiveFiltersCount,
-    getCleanFilter,
-  } = useFilteredProjects();
+  } = useSearchFilterActions();
+  const { resetFilters, getFilterStatus } = useSearchUtils();
 
-  const activeFiltersCount = getActiveFiltersCount();
+  const activeFiltersCount = useActiveFiltersCount();
+
+  const handleSearch = (): void => {
+    const searchFilter = getFilterStatus();
+    console.log("검색 실행:", searchFilter);
+    onSearch(searchFilter);
+  };
 
   return (
-    <StyledContainer>
-      <HeaderSection>
-        <TitleArea>
-          <TextContainer>
-            <MainTitle variant={isMobile ? "h5" : "h4"}>
-              프로젝트 찾기
-            </MainTitle>
-            <SubTitle variant="body1">
-              원하는 조건으로 프로젝트를 검색하고 필터링하세요
-            </SubTitle>
-          </TextContainer>
-        </TitleArea>
+    <StyledForm
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearch();
+      }}
+    >
+      <StyledContainer>
+        <HeaderSection>
+          <TitleArea>
+            <TextContainer>
+              <MainTitle variant={isMobile ? "h5" : "h4"}>
+                프로젝트 찾기
+              </MainTitle>
+              <SubTitle variant="body1">
+                원하는 조건으로 프로젝트를 검색하고 필터링하세요
+              </SubTitle>
+            </TextContainer>
+          </TitleArea>
 
-        <StatusArea>
-          {activeFiltersCount > 0 && (
-            <ActiveFiltersChip
-              icon={<FilterListIcon fontSize="small" />}
-              label={`${activeFiltersCount}개 활성 필터`}
-              size="medium"
+          <StatusArea $hasActiveFilters={activeFiltersCount > 0}>
+            {activeFiltersCount > 0 && (
+              <ActiveFiltersChip
+                icon={<FilterListIcon fontSize="small" />}
+                label={`${activeFiltersCount}개 활성 필터`}
+                size="medium"
+              />
+            )}
+            <ResetButton
+              variant="outlined"
+              startIcon={<TuneIcon fontSize="small" />}
+              onClick={resetFilters}
+              disabled={isLoading}
+            >
+              필터 초기화
+            </ResetButton>
+          </StatusArea>
+        </HeaderSection>
+
+        <SearchSection>
+          <SearchContainer>
+            <SearchInputSection onEnterPress={handleSearch} />
+          </SearchContainer>
+        </SearchSection>
+
+        <FiltersSection>
+          <SectionHeader>
+            <SectionTitle variant="h6">상세 필터</SectionTitle>
+            <SectionDivider />
+          </SectionHeader>
+
+          <FiltersGrid>
+            <MemoizedSelectBox
+              config={SELECT_FIELD_CONFIGS.category}
+              value={category || "all"}
+              onChange={updateCategory as (value: string) => void}
             />
-          )}
-          <ResetButton
-            variant="outlined"
-            startIcon={<TuneIcon fontSize="small" />}
-            onClick={resetFilters}
+
+            <MemoizedSelectBox
+              config={SELECT_FIELD_CONFIGS.position}
+              value={position || "all"}
+              onChange={updatePosition as (value: string) => void}
+            />
+
+            <MemoizedSelectBox
+              config={SELECT_FIELD_CONFIGS.status}
+              value={status || "all"}
+              onChange={updateStatus as (value: string) => void}
+            />
+
+            <MemoizedSelectBox
+              config={SELECT_FIELD_CONFIGS.workflow}
+              value={workflow || "all"}
+              onChange={updateWorkflow as (value: string) => void}
+            />
+
+            <MemoizedSelectBox
+              config={SELECT_FIELD_CONFIGS.sortBy}
+              value={sortBy || "latest"}
+              onChange={updateSortBy as (value: string) => void}
+            />
+          </FiltersGrid>
+        </FiltersSection>
+
+        <ActionSection>
+          <SearchButton
+            type="submit"
+            variant="contained"
+            size={isMobile ? "medium" : "large"}
+            fullWidth={isMobile}
+            startIcon={<Search />}
             disabled={isLoading}
           >
-            필터 초기화
-          </ResetButton>
-        </StatusArea>
-      </HeaderSection>
-
-      <SearchSection>
-        <SearchContainer>
-          <SearchInputSection title={title} onTitleChange={updateTitle} />
-        </SearchContainer>
-      </SearchSection>
-
-      <FiltersSection>
-        <SectionHeader>
-          <SectionTitle variant="h6">상세 필터</SectionTitle>
-          <SectionDivider />
-        </SectionHeader>
-
-        <FiltersGrid>
-          <MemoizedSelectBox
-            config={SELECT_FIELD_CONFIGS.category}
-            value={category || "all"}
-            onChange={updateCategory as (value: string) => void}
-          />
-
-          <MemoizedSelectBox
-            config={SELECT_FIELD_CONFIGS.position}
-            value={position || "all"}
-            onChange={updatePosition as (value: string) => void}
-          />
-
-          <MemoizedSelectBox
-            config={SELECT_FIELD_CONFIGS.status}
-            value={status || "all"}
-            onChange={updateStatus as (value: string) => void}
-          />
-
-          <MemoizedSelectBox
-            config={SELECT_FIELD_CONFIGS.workflow}
-            value={workflow || "all"}
-            onChange={updateWorkflow as (value: string) => void}
-          />
-
-          <MemoizedSelectBox
-            config={SELECT_FIELD_CONFIGS.sortBy}
-            value={sortBy || "latest"}
-            onChange={updateSortBy as (value: string) => void}
-          />
-        </FiltersGrid>
-      </FiltersSection>
-
-      <ActionSection>
-        <SearchButton
-          variant="contained"
-          size="large"
-          fullWidth={isMobile}
-          startIcon={<Search />}
-          onClick={() => onSearch(getCleanFilter())}
-          disabled={isLoading}
-        >
-          {isLoading ? "검색 중..." : "프로젝트 검색"}
-        </SearchButton>
-      </ActionSection>
-    </StyledContainer>
+            {isLoading ? "검색 중..." : "프로젝트 검색"}
+          </SearchButton>
+        </ActionSection>
+      </StyledContainer>
+    </StyledForm>
   );
 };
 
 export default memo(ProjectSearchForm);
+
+const StyledForm = styled("form")(() => ({
+  width: "100%",
+}));
 
 const StyledContainer = styled(Paper)(({ theme }) => ({
   width: "100%",
@@ -196,19 +220,21 @@ const SubTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-const StatusArea = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(2),
+const StatusArea = styled(Box)<{ $hasActiveFilters: boolean }>(
+  ({ theme, $hasActiveFilters }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(2),
 
-  [theme.breakpoints.down("md")]: {
-    justifyContent: "space-between",
-  },
-}));
+    [theme.breakpoints.down("md")]: {
+      justifyContent: $hasActiveFilters ? "space-between" : "flex-end",
+    },
+  })
+);
 
 const ActiveFiltersChip = styled(Chip)(({ theme }) => ({
   fontWeight: 600,
-  fontSize: "0.875rem",
+  fontSize: "1.4rem",
   height: 40,
   backgroundColor: alpha(theme.palette.primary.main, 0.12),
   color: theme.palette.primary.main,
@@ -216,6 +242,10 @@ const ActiveFiltersChip = styled(Chip)(({ theme }) => ({
 
   "& .MuiChip-icon": {
     color: theme.palette.primary.main,
+  },
+
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.2rem",
   },
 }));
 
@@ -230,6 +260,12 @@ const ResetButton = styled(Button)(({ theme }) => ({
     borderColor: theme.palette.primary.main,
     backgroundColor: alpha(theme.palette.primary.main, 0.04),
     color: theme.palette.primary.main,
+  },
+
+  [theme.breakpoints.down("sm")]: {
+    height: 36,
+    fontSize: "1.2rem",
+    marginLeft: "auto",
   },
 }));
 
@@ -297,6 +333,13 @@ const SearchButton = styled(Button)(({ theme }) => ({
   boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   textTransform: "none",
+
+  [theme.breakpoints.down("sm")]: {
+    minWidth: "auto",
+    height: 52,
+    fontSize: "1.2rem",
+    padding: theme.spacing(1.5, 2),
+  },
 
   "&:hover": {
     transform: "translateY(-2px)",
