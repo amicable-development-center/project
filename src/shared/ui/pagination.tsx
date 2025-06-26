@@ -82,27 +82,18 @@ const Pagination = ({
 
 export default Pagination;
 
-const PaginationContainer = styled(Box)(({ theme }) => ({
+const PaginationContainer = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   gap: "0.75rem",
   padding: "2rem 0",
-
-  [theme.breakpoints.down("sm")]: {
-    gap: "1rem",
-    padding: "2.5rem 0",
-  },
 }));
 
-const PageNumbersContainer = styled(Box)(({ theme }) => ({
+const PageNumbersContainer = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   gap: "0.5rem",
-
-  [theme.breakpoints.down("sm")]: {
-    gap: "0.75rem",
-  },
 }));
 
 const PageButton = styled(Button)<{ $isActive: boolean; $isMobile: boolean }>(
@@ -146,16 +137,11 @@ const NavButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const EllipsisButton = styled(IconButton)(({ theme }) => ({
+const EllipsisButton = styled(IconButton)(() => ({
   minWidth: "3rem",
   height: "3rem",
   cursor: "default",
   "&:hover": {
     backgroundColor: "transparent",
-  },
-
-  [theme.breakpoints.down("sm")]: {
-    minWidth: "3.5rem",
-    height: "3.5rem",
   },
 }));
