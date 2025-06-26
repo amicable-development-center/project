@@ -6,6 +6,7 @@ import {
   deleteDoc,
   updateDoc,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 
 import type { ApiResMessage } from "@entities/projects/types/firebase";
@@ -66,38 +67,92 @@ export const updateProjectItem = async (): Promise<void> => {
   return;
 };
 
-/** 프로젝트 지원하기
+/**
+ *  프로젝트 지원하기
  * projects - applicants에 uid 넣기
  * user - appliedProjects에 projectID 넣기
+ *
+ *  프로젝트 좋아요
+ * projects - likedUsers uid 넣기
+ * user - likeProjects projectID 넣기
  */
-export const updateProjectApply = async (
-  uid: string,
-  projectID: string
-): Promise<ApiResMessage> => {
-  console.log({ uid, projectID });
+const fleidMap = {
+  apply: {
+    projectField: "applicants",
+    userField: "appliedProjects",
+    successMessage: "지원이 완료되었습니다. 행운을 빌어요 🚀",
+  },
+  like: {
+    projectField: "likedUsers",
+    userField: "likeProjects",
+    successMessage: "",
+  },
+};
 
+export const updateApplyOrLike = async (
+  uid: string,
+  projectID: string,
+  type: "apply" | "like"
+): Promise<ApiResMessage> => {
   const projecstRef = doc(db, "projects", projectID);
   const usersRef = doc(db, "users", uid);
 
+  const { projectField, userField, successMessage } = fleidMap[type];
+
   try {
     const updateProject = updateDoc(projecstRef, {
-      applicants: arrayUnion(uid),
+      [projectField]: arrayUnion(uid),
     });
     const updateUser = updateDoc(usersRef, {
-      appliedProjects: arrayUnion(projectID),
+      [userField]: arrayUnion(projectID),
     });
 
     await Promise.all([updateProject, updateUser]);
 
     return {
       success: true,
-      message: "프로젝트에 지원이 완료되었습니다. 행운을 빌어요 🚀",
+      message: successMessage,
     };
   } catch (err) {
     console.log(err);
     return {
       success: false,
-      message: "프로젝트 지원에 실패하였습니다.",
+      message: "실패하였습니다. 동작이 반복 될 시 관리자에게 문의 주세요.",
+    };
+  }
+};
+
+/**
+ * 프로젝트 좋아요 취소
+ * projects - likedUsers uid 빼기
+ * user - likeProjects projectID 빼기
+ */
+export const updateUnLike = async (
+  uid: string,
+  projectID: string
+): Promise<ApiResMessage> => {
+  const projecstRef = doc(db, "projects", projectID);
+  const usersRef = doc(db, "users", uid);
+
+  try {
+    const updateProject = updateDoc(projecstRef, {
+      likedUsers: arrayRemove(uid),
+    });
+    const updateUser = updateDoc(usersRef, {
+      likeProjects: arrayRemove(projectID),
+    });
+
+    await Promise.all([updateProject, updateUser]);
+
+    return {
+      success: true,
+      message: "",
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      success: false,
+      message: "실패하였습니다. 동작이 반복 될 시 관리자에게 문의 주세요.",
     };
   }
 };

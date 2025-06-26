@@ -5,7 +5,7 @@ import { getProjectItem } from "@entities/projects/api/projectsAPi";
 import type { ProjectListRes } from "@shared/types/project";
 
 const useProjectsItem = ({
-  id,
+  id, // projectID
 }: {
   id: string | null;
 }): UseQueryResult<ProjectListRes | null, Error> => {

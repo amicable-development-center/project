@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
 import ProjectDelete from "@features/projects/ui/ProjectDelete";
+import ProjectLike from "@features/projects/ui/ProjectLike";
 
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
 import ProjectApply from "@entities/projects/ui/post-info/ProjectApply";
@@ -18,6 +19,7 @@ import ProjectSchedule from "@entities/projects/ui/projects-detail/ProjectSchedu
 import TechStack from "@entities/projects/ui/projects-detail/TechStack";
 
 import { useAuthStore } from "@shared/stores/authStore";
+import type { RecruitmentStatus } from "@shared/types/project";
 
 const ProjectDetailPage = (): JSX.Element | null => {
   const { id } = useParams();
@@ -29,11 +31,15 @@ const ProjectDetailPage = (): JSX.Element | null => {
     isError,
   } = useProjectsItem({ id: id || null });
 
+  const projectLikeValues = {
+    status: (project?.status as RecruitmentStatus) || "모집중",
+    likedUsers: project?.likedUsers || [],
+  };
+
   const projectInfoValues = !project
     ? null
     : {
         title: project.title,
-        status: project.status,
         teamSize: project.teamSize,
         workflow: project.workflow,
         simpleInfo: project.simpleInfo,
@@ -85,6 +91,7 @@ const ProjectDetailPage = (): JSX.Element | null => {
       <CardContainer>
         <Box flex={3}>
           <CardBox>
+            <ProjectLike values={projectLikeValues} />
             <ProjectInfo values={projectInfoValues} />
           </CardBox>
           <CardBox>
