@@ -20,7 +20,7 @@ import type {
 import type { ProjectSearchFilterOption, SortBy } from "@shared/types/search";
 import type { UserRole } from "@shared/types/user";
 
-export class SearchFilterBuilder implements FilterBuilder {
+export class SearchQueryBuilder implements FilterBuilder {
   private filter: ProjectSearchFilterOption;
   private baseQuery: Query;
   private limitValue?: number;

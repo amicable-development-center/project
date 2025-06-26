@@ -1,7 +1,7 @@
 import { memo } from "react";
 import type { JSX } from "react";
 
-import type { SelectFieldConfig } from "@entities/search/model/selectFieldConfigs";
+import type { SelectFieldConfig } from "@entities/search/model/searchFormConfig";
 import SearchSelectBox from "@entities/search/ui/SearchSelectBox";
 
 interface SelectBoxProps {

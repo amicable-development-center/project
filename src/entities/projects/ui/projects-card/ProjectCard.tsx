@@ -39,7 +39,7 @@ const ProjectCard = ({
   const isRecruiting = project.status === RecruitmentStatus.recruiting;
 
   return (
-    <StyledCard $simple={simple}>
+    <StyledCard simple={simple}>
       <StyledCardContent>
         <ProjectHeader>
           <StatusChip
@@ -130,38 +130,38 @@ const ProjectCard = ({
 
 export default memo(ProjectCard);
 
-const StyledCard = styled(Card)<{ $simple?: boolean }>(
-  ({ theme, $simple }) => ({
-    height: "100%",
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== "simple",
+})<{ simple?: boolean }>(({ theme, simple }) => ({
+  height: "100%",
+  flex: 1,
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  cursor: "pointer",
+  border: `1px solid ${theme.palette.divider}`,
+  ...(simple && { minHeight: 260 }),
+
+  "&:hover": {
+    transform: "translateY(-0.4rem)",
+    boxShadow:
+      "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+    borderColor: theme.palette.primary.light,
+  },
+
+  [theme.breakpoints.up("sm")]: {
     flex: 1,
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    cursor: "pointer",
-    border: `1px solid ${theme.palette.divider}`,
-    ...($simple && { minHeight: 260 }),
-
     "&:hover": {
-      transform: "translateY(-0.4rem)",
-      boxShadow:
-        "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-      borderColor: theme.palette.primary.light,
+      transform: "translateY(-0.6rem)",
     },
+  },
 
-    [theme.breakpoints.up("sm")]: {
-      flex: 1,
-      "&:hover": {
-        transform: "translateY(-0.6rem)",
-      },
-    },
-
-    [theme.breakpoints.up("md")]: {
-      maxWidth: "48rem",
-      maxHeight: "54rem",
-    },
-  })
-);
+  [theme.breakpoints.up("md")]: {
+    maxWidth: "48rem",
+    maxHeight: "54rem",
+  },
+}));
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   height: "100%",

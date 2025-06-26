@@ -5,7 +5,7 @@ import { memo } from "react";
 import {
   DROPDOWN_DEFAULTS,
   SEARCH_FORM_LABELS,
-} from "@entities/search/model/searchOptions";
+} from "@entities/search/model/searchConstants";
 
 import { RecruitmentStatus } from "@shared/types/project";
 

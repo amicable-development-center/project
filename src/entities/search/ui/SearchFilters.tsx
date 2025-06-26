@@ -2,7 +2,7 @@ import { Box, styled } from "@mui/material";
 import { memo } from "react";
 import type { JSX } from "react";
 
-import { SELECT_FIELD_CONFIGS } from "@entities/search/model/selectFieldConfigs";
+import { SELECT_FIELD_CONFIGS } from "@entities/search/model/searchFormConfig";
 import SelectBox from "@entities/search/ui/SelectBox";
 
 import {

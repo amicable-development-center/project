@@ -1,9 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 import {
-  useGetFilteredProjectsByPage,
-  useGetFilteredProjectsCount,
-} from "@entities/search/queries/useGetFilteredProjectLists";
+  useProjectsByPage,
+  useProjectsCount,
+} from "@entities/search/queries/useProjectSearchQueries";
 
 import { usePaginationWithState } from "@shared/hooks/usePagination";
 import type { ProjectListRes } from "@shared/types/project";
@@ -28,15 +28,20 @@ interface UseProjectSearchReturn {
 
 const useProjectSearch = (): UseProjectSearchReturn => {
   const [currentFilter, setCurrentFilter] = useState<ProjectSearchFilterOption>(
-    {}
+    {
+      category: "all",
+      status: "all",
+      workflow: "all",
+      position: "all",
+      sortBy: "latest",
+    }
   );
 
   const {
     data: totalCount = 0,
     isLoading: isCountLoading,
     isError: isCountError,
-    refetch: refetchCount,
-  } = useGetFilteredProjectsCount(currentFilter);
+  } = useProjectsCount(currentFilter);
 
   const { currentPage, totalPages, setPage, goToReset } =
     usePaginationWithState({
@@ -48,18 +53,10 @@ const useProjectSearch = (): UseProjectSearchReturn => {
     data: projects = [],
     isLoading: isProjectsLoading,
     isError: isProjectsError,
-    refetch: refetchProjects,
-  } = useGetFilteredProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
+  } = useProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
 
   const isLoading = isProjectsLoading || isCountLoading;
   const isError = isProjectsError || isCountError;
-
-  useEffect(() => {
-    if (Object.keys(currentFilter).length > 0) {
-      refetchProjects();
-      refetchCount();
-    }
-  }, [currentFilter, refetchProjects, refetchCount]);
 
   const handleSearch = useCallback(
     (filter: ProjectSearchFilterOption): void => {
