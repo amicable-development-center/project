@@ -14,11 +14,9 @@ import { type JSX } from "react";
 import { useSignUpForm } from "@entities/user/hooks/useSignUpForm";
 import SubmitButton from "@entities/user/ui/SubmitButton";
 
-import { useAuthStore } from "@shared/stores/authStore";
+// import { useAuthStore } from "@shared/stores/authStore";
 
 const UserInfoForm = (): JSX.Element => {
-  const { user } = useAuthStore();
-  const defaultName = user?.displayName || "";
   const {
     name,
     userRole,
@@ -27,7 +25,7 @@ const UserInfoForm = (): JSX.Element => {
     errors,
     handleChange,
     handleSubmit,
-  } = useSignUpForm(defaultName);
+  } = useSignUpForm();
 
   return (
     <FormContainer>
