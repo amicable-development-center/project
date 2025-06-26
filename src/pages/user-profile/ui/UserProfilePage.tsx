@@ -15,6 +15,8 @@ import { useAuthStore } from "@shared/stores/authStore";
 import { useProjectStore } from "@shared/stores/projectStore";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
+import UserNotFound from "./UserNotFound";
+
 // 탭 이름 상수 배열
 const PROFILE_TABS = [
   { label: "관심있는 프로젝트", color: "primary" },
@@ -24,7 +26,7 @@ const PROFILE_TABS = [
 const UserProfilePage = (): JSX.Element => {
   const { user } = useAuthStore();
   const uid = user?.uid;
-  const { data: userProfile } = useUserProfile(uid ?? "");
+  const { data: userProfile, isLoading } = useUserProfile(uid ?? "");
 
   // zustand store 사용
   const { setLikeProjects, setAppliedProjects } = useProjectStore();
@@ -54,8 +56,11 @@ const UserProfilePage = (): JSX.Element => {
     await removeProjectsFromUser(user.uid, type, ids);
   };
 
-  if (!userProfile) {
+  if (isLoading) {
     return <LoadingSpinner />;
+  }
+  if (!userProfile) {
+    return <UserNotFound />;
   }
 
   return (
