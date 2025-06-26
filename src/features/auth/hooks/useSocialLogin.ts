@@ -4,7 +4,7 @@ import {
   getAdditionalUserInfo,
 } from "firebase/auth";
 import type { AuthProvider } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { auth } from "@shared/firebase/firebase";
 
@@ -12,6 +12,8 @@ export const useSocialLogin = (): {
   socialLogin: (provider: AuthProvider) => Promise<void>;
 } => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const socialLogin = async (provider: AuthProvider): Promise<void> => {
     try {
@@ -27,7 +29,7 @@ export const useSocialLogin = (): {
       if (isNewUser) {
         navigate("/signup");
       } else {
-        navigate("/");
+        navigate(redirect);
       }
     } catch (error: any) {
       console.error("소셜 로그인 실패: ", error);
