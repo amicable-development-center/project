@@ -1,6 +1,7 @@
 import { Box, Tabs, Tab } from "@mui/material";
 import type { JSX } from "react";
 
+import type { ProjectListRes } from "@shared/types/project";
 import ProjectCard from "@shared/ui/ProjectCard";
 
 import EmptyProjectCard from "./EmptyProjectCard";
@@ -9,8 +10,8 @@ interface UserProfileProjectListProps {
   PROFILE_TABS: { label: string; color: string }[];
   tab: number;
   setTab: (idx: number) => void;
-  likeProjects: any[];
-  appliedProjects: any[];
+  likeProjects: ProjectListRes[];
+  appliedProjects: ProjectListRes[];
 }
 
 const UserProfileProjectList = ({
