@@ -30,7 +30,7 @@ function App(): JSX.Element {
   useAuthObserver();
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           {/* 헤더 없는 레이아웃 (로그인/회원가입 전용) */}
