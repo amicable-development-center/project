@@ -1,0 +1,41 @@
+{
+  "cSpell.words": [
+    "ACMRTUXB",
+    "Cantarell",
+    "coments",
+    "eslintcache",
+    "Fira",
+    "isrc",
+    "Neue",
+    "Pretendard",
+    "Segoe",
+    "TTFB"
+  ],
+  "css.lint.unknownAtRules": "ignore",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.paths": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.configPath": "./.prettierrc",
+  "prettier.requireConfig": true,
+  "prettier.useEditorConfig": false,
+  "typescript.format.enable": false,
+  "javascript.format.enable": false
+}

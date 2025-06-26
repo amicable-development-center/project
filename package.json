@@ -31,8 +31,16 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.2",
+    "@mui/material": "^7.1.2",
+    "@tanstack/react-query": "^5.81.2",
+    "firebase": "^11.9.1",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -42,9 +50,11 @@
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
     "@vitejs/plugin-react": "^4.4.1",
+    "babel-plugin-import": "^1.13.8",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.2",
@@ -56,9 +66,11 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
+    "lighthouse-ci": "^1.13.1",
     "lint-staged": "^16.1.2",
     "only-allow": "^1.2.1",
     "prettier": "^3.5.3",
+    "rollup-plugin-visualizer": "^6.0.3",
     "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
