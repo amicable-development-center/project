@@ -10,6 +10,7 @@ import {
   type DocumentData,
   doc,
   getDoc,
+  where,
 } from "firebase/firestore";
 
 import { db } from "@shared/firebase/firebase";
@@ -80,4 +81,33 @@ export const getProjectItem = async (
     console.log(err);
     return null;
   }
+};
+
+/** 여러 id로 프로젝트 리스트 한 번에 가져오기 */
+export const getProjectsByIds = async (
+  ids: string[]
+): Promise<ProjectListRes[]> => {
+  if (ids.length === 0) return [];
+  // 10개씩 쪼개서 여러 번 쿼리 (Array.from 사용)
+  const chunkCount = Math.ceil(ids.length / 10);
+  const chunks = Array.from({ length: chunkCount }, (_, i) =>
+    ids.slice(i * 10, (i + 1) * 10)
+  );
+
+  // 여러 쿼리를 병렬로 실행 (Promise.all 사용)
+  const promises = chunks.map((chunk) => {
+    const q = query(collection(db, "projects"), where("__name__", "in", chunk));
+    return getDocs(q);
+  });
+  const snapshots = await Promise.all(promises);
+  const results: ProjectListRes[] = snapshots.flatMap((querySnapshot) =>
+    querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        }) as ProjectListRes
+    )
+  );
+  return results;
 };

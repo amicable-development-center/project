@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import { saveUser } from "@features/user/api/userApi";
+import { saveUser } from "@entities/user/api/userApi";
 
 import { useAuthStore } from "@shared/stores/authStore";
 import type { UserInput } from "@shared/types/user";

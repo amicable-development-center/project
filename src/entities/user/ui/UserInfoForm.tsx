@@ -11,8 +11,8 @@ import {
 import { styled } from "@mui/material/styles";
 import { type JSX } from "react";
 
-import { useSignUpForm } from "@features/user/hooks/useSignUpForm";
-import SubmitButton from "@features/user/ui/SubmitButton";
+import { useSignUpForm } from "@entities/user/hooks/useSignUpForm";
+import SubmitButton from "@entities/user/ui/SubmitButton";
 
 const UserInfoForm = (): JSX.Element => {
   const {

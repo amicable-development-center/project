@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useSignUp } from "@features/user/hooks/useSignUp";
+import { useSignUp } from "@entities/user/hooks/useSignUp";
 
 import type { UserExperience, UserRole } from "@shared/types/user";
 
