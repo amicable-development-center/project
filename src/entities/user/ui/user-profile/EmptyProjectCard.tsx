@@ -14,6 +14,38 @@ interface EmptyProjectCardProps {
   message: string;
 }
 
+const EmptyProjectCard = ({ message }: EmptyProjectCardProps): JSX.Element => (
+  <StyledCard>
+    <StyledCardContent>
+      <Box
+        flex={1}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minHeight={60}
+      >
+        <Typography variant="body1" color="text.secondary" align="center">
+          {message}
+        </Typography>
+      </Box>
+      <StyledDivider />
+      <Box
+        flex={1}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minHeight={80}
+        gap={2}
+      >
+        <NavigateButton to="/project">프로젝트 찾기</NavigateButton>
+        <NavigateButton to="/project/insert">프로젝트 등록</NavigateButton>
+      </Box>
+    </StyledCardContent>
+  </StyledCard>
+);
+
+export default EmptyProjectCard;
+
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "auto",
   minHeight: 180,
@@ -64,35 +96,3 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
   margin: `${theme.spacing(0.8)} 0`,
   backgroundColor: theme.palette.divider,
 }));
-
-const EmptyProjectCard = ({ message }: EmptyProjectCardProps): JSX.Element => (
-  <StyledCard>
-    <StyledCardContent>
-      <Box
-        flex={1}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        minHeight={60}
-      >
-        <Typography variant="body1" color="text.secondary" align="center">
-          {message}
-        </Typography>
-      </Box>
-      <StyledDivider />
-      <Box
-        flex={1}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        minHeight={80}
-        gap={2}
-      >
-        <NavigateButton to="/project">프로젝트 찾기</NavigateButton>
-        <NavigateButton to="/project/insert">프로젝트 등록</NavigateButton>
-      </Box>
-    </StyledCardContent>
-  </StyledCard>
-);
-
-export default EmptyProjectCard;
