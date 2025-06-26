@@ -3,7 +3,7 @@ import { type JSX } from "react";
 
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import useProjectListPage from "@entities/search/hooks/useProjectListPage";
-import ProjectSearchForm from "@entities/search/ui/ProjectSearchForm";
+import SearchForm from "@entities/search/ui/SearchForm";
 
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 import Pagination from "@shared/ui/pagination/Pagination";
@@ -34,7 +34,7 @@ const ProjectListPage = (): JSX.Element => {
   return (
     <MainContainer>
       <SearchContainer>
-        <ProjectSearchForm onSearch={handleSearch} isLoading={isLoading} />
+        <SearchForm onSearch={handleSearch} isLoading={isLoading} />
       </SearchContainer>
 
       <ResultsContainer>

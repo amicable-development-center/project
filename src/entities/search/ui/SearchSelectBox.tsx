@@ -4,14 +4,14 @@ import { memo } from "react";
 
 import type { SelectFieldConfig } from "@entities/search/model/selectFieldConfigs";
 
-interface ProjectSearchSelectBoxProps {
+interface SearchSelectBoxProps {
   config: SelectFieldConfig;
   value: string;
   onChange: (value: string) => void;
 }
 
-const ProjectSearchSelectBox = memo(
-  ({ config, value, onChange }: ProjectSearchSelectBoxProps): JSX.Element => {
+const SearchSelectBox = memo(
+  ({ config, value, onChange }: SearchSelectBoxProps): JSX.Element => {
     return (
       <FormControl fullWidth>
         <InputLabel>{config.label}</InputLabel>
@@ -31,4 +31,4 @@ const ProjectSearchSelectBox = memo(
   }
 );
 
-export default ProjectSearchSelectBox;
+export default SearchSelectBox;
