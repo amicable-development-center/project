@@ -2,9 +2,11 @@ import { Box, Typography, Container, styled, keyframes } from "@mui/material";
 import { type JSX } from "react";
 
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
-import useProjectListPage from "@entities/search/hooks/useProjectListPage";
+import useProjectSearch from "@entities/search/hooks/useProjectSearch";
 import SearchForm from "@entities/search/ui/SearchForm";
 import SearchListResultHandler from "@entities/search/ui/SearchListResultHandler";
+
+import type { ProjectListRes } from "@shared/types/project";
 
 const ProjectListPage = (): JSX.Element => {
   const {
@@ -16,7 +18,7 @@ const ProjectListPage = (): JSX.Element => {
     isError,
     handleSearch,
     handlePageChange,
-  } = useProjectListPage();
+  } = useProjectSearch();
 
   const isEmpty = !isLoading && !isError && projects.length === 0;
 
@@ -32,7 +34,7 @@ const ProjectListPage = (): JSX.Element => {
         </ResultsHeader>
 
         <ProjectListContainer>
-          {projects.map((project, index) => (
+          {projects.map((project: ProjectListRes, index: number) => (
             <AnimatedProjectCard
               key={project.id}
               style={{

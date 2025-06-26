@@ -11,7 +11,7 @@ import type { ProjectSearchFilterOption } from "@shared/types/search";
 
 const ITEMS_PER_PAGE = 6;
 
-interface UseProjectListPageReturn {
+interface UseProjectSearchReturn {
   projects: ProjectListRes[];
   totalCount: number;
   currentFilter: ProjectSearchFilterOption;
@@ -26,7 +26,7 @@ interface UseProjectListPageReturn {
   handlePageChange: (page: number) => void;
 }
 
-const useProjectListPage = (): UseProjectListPageReturn => {
+const useProjectSearch = (): UseProjectSearchReturn => {
   const [currentFilter, setCurrentFilter] = useState<ProjectSearchFilterOption>(
     {}
   );
@@ -54,7 +54,6 @@ const useProjectListPage = (): UseProjectListPageReturn => {
   const isLoading = isProjectsLoading || isCountLoading;
   const isError = isProjectsError || isCountError;
 
-  // 필터가 변경되면 즉시 refetch
   useEffect(() => {
     if (Object.keys(currentFilter).length > 0) {
       refetchProjects();
@@ -64,9 +63,6 @@ const useProjectListPage = (): UseProjectListPageReturn => {
 
   const handleSearch = useCallback(
     (filter: ProjectSearchFilterOption): void => {
-      console.log("검색 필터 받음:", filter);
-
-      // 상태 업데이트만 하면 useEffect가 자동으로 refetch
       setCurrentFilter(filter);
       goToReset();
     },
@@ -94,4 +90,4 @@ const useProjectListPage = (): UseProjectListPageReturn => {
   };
 };
 
-export default useProjectListPage;
+export default useProjectSearch;

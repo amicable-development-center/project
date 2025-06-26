@@ -41,14 +41,9 @@ const SearchInput = memo(({ onEnterPress }: SearchInputProps): JSX.Element => {
           onBlur={handleBlur}
           variant="outlined"
           autoComplete="off"
+          showHistory={showHistory}
           InputProps={{
             startAdornment: <StyledSearchIcon />,
-          }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderBottomLeftRadius: showHistory ? 0 : undefined,
-              borderBottomRightRadius: showHistory ? 0 : undefined,
-            },
           }}
         />
 
@@ -74,18 +69,22 @@ const StyledSearchIcon = styled(Search)(({ theme }) => ({
   fontSize: "1.5rem",
 }));
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  "& .MuiOutlinedInput-root": {
-    borderRadius: theme.spacing(1.5),
-    backgroundColor: theme.palette.background.paper,
-    transition: "all 0.2s ease-in-out",
-    "&:hover": {
-      boxShadow: `0 2px 8px ${theme.palette.action.hover}`,
+const StyledTextField = styled(TextField)<{ showHistory: boolean }>(
+  ({ theme, showHistory }) => ({
+    "& .MuiOutlinedInput-root": {
+      borderRadius: theme.spacing(1.5),
+      backgroundColor: theme.palette.background.paper,
+      transition: "all 0.2s ease-in-out",
+      borderBottomLeftRadius: showHistory ? 0 : undefined,
+      borderBottomRightRadius: showHistory ? 0 : undefined,
+      "&:hover": {
+        boxShadow: `0 2px 8px ${theme.palette.action.hover}`,
+      },
+      "&.Mui-focused": {
+        boxShadow: `0 4px 12px ${theme.palette.primary.main}25`,
+      },
     },
-    "&.Mui-focused": {
-      boxShadow: `0 4px 12px ${theme.palette.primary.main}25`,
-    },
-  },
-}));
+  })
+);
 
 export default SearchInput;
