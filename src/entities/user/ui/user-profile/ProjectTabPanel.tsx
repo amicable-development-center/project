@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import type { JSX } from "react";
 
 import type { ProjectListRes } from "@shared/types/project";
@@ -16,21 +16,25 @@ const ProjectTabPanel = ({
   emptyMessage,
 }: ProjectTabPanelProps): JSX.Element =>
   projects && projects.length > 0 ? (
-    <Box
-      display="grid"
-      gridTemplateColumns={{
-        xs: "1fr",
-        sm: "repeat(2, 1fr)",
-        md: "repeat(3, 1fr)",
-      }}
-      gap={2}
-    >
+    <StyledGridContainer>
       {projects.slice(0, 3).map((project) => (
         <ProjectCard key={project.id} project={project} simple />
       ))}
-    </Box>
+    </StyledGridContainer>
   ) : (
     <EmptyProjectCard message={emptyMessage} />
   );
 
 export default ProjectTabPanel;
+
+const StyledGridContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr",
+  gap: theme.spacing(2),
+  [theme.breakpoints.up("sm")]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+  },
+  [theme.breakpoints.up("md")]: {
+    gridTemplateColumns: "repeat(3, 1fr)",
+  },
+}));
