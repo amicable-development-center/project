@@ -10,7 +10,7 @@ const useProjectsItem = ({
   id: string | null;
 }): UseQueryResult<ProjectListRes | null, Error> => {
   return useQuery({
-    queryKey: ["projects-total-count"],
+    queryKey: ["project-detail", id],
     queryFn: () => {
       if (!id) return null;
       return getProjectItem(id);

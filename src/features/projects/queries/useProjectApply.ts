@@ -22,7 +22,7 @@ const useProjectApply = (): UseMutationResult<ApiResMessage, Error, string> => {
       // 지원 완료 후 프로필로 이동
       alert(data.message);
       if (data.success) {
-        Navigate(`/project/${data.id}`);
+        Navigate("/profile");
       }
     },
     onError: (err) => {
