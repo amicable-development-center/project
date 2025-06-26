@@ -4,7 +4,6 @@ import TuneIcon from "@mui/icons-material/Tune";
 import {
   Box,
   Button,
-  TextField,
   Paper,
   alpha,
   Typography,
@@ -15,11 +14,14 @@ import {
   Divider,
 } from "@mui/material";
 import type { JSX } from "react";
+import { memo } from "react";
 
 import useFilteredProjects from "@entities/search/hooks/useFilteredProjects";
 import { SELECT_FIELD_CONFIGS } from "@entities/search/model/selectFieldConfigs";
 import type { ProjectSearchFilterOption } from "@entities/search/types";
-import ProjectSearchSelectBox from "@entities/search/ui/project-search-input/ProjectSearchSelectBox";
+
+import MemoizedSelectBox from "./project-search-input/MemoizedSelectBox";
+import SearchInputSection from "./SearchInputSection";
 
 interface ProjectSearchFormProps {
   onSearch: (filter: ProjectSearchFilterOption) => void;
@@ -88,17 +90,7 @@ const ProjectSearchForm = ({
 
       <SearchSection>
         <SearchContainer>
-          <StyledTextField
-            fullWidth
-            label="프로젝트 제목 검색"
-            placeholder="어떤 프로젝트를 찾고 계신가요?"
-            value={title}
-            onChange={(e) => updateTitle(e.target.value)}
-            variant="outlined"
-            InputProps={{
-              startAdornment: <StyledSearchIcon />,
-            }}
-          />
+          <SearchInputSection title={title} onTitleChange={updateTitle} />
         </SearchContainer>
       </SearchSection>
 
@@ -109,34 +101,34 @@ const ProjectSearchForm = ({
         </SectionHeader>
 
         <FiltersGrid>
-          <ProjectSearchSelectBox
+          <MemoizedSelectBox
             config={SELECT_FIELD_CONFIGS.category}
             value={category || "all"}
-            onChange={(value) => updateCategory(value as any)}
+            onChange={updateCategory as (value: string) => void}
           />
 
-          <ProjectSearchSelectBox
+          <MemoizedSelectBox
             config={SELECT_FIELD_CONFIGS.position}
             value={position || "all"}
-            onChange={(value) => updatePosition(value as any)}
+            onChange={updatePosition as (value: string) => void}
           />
 
-          <ProjectSearchSelectBox
+          <MemoizedSelectBox
             config={SELECT_FIELD_CONFIGS.status}
             value={status || "all"}
-            onChange={(value) => updateStatus(value as any)}
+            onChange={updateStatus as (value: string) => void}
           />
 
-          <ProjectSearchSelectBox
+          <MemoizedSelectBox
             config={SELECT_FIELD_CONFIGS.workflow}
             value={workflow || "all"}
-            onChange={(value) => updateWorkflow(value as any)}
+            onChange={updateWorkflow as (value: string) => void}
           />
 
-          <ProjectSearchSelectBox
+          <MemoizedSelectBox
             config={SELECT_FIELD_CONFIGS.sortBy}
             value={sortBy || "latest"}
-            onChange={(value) => updateSortBy(value as any)}
+            onChange={updateSortBy as (value: string) => void}
           />
         </FiltersGrid>
       </FiltersSection>
@@ -157,7 +149,7 @@ const ProjectSearchForm = ({
   );
 };
 
-export default ProjectSearchForm;
+export default memo(ProjectSearchForm);
 
 const StyledContainer = styled(Paper)(({ theme }) => ({
   width: "100%",
@@ -249,50 +241,6 @@ const SearchSection = styled(Box)(({ theme }) => ({
 
 const SearchContainer = styled(Box)(() => ({
   width: "100%",
-}));
-
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  "& .MuiOutlinedInput-root": {
-    borderRadius: theme.spacing(2),
-    fontSize: "1.6rem",
-    backgroundColor: theme.palette.background.paper,
-    transition: "all 0.2s ease-in-out",
-    padding: theme.spacing(0.5, 1.5),
-
-    "&:hover": {
-      boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.08)}`,
-
-      "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: alpha(theme.palette.primary.main, 0.4),
-      },
-    },
-
-    "&.Mui-focused": {
-      boxShadow: `0 4px 24px ${alpha(theme.palette.primary.main, 0.12)}`,
-
-      "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: theme.palette.primary.main,
-        borderWidth: 2,
-      },
-    },
-  },
-
-  "& .MuiInputLabel-root": {
-    fontWeight: 700,
-    fontSize: "1.5rem",
-  },
-
-  "& .MuiOutlinedInput-input": {
-    fontSize: "1.5rem",
-    padding: theme.spacing(2.5),
-    fontWeight: 500,
-  },
-}));
-
-const StyledSearchIcon = styled(Search)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  marginRight: theme.spacing(1.5),
-  fontSize: "1.5rem",
 }));
 
 const FiltersSection = styled(Box)(({ theme }) => ({

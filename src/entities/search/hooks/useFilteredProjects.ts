@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import type { ProjectSearchFilterOption, SortBy } from "@entities/search/types";
 
@@ -36,6 +36,7 @@ const useFilteredProjects = (): UseFilteredProjects => {
   const [workflow, setWorkflow] = useState<Workflow | "all">("all");
   const [sortBy, setSortBy] = useState<SortBy | "latest">("latest");
 
+  // 🚀 단순한 함수들 - setState는 이미 안정적이므로 useCallback 불필요
   const updateTitle = (newTitle: string): void => {
     setTitle(newTitle);
   };
@@ -94,14 +95,17 @@ const useFilteredProjects = (): UseFilteredProjects => {
     ) as ProjectSearchFilterOption;
   };
 
-  const filterState = {
-    title,
-    category,
-    position,
-    status,
-    workflow,
-    sortBy,
-  };
+  const filterState = useMemo(
+    () => ({
+      title,
+      category,
+      position,
+      status,
+      workflow,
+      sortBy,
+    }),
+    [title, category, position, status, workflow, sortBy]
+  );
 
   return {
     filterState,
