@@ -14,6 +14,8 @@ import { type JSX } from "react";
 import { useSignUpForm } from "@entities/user/hooks/useSignUpForm";
 import SubmitButton from "@entities/user/ui/SubmitButton";
 
+// import { useAuthStore } from "@shared/stores/authStore";
+
 const UserInfoForm = (): JSX.Element => {
   const {
     name,
@@ -31,13 +33,12 @@ const UserInfoForm = (): JSX.Element => {
       {/* 이름 입력 */}
       <FormControl error={errors.name} variant="outlined" fullWidth>
         <StyledTextField
-          label="🙋 이름 *"
+          label="🙋 닉네임 *"
           variant="outlined"
           value={name}
           onChange={(e) => handleChange("name")(e.target.value)}
           error={errors.name}
           onFocus={() => errors.name && handleChange("name")(name)}
-          placeholder="이름"
           InputLabelProps={{ shrink: true }}
         />
         {errors.name && <ErrorText>이름을 입력해주세요.</ErrorText>}

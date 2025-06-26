@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useSignUp } from "@entities/user/hooks/useSignUp";
 
+import { useAuthStore } from "@shared/stores/authStore";
 import type { UserExperience, UserRole } from "@shared/types/user";
 
 // 반환 타입 정의
@@ -19,8 +20,10 @@ interface UseSignUpFormReturn {
 
 export function useSignUpForm(): UseSignUpFormReturn {
   const { signUp } = useSignUp();
+  const { user } = useAuthStore();
+  const defaultName = user?.displayName || "";
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState(defaultName);
   const [userRole, setUserRole] = useState("");
   const [experience, setExperience] = useState("");
   const [introduceMyself, setIntroduceMyself] = useState("");

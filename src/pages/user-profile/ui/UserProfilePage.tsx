@@ -1,19 +1,29 @@
-import { Box, Avatar, Typography, Paper, Container } from "@mui/material";
+import { Box, Container, Chip as MuiChip } from "@mui/material";
+import { styled as muiStyled } from "@mui/material/styles";
 import type { JSX } from "react";
+import { useState } from "react";
 
 import { useUserProfile } from "@features/auth/hooks/useUserProfile";
 
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
-import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
+import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
+import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader";
+import UserProfileProjectList from "@entities/user/ui/user-profile/UserProfileProjectList";
 
 import { useAuthStore } from "@shared/stores/authStore";
+
+// 탭 이름 상수 배열
+const PROFILE_TABS = [
+  { label: "관심있는 프로젝트", color: "primary" },
+  { label: "지원한 프로젝트", color: "secondary" },
+];
 
 const UserProfilePage = (): JSX.Element => {
   const { user } = useAuthStore();
   const uid = user?.uid;
   const { data: userProfile } = useUserProfile(uid ?? "");
 
-  // 좋아요/지원한 프로젝트 id 배열
+  // 관심있는/지원한 프로젝트 id 배열
   const likeIds = userProfile?.likeProjects ?? [];
   const appliedIds = userProfile?.appliedProjects ?? [];
 
@@ -23,98 +33,66 @@ const UserProfilePage = (): JSX.Element => {
   console.log(likeProjects);
   console.log(appliedProjects);
 
+  const [tab, setTab] = useState(0);
   if (!userProfile) {
     return <div>UserProfilePage</div>;
   }
 
   return (
-    <Container
-      maxWidth="lg"
-      sx={{
-        py: { xs: 2, sm: 4, md: 6 },
-        backgroundColor: (theme) => theme.palette.background.default,
-        height: "100dvh",
-      }}
-    >
-      {/* 프로필 헤더 + 자기소개 */}
-      <Box
-        display="flex"
-        flexDirection={{ xs: "column", md: "row" }}
-        gap={3}
-        mb={3}
-      >
-        <Paper elevation={2} sx={{ p: 3, flex: 1 }}>
-          <Box display="flex" alignItems="center" gap={3}>
-            <Avatar src={userProfile.avatar} sx={{ width: 80, height: 80 }} />
-            <Box>
-              <Typography variant="h5" fontWeight={700}>
-                {userProfile.name}
-              </Typography>
-              <Typography color="text.secondary">
-                {userProfile.email}
-              </Typography>
-              <Typography>역할: {userProfile.userRole}</Typography>
-              <Typography>경력: {userProfile.experience}</Typography>
-            </Box>
-          </Box>
-        </Paper>
-        <Paper elevation={1} sx={{ p: 2, flex: 1 }}>
-          <Typography variant="subtitle1" fontWeight={600} mb={1}>
-            자기소개
-          </Typography>
-          <Typography>{userProfile.introduceMyself}</Typography>
-        </Paper>
+    <MainContainer maxWidth="lg">
+      <UserProfileHeader />
+      <Box display="flex" gap={4}>
+        {/* 왼쪽 프로필 사이드바 */}
+        <UserProfileCard
+          userProfile={userProfile}
+          PROFILE_TABS={PROFILE_TABS}
+          likeProjects={likeProjects ?? []}
+          appliedProjects={appliedProjects ?? []}
+          tab={tab}
+          setTab={setTab}
+          ProfileTabChip={ProfileTabChip}
+        />
+        {/* 오른쪽 메인: 탭 + 프로젝트 카드 */}
+        <UserProfileProjectList
+          PROFILE_TABS={PROFILE_TABS}
+          tab={tab}
+          setTab={setTab}
+          likeProjects={likeProjects ?? []}
+          appliedProjects={appliedProjects ?? []}
+        />
       </Box>
-
-      {/* 좋아요한 프로젝트 */}
-      <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={4}>
-        <Box flex={1}>
-          <Typography variant="h6" mb={2}>
-            좋아요한 프로젝트
-          </Typography>
-          <Box
-            sx={{
-              maxHeight: 580,
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              backgroundColor: (theme) => theme.palette.background.default,
-              borderRadius: 2,
-              p: 2,
-            }}
-          >
-            {likeProjects?.map((project) => (
-              <ProjectCard key={project.id} project={project} simple />
-            ))}
-          </Box>
-        </Box>
-
-        {/* 지원한 프로젝트 */}
-        <Box flex={1}>
-          <Typography variant="h6" mb={2}>
-            지원한 프로젝트
-          </Typography>
-          <Box
-            sx={{
-              maxHeight: 580,
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              backgroundColor: (theme) => theme.palette.background.default,
-              borderRadius: 2,
-              p: 2,
-            }}
-          >
-            {appliedProjects?.map((project) => (
-              <ProjectCard key={project.id} project={project} simple />
-            ))}
-          </Box>
-        </Box>
-      </Box>
-    </Container>
+    </MainContainer>
   );
 };
 
 export default UserProfilePage;
+
+const MainContainer = muiStyled(Container)(({ theme }) => ({
+  paddingBottom: theme.spacing(2),
+  [theme.breakpoints.up("sm")]: {
+    paddingBottom: theme.spacing(4),
+  },
+  [theme.breakpoints.up("md")]: {
+    paddingBottom: theme.spacing(6),
+  },
+  backgroundColor: theme.palette.background.default,
+  minHeight: "100dvh",
+}));
+
+// 커스텀 Chip: 액티브일 때만 border, 글씨색 파란색, 배경은 그대로
+const ProfileTabChip = muiStyled(MuiChip, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<{
+  active?: boolean;
+}>(({ theme, active }) => ({
+  borderColor: active ? theme.palette.primary.main : theme.palette.divider,
+  color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+  backgroundColor: theme.palette.background.paper,
+  fontWeight: 600,
+  fontSize: "0.98rem",
+  borderWidth: 1,
+  borderStyle: "solid",
+  "&:hover": {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
