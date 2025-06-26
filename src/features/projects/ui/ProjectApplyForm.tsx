@@ -1,11 +1,28 @@
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
+import { useParams } from "react-router-dom";
 
 import useApplyFrom from "@features/projects/hook/useApplyFrom";
 
-const ProjectApplyForm = (): JSX.Element => {
-  const { openForm, message, submit } = useApplyFrom();
+import { useAuthStore } from "@shared/stores/authStore";
+
+const ProjectApplyForm = ({
+  applicants,
+}: {
+  applicants: string[];
+}): JSX.Element => {
+  const { id } = useParams();
+  const user = useAuthStore((state) => state.user);
+  const { openForm, message, submit } = useApplyFrom(id || "");
+
+  if (user && applicants.includes(user?.uid || "")) {
+    return (
+      <MessageBtn className="done">
+        <Typography>지원완료</Typography>
+      </MessageBtn>
+    );
+  }
 
   /* 지원하기 폼 닫혀있을 때 */
   if (!openForm.isOpen) {
@@ -84,5 +101,11 @@ const MessageBtn = styled(Box)`
     &:hover {
       background: linear-gradient(to bottom right, #474dc0, #7324bd);
     }
+  }
+
+  &.done {
+    cursor: default;
+    color: #858585;
+    background-color: #f0f0f0;
   }
 `;
