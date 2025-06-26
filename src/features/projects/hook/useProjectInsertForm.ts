@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
 
@@ -11,19 +12,62 @@ import {
 import { ExpectedPeriod } from "@shared/types/schedule";
 import { UserExperience } from "@shared/types/user";
 
-const useProjectInsertForm = (): { submit: () => Promise<void> } => {
+// 이하 InitData 개선 예정
+type Setp1Type = Pick<
+  ProjectItemInsertReq,
+  "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
+>;
+
+interface InsertFormResult {
+  form: {
+    step1: Setp1Type;
+  };
+  page: {
+    currentStep: number;
+    goPrev: () => void;
+    goNext: () => void;
+  };
+  submit: () => Promise<void>;
+}
+
+const useProjectInsertForm = (): InsertFormResult => {
   const { mutate: insertItem, isPending } = useProjectInsert();
 
+  const [currentStep, setCurrentStep] = useState(1);
+  // const [formStep1, setFormStep1] = useState<Setp1Type>(initForm1);
+
+  const handlePrev = (): void => setCurrentStep((prev) => prev - 1);
+  const handleNext = (): void => setCurrentStep((prev) => prev + 1);
+
   const submit = async (): Promise<void> => {
+    if (!window.confirm("등록을 완료 하시겠습니까?")) return;
     if (isPending) return;
     // form 검사 추가 바람
     insertItem(TestData);
   };
 
-  return { submit };
+  return {
+    form: {
+      step1: initForm1,
+    },
+    page: {
+      currentStep: currentStep,
+      goPrev: handlePrev,
+      goNext: handleNext,
+    },
+    submit,
+  };
 };
 
 export default useProjectInsertForm;
+
+const initForm1 = {
+  title: "",
+  oneLineInfo: "",
+  category: ProjectCategory.webDevelopment,
+  closedDate: Timestamp.now(),
+  simpleInfo: "",
+};
 
 // 테스트용 form 입니다.
 const TestData: ProjectItemInsertReq = {
