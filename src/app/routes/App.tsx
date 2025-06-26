@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import AuthLayout from "@app/routes/AuthLayout";
 import MainLayout from "@app/routes/MainLayout";
+import PrivateRoute from "@app/routes/PrivateRoute";
 
 import { useAuthObserver } from "@shared/hooks/useAuthObserver";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
@@ -40,12 +41,29 @@ function App(): JSX.Element {
 
           {/* 헤더 포함 레이아웃 (메인 페이지) */}
           <Route element={<MainLayout />}>
+            {/* 공개 페이지 */}
             <Route path="/" element={<HomePage />} />
-            <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/project" element={<ProjectListPage />} />
-            <Route path="/project/insert" element={<ProjectInsertPage />} />
             <Route path="/project/:id" element={<ProjectDetailPage />} />
             <Route path="*" element={<NotFoundPage />} />
+
+            {/* 비공개 페이지 */}
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <UserProfilePage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/project/insert"
+              element={
+                <PrivateRoute>
+                  <ProjectInsertPage />
+                </PrivateRoute>
+              }
+            />
           </Route>
         </Routes>
       </Suspense>
