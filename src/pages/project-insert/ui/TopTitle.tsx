@@ -1,19 +1,26 @@
 import { Box, Typography } from "@mui/material";
 import type { JSX } from "react";
 
-// Box: maxWidth={700} mx="auto" 설정이 불필요하여 삭제히였습니다.
-// Typography 엔 fontSize 설정이 적용되지 않아 삭제하였습니다.
 const TopTitle = (): JSX.Element => {
   return (
-    <Box pb={2} textAlign="center">
-      <Typography variant="h3" fontWeight={800} mb={1} color="#222">
-        같이 할 사람 구해요! 🚀
+    <Box py={4} textAlign="center">
+      <Typography
+        variant="h2"
+        fontWeight={700}
+        mb={1}
+        sx={{
+          background: "linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        프로젝트, 함께 시작해요
       </Typography>
-      <Typography variant="h6" color="#555" mb={0.5}>
-        멋진 아이디어가 있다면 팀원을 모집해보세요
-      </Typography>
-      <Typography color="#888">
-        혼자서는 힘들어도 함께라면 뭐든 할 수 있어요!
+      <Typography variant="h6" color="text.secondary" fontWeight={400}>
+        혼자서는 힘든 프로젝트도 팀과 함께라면 가능해요
+        <br />
+        프로젝트잼에서 완벽한 팀원을 찾아보세요
       </Typography>
     </Box>
   );
