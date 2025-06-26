@@ -6,7 +6,7 @@ import useProjectListPage from "@entities/search/hooks/useProjectListPage";
 import ProjectSearchForm from "@entities/search/ui/ProjectSearchForm";
 
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
-import Pagination from "@shared/ui/Pagination";
+import Pagination from "@shared/ui/pagination/Pagination";
 
 const ProjectListPage = (): JSX.Element => {
   const {
