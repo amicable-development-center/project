@@ -1,4 +1,6 @@
-import { ChevronLeft, ChevronRight, MoreHoriz } from "@mui/icons-material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Box, Button, styled, IconButton } from "@mui/material";
 import { type JSX } from "react";
 
@@ -33,14 +35,14 @@ const Pagination = ({
         disabled={!canGoPrev || disabled}
         size="medium"
       >
-        <ChevronLeft />
+        <ChevronLeftIcon />
       </NavButton>
       <PageNumbersContainer>
         {pageNumbers.map((page, index) => (
           <Box key={index}>
             {page === "ellipsis" ? (
               <EllipsisButton disabled>
-                <MoreHoriz fontSize="medium" />
+                <MoreHorizIcon fontSize="medium" />
               </EllipsisButton>
             ) : (
               <PageButton
@@ -61,7 +63,7 @@ const Pagination = ({
         disabled={!canGoNext || disabled}
         size="medium"
       >
-        <ChevronRight />
+        <ChevronRightIcon />
       </NavButton>
     </PaginationContainer>
   );

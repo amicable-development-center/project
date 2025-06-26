@@ -15,6 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import type { JSX } from "react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 
 import { type ProjectListRes } from "@shared/types/project";
@@ -108,7 +109,7 @@ const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
   );
 };
 
-export default ProjectCard;
+export default memo(ProjectCard);
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",

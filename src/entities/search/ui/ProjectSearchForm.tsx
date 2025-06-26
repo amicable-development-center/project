@@ -1,4 +1,6 @@
-import { Search, FilterList, Tune } from "@mui/icons-material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import Search from "@mui/icons-material/Search";
+import TuneIcon from "@mui/icons-material/Tune";
 import {
   Box,
   Button,
@@ -68,14 +70,14 @@ const ProjectSearchForm = ({
         <StatusArea>
           {activeFiltersCount > 0 && (
             <ActiveFiltersChip
-              icon={<FilterList fontSize="small" />}
+              icon={<FilterListIcon fontSize="small" />}
               label={`${activeFiltersCount}개 활성 필터`}
               size="medium"
             />
           )}
           <ResetButton
             variant="outlined"
-            startIcon={<Tune fontSize="small" />}
+            startIcon={<TuneIcon fontSize="small" />}
             onClick={resetFilters}
             disabled={isLoading}
           >
@@ -94,7 +96,7 @@ const ProjectSearchForm = ({
             onChange={(e) => updateTitle(e.target.value)}
             variant="outlined"
             InputProps={{
-              startAdornment: <SearchIcon />,
+              startAdornment: <StyledSearchIcon />,
             }}
           />
         </SearchContainer>
@@ -287,7 +289,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const SearchIcon = styled(Search)(({ theme }) => ({
+const StyledSearchIcon = styled(Search)(({ theme }) => ({
   color: theme.palette.text.secondary,
   marginRight: theme.spacing(1.5),
   fontSize: "1.5rem",

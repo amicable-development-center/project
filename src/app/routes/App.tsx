@@ -13,9 +13,6 @@ const NotFoundPage = lazy(() => import("@pages/not-found/ui/NotFoundPage"));
 const UserProfilePage = lazy(
   () => import("@pages/user-profile/ui/UserProfilePage")
 );
-const ProjectListPage = lazy(
-  () => import("@pages/project-list/ui/ProjectListPage")
-);
 const ProjectDetailPage = lazy(
   () => import("@pages/project-detail/ui/ProjectDetailPage")
 );
@@ -24,6 +21,9 @@ const ProjectInsertPage = lazy(
 );
 const LoginPage = lazy(() => import("@pages/login/ui/LoginPage"));
 const SignUpPage = lazy(() => import("@pages/signup/ui/SignUpPage"));
+const ProjectListPage = lazy(
+  () => import("@pages/project-list/ui/ProjectListPage")
+);
 
 function App(): JSX.Element {
   useAuthObserver();
