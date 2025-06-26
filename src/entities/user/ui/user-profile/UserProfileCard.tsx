@@ -7,10 +7,11 @@ import {
   CardContent,
   IconButton,
   Divider,
-  Badge,
 } from "@mui/material";
 import { styled as muiStyled } from "@mui/material/styles";
 import type { JSX } from "react";
+
+import TabWithBadge from "./TapWithBadge";
 
 // Chip 컴포넌트는 상위에서 import해서 prop으로 넘겨야 함
 
@@ -75,32 +76,18 @@ const UserProfileCard = ({
         <ProfileEmail>{userProfile.email}</ProfileEmail>
         <Box mt={2} display="flex" gap={1} justifyContent="center">
           {PROFILE_TABS.map((tabInfo, idx) => (
-            <Badge
+            <TabWithBadge
               key={tabInfo.label}
-              badgeContent={
+              label={tabInfo.label}
+              count={
                 idx === 0
                   ? likeProjects?.length || 0
                   : appliedProjects?.length || 0
               }
-              color={tab === idx ? "primary" : "secondary"}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              overlap="rectangular"
-              sx={{
-                "& .MuiBadge-badge": {
-                  fontSize: "1.1rem",
-                  fontWeight: 700,
-                  minWidth: 24,
-                  height: 24,
-                },
-              }}
-            >
-              <ProfileTabChip
-                label={tabInfo.label}
-                active={tab === idx}
-                clickable
-                onClick={() => setTab(idx)}
-              />
-            </Badge>
+              active={tab === idx}
+              onClick={() => setTab(idx)}
+              ProfileTabChip={ProfileTabChip}
+            />
           ))}
         </Box>
       </ProfileCardContent>
