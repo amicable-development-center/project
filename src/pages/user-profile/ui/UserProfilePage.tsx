@@ -1,9 +1,10 @@
 import { Box, Container, Chip as MuiChip } from "@mui/material";
 import { styled as muiStyled } from "@mui/material/styles";
 import type { JSX } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useUserProfile } from "@features/auth/hooks/useUserProfile";
+import { removeProjectsFromUser } from "@features/projects/api/projectsApi";
 
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
 import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
@@ -11,6 +12,7 @@ import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader"
 import UserProfileProjectList from "@entities/user/ui/user-profile/UserProfileProjectList";
 
 import { useAuthStore } from "@shared/stores/authStore";
+import { useProjectStore } from "@shared/stores/projectStore";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
 // 탭 이름 상수 배열
@@ -24,17 +26,34 @@ const UserProfilePage = (): JSX.Element => {
   const uid = user?.uid;
   const { data: userProfile } = useUserProfile(uid ?? "");
 
+  // zustand store 사용
+  const { setLikeProjects, setAppliedProjects } = useProjectStore();
+
   // 관심있는/지원한 프로젝트 id 배열
   const likeIds = userProfile?.likeProjects ?? [];
   const appliedIds = userProfile?.appliedProjects ?? [];
 
   // 프로젝트 데이터 가져오기
-  const { data: likeProjects } = useProjectsByIds(likeIds);
-  const { data: appliedProjects } = useProjectsByIds(appliedIds);
-  console.log(likeProjects);
-  console.log(appliedProjects);
+  const { data: likeProjectsData } = useProjectsByIds(likeIds);
+  const { data: appliedProjectsData } = useProjectsByIds(appliedIds);
+
+  // zustand store에 동기화
+  useEffect(() => {
+    if (likeProjectsData) setLikeProjects(likeProjectsData);
+  }, [likeProjectsData, setLikeProjects]);
+  useEffect(() => {
+    if (appliedProjectsData) setAppliedProjects(appliedProjectsData);
+  }, [appliedProjectsData, setAppliedProjects]);
 
   const [tab, setTab] = useState(0);
+  const handleDeleteProjects = async (
+    type: "likeProjects" | "appliedProjects",
+    ids: string[]
+  ): Promise<void> => {
+    if (!user) return;
+    await removeProjectsFromUser(user.uid, type, ids);
+  };
+
   if (!userProfile) {
     return <LoadingSpinner />;
   }
@@ -52,8 +71,6 @@ const UserProfilePage = (): JSX.Element => {
         <UserProfileCard
           userProfile={userProfile}
           PROFILE_TABS={PROFILE_TABS}
-          likeProjects={likeProjects ?? []}
-          appliedProjects={appliedProjects ?? []}
           tab={tab}
           setTab={setTab}
           ProfileTabChip={ProfileTabChip}
@@ -63,8 +80,7 @@ const UserProfilePage = (): JSX.Element => {
           PROFILE_TABS={PROFILE_TABS}
           tab={tab}
           setTab={setTab}
-          likeProjects={likeProjects ?? []}
-          appliedProjects={appliedProjects ?? []}
+          onDeleteProjects={handleDeleteProjects}
         />
       </Box>
     </MainContainer>

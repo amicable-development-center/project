@@ -9,16 +9,29 @@ import EmptyProjectCard from "./EmptyProjectCard";
 interface ProjectTabPanelProps {
   projects: ProjectListRes[];
   emptyMessage: string;
+  editMode?: boolean;
+  selectedIds?: string[];
+  onSelectProject?: (id: string) => void;
 }
 
 const ProjectTabPanel = ({
   projects,
   emptyMessage,
+  editMode = false,
+  selectedIds = [],
+  onSelectProject,
 }: ProjectTabPanelProps): JSX.Element =>
   projects && projects.length > 0 ? (
     <StyledGridContainer>
-      {projects.slice(0, 3).map((project) => (
-        <ProjectCard key={project.id} project={project} simple />
+      {projects.map((project) => (
+        <ProjectCard
+          key={project.id}
+          project={project}
+          simple
+          editMode={editMode}
+          selected={selectedIds.includes(project.id)}
+          onSelect={() => onSelectProject && onSelectProject(project.id)}
+        />
       ))}
     </StyledGridContainer>
   ) : (

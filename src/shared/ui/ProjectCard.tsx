@@ -14,6 +14,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
 import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -31,12 +32,18 @@ interface ProjectCardProps {
   project: ProjectListRes;
   simple?: boolean;
   sx?: any;
+  editMode?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 const ProjectCard = ({
   project,
   simple = false,
   sx,
+  editMode = false,
+  selected = false,
+  onSelect,
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
@@ -46,6 +53,9 @@ const ProjectCard = ({
       <StyledCardContent>
         <ProjectHeader>
           <StatusChip label={project.status} color="primary" size="small" />
+          {simple && editMode && (
+            <Checkbox checked={selected} onChange={onSelect} sx={{ ml: 1 }} />
+          )}
         </ProjectHeader>
 
         <ContentSection>
@@ -172,7 +182,7 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 
 const ProjectHeader = styled(Box)(() => ({
   display: "flex",
-  justifyContent: "flex-start",
+  justifyContent: "space-between",
   alignItems: "center",
 }));
 

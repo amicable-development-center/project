@@ -11,7 +11,7 @@ import {
 import { styled as muiStyled } from "@mui/material/styles";
 import type { ComponentType, JSX } from "react";
 
-import type { ProjectListRes } from "@shared/types/project";
+import { useProjectStore } from "@shared/stores/projectStore";
 import type { User } from "@shared/types/user";
 
 import TabWithBadge from "./TapWithBadge";
@@ -21,8 +21,6 @@ import TabWithBadge from "./TapWithBadge";
 interface UserProfileCardProps {
   userProfile: User;
   PROFILE_TABS: { label: string; color: string }[];
-  likeProjects: ProjectListRes[];
-  appliedProjects: ProjectListRes[];
   tab: number;
   setTab: (idx: number) => void;
   ProfileTabChip: ComponentType<any>;
@@ -44,12 +42,12 @@ const experienceMap: Record<string, string> = {
 const UserProfileCard = ({
   userProfile,
   PROFILE_TABS,
-  likeProjects,
-  appliedProjects,
   tab,
   setTab,
   ProfileTabChip,
 }: UserProfileCardProps): JSX.Element => {
+  const { likeProjects, appliedProjects } = useProjectStore();
+
   return (
     <ProfileCard>
       <ProfileCardContent>
@@ -112,6 +110,8 @@ const ProfileCard = muiStyled(Card)(({ theme }) => ({
   boxShadow: theme.shadows[2],
   position: "relative",
   padding: "0 2rem",
+  maxHeight: "350px",
+  overflow: "auto",
 }));
 const ProfileCardContent = muiStyled(CardContent)(({ theme }) => ({
   padding: theme.spacing(3),
