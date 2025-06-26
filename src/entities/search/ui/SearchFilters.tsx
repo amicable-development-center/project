@@ -79,7 +79,6 @@ export const MemoizedSortByFilter = memo((): JSX.Element => {
   );
 });
 
-// 전체 필터 그리드를 메모이제이션
 export const MemoizedFiltersGrid = memo(
   (): JSX.Element => (
     <FiltersGrid>
@@ -92,7 +91,6 @@ export const MemoizedFiltersGrid = memo(
   )
 );
 
-// Styled Components
 const FiltersGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",

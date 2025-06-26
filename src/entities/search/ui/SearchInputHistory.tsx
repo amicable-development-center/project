@@ -1,6 +1,5 @@
+import { History, HistoryToggleOff } from "@mui/icons-material";
 import Clear from "@mui/icons-material/Clear";
-import History from "@mui/icons-material/History";
-import HistoryToggleOff from "@mui/icons-material/HistoryToggleOff";
 import {
   Paper,
   List,
@@ -21,11 +20,169 @@ import { memo } from "react";
 import type { JSX } from "react";
 
 import { useSearchHistory } from "@entities/search/hooks/useSearchHistory";
+import SearchInputHistoryToggle from "@entities/search/ui/SearchInputHistoryToggle";
 
 interface SearchInputHistoryProps {
   onItemClick: (item: string) => void;
   onClose: () => void;
 }
+
+const HistoryDisabledMessage = (): JSX.Element => (
+  <DisabledMessage>
+    <HistoryToggleOff color="disabled" />
+    <Typography variant="body2" color="text.secondary">
+      검색 히스토리가 비활성화되어 있습니다
+    </Typography>
+  </DisabledMessage>
+);
+
+const HistoryEmptyMessage = (): JSX.Element => (
+  <EmptyMessage>
+    <History color="disabled" />
+    <Typography variant="body2" color="text.secondary">
+      검색 히스토리가 없습니다
+    </Typography>
+  </EmptyMessage>
+);
+
+interface HistoryListContentProps {
+  searchHistory: string[];
+  onItemClick: (item: string) => void;
+  onClose: () => void;
+  handleHistoryItemClick: (
+    historyItem: string,
+    onItemClick: (item: string) => void,
+    onClose: () => void
+  ) => void;
+  handleRemoveHistoryItem: (historyItem: string, e: React.MouseEvent) => void;
+}
+
+const HistoryListContent = ({
+  searchHistory,
+  onItemClick,
+  onClose,
+  handleHistoryItemClick,
+  handleRemoveHistoryItem,
+}: HistoryListContentProps): JSX.Element => (
+  <>
+    {searchHistory.map((historyItem, index) => (
+      <HistoryListItem key={`${historyItem}-${index}`} disablePadding>
+        <HistoryListItemButton
+          onClick={() =>
+            handleHistoryItemClick(historyItem, onItemClick, onClose)
+          }
+        >
+          <ListItemIcon>
+            <History fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={historyItem}
+            primaryTypographyProps={{
+              noWrap: true,
+              fontSize: "0.875rem",
+            }}
+          />
+          <StyledDeleteButton
+            size="small"
+            onClick={(e) => handleRemoveHistoryItem(historyItem, e)}
+            onMouseDown={(e) => e.stopPropagation()}
+            data-history-dropdown
+            title="삭제"
+          >
+            <Clear fontSize="small" />
+          </StyledDeleteButton>
+        </HistoryListItemButton>
+      </HistoryListItem>
+    ))}
+  </>
+);
+// 헤더 컴포넌트
+interface SearchHistoryHeaderProps {
+  isHistoryEnabled: boolean;
+  searchHistory: string[];
+  handleToggleHistory: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleClearAllHistory: () => void;
+}
+
+const SearchHistoryHeader = ({
+  isHistoryEnabled,
+  searchHistory,
+  handleToggleHistory,
+  handleClearAllHistory,
+}: SearchHistoryHeaderProps): JSX.Element => (
+  <HistoryHeader>
+    <HeaderContent>
+      <SearchInputHistoryToggle isHistoryEnabled={isHistoryEnabled} />
+      <Typography variant="body2" fontWeight={600}>
+        검색 히스토리
+      </Typography>
+    </HeaderContent>
+    <HeaderActions>
+      <StyledFormControlLabel
+        control={
+          <Switch
+            size="small"
+            checked={isHistoryEnabled}
+            onChange={handleToggleHistory}
+            data-history-dropdown
+          />
+        }
+        label=""
+        onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
+        data-history-dropdown
+      />
+      {isHistoryEnabled && searchHistory.length > 0 && (
+        <ClearAllButton
+          onClick={handleClearAllHistory}
+          onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
+          data-history-dropdown
+        >
+          <ClearAllText variant="body2">전체삭제</ClearAllText>
+        </ClearAllButton>
+      )}
+    </HeaderActions>
+  </HistoryHeader>
+);
+
+interface HistoryContentProps {
+  isHistoryEnabled: boolean;
+  searchHistory: string[];
+  onItemClick: (item: string) => void;
+  onClose: () => void;
+  handleHistoryItemClick: (
+    historyItem: string,
+    onItemClick: (item: string) => void,
+    onClose: () => void
+  ) => void;
+  handleRemoveHistoryItem: (historyItem: string, e: React.MouseEvent) => void;
+}
+
+const HistoryContent = ({
+  isHistoryEnabled,
+  searchHistory,
+  onItemClick,
+  onClose,
+  handleHistoryItemClick,
+  handleRemoveHistoryItem,
+}: HistoryContentProps): JSX.Element => {
+  if (!isHistoryEnabled) {
+    return <HistoryDisabledMessage />;
+  }
+
+  if (searchHistory.length === 0) {
+    return <HistoryEmptyMessage />;
+  }
+
+  return (
+    <HistoryListContent
+      searchHistory={searchHistory}
+      onItemClick={onItemClick}
+      onClose={onClose}
+      handleHistoryItemClick={handleHistoryItemClick}
+      handleRemoveHistoryItem={handleRemoveHistoryItem}
+    />
+  );
+};
 
 const SearchInputHistory = memo(
   ({
@@ -46,116 +203,24 @@ const SearchInputHistory = memo(
         data-history-dropdown
         onMouseDown={(e) => e.preventDefault()}
       >
-        <HistoryHeader>
-          <HeaderContent>
-            {isHistoryEnabled ? (
-              <History fontSize="small" />
-            ) : (
-              <HistoryToggleOff fontSize="small" />
-            )}
-            <Typography variant="body2" fontWeight={600}>
-              검색 히스토리
-            </Typography>
-          </HeaderContent>
-          <HeaderActions>
-            <FormControlLabel
-              control={
-                <Switch
-                  size="small"
-                  checked={isHistoryEnabled}
-                  onChange={handleToggleHistory}
-                  data-history-dropdown
-                />
-              }
-              label=""
-              sx={{ margin: 0 }}
-              onMouseDown={(e) => e.preventDefault()}
-              data-history-dropdown
-            />
-            {isHistoryEnabled && searchHistory.length > 0 && (
-              <Box
-                onClick={handleClearAllHistory}
-                onMouseDown={(e) => e.preventDefault()}
-                data-history-dropdown
-                sx={{
-                  cursor: "pointer",
-                  padding: "4px 8px",
-                  borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: "action.hover",
-                  },
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "text.secondary",
-                    fontSize: "0.75rem",
-                    "&:hover": {
-                      color: "primary.main",
-                    },
-                  }}
-                >
-                  전체삭제
-                </Typography>
-              </Box>
-            )}
-          </HeaderActions>
-        </HistoryHeader>
+        <SearchHistoryHeader
+          isHistoryEnabled={isHistoryEnabled}
+          searchHistory={searchHistory}
+          handleToggleHistory={handleToggleHistory}
+          handleClearAllHistory={handleClearAllHistory}
+        />
 
         <Divider />
 
         <HistoryList>
-          {!isHistoryEnabled ? (
-            <DisabledMessage>
-              <HistoryToggleOff color="disabled" />
-              <Typography variant="body2" color="text.secondary">
-                검색 히스토리가 비활성화되어 있습니다
-              </Typography>
-            </DisabledMessage>
-          ) : searchHistory.length === 0 ? (
-            <EmptyMessage>
-              <History color="disabled" />
-              <Typography variant="body2" color="text.secondary">
-                검색 히스토리가 없습니다
-              </Typography>
-            </EmptyMessage>
-          ) : (
-            searchHistory.map((historyItem, index) => (
-              <HistoryListItem key={`${historyItem}-${index}`} disablePadding>
-                <HistoryListItemButton
-                  onClick={() =>
-                    handleHistoryItemClick(historyItem, _onItemClick, _onClose)
-                  }
-                >
-                  <ListItemIcon>
-                    <History fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={historyItem}
-                    primaryTypographyProps={{
-                      noWrap: true,
-                      fontSize: "0.875rem",
-                    }}
-                  />
-                  <IconButton
-                    size="small"
-                    onClick={(e) => handleRemoveHistoryItem(historyItem, e)}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    data-history-dropdown
-                    title="삭제"
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                  >
-                    <Clear fontSize="small" />
-                  </IconButton>
-                </HistoryListItemButton>
-              </HistoryListItem>
-            ))
-          )}
+          <HistoryContent
+            isHistoryEnabled={isHistoryEnabled}
+            searchHistory={searchHistory}
+            onItemClick={_onItemClick}
+            onClose={_onClose}
+            handleHistoryItemClick={handleHistoryItemClick}
+            handleRemoveHistoryItem={handleRemoveHistoryItem}
+          />
         </HistoryList>
       </HistoryDropdown>
     );
@@ -242,6 +307,33 @@ const HistoryListItemButton = styled(ListItemButton)(({ theme }) => ({
 
   "&:hover": {
     backgroundColor: "transparent",
+  },
+}));
+
+const StyledFormControlLabel = styled(FormControlLabel)(() => ({
+  margin: 0,
+}));
+
+const ClearAllButton = styled(Box)(({ theme }) => ({
+  cursor: "pointer",
+  padding: "4px 8px",
+  borderRadius: theme.spacing(1),
+  "&:hover": {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const ClearAllText = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  fontSize: "0.75rem",
+  "&:hover": {
+    color: theme.palette.primary.main,
+  },
+}));
+
+const StyledDeleteButton = styled(IconButton)(({ theme }) => ({
+  "&:hover": {
+    backgroundColor: theme.palette.action.hover,
   },
 }));
 

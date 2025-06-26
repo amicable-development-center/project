@@ -2,7 +2,6 @@ import { Box, Typography, Divider, alpha, styled } from "@mui/material";
 import { memo } from "react";
 import type { JSX } from "react";
 
-// 메모이제이션된 텍스트 컴포넌트들
 export const MemoizedTitleSection = memo(
   ({ isMobile }: { isMobile: boolean }): JSX.Element => (
     <TitleArea>
@@ -25,7 +24,6 @@ export const MemoizedSectionHeader = memo(
   )
 );
 
-// Styled Components
 const TitleArea = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",

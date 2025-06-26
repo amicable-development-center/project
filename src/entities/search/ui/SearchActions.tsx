@@ -55,7 +55,6 @@ export const MemoizedSearchButton = memo(
   )
 );
 
-// Styled Components
 const ActiveFiltersChip = styled(Chip)(({ theme }) => ({
   fontWeight: 600,
   fontSize: "1.4rem",
