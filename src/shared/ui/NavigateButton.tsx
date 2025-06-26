@@ -14,7 +14,7 @@ const NavigateButton = ({
   sx,
 }: NavigateButtonProps): JSX.Element => {
   const navigate = useNavigate();
-  const handleClick = () => {
+  const handleClick = (): void => {
     navigate(to);
   };
   return (
