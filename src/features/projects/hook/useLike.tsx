@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 import useProjectLike from "@features/projects/queries/useProjectLike";
 import useProjectUnLike from "@features/projects/queries/useProjectUnLike";
@@ -7,17 +8,11 @@ import { useAuthStore } from "@shared/stores/authStore";
 
 interface LikeResult {
   isLike: boolean;
-  like: () => void;
-  unlike: () => void;
+  likeFn: () => void;
 }
 
-const useLike = ({
-  projectID,
-  likedUsers,
-}: {
-  projectID: string;
-  likedUsers: string[];
-}): LikeResult => {
+const useLike = ({ likedUsers }: { likedUsers: string[] }): LikeResult => {
+  const { id: projectID } = useParams();
   const user = useAuthStore((state) => state.user);
   const { mutate: updateLike, isPending: likePending } = useProjectLike();
   const { mutate: updateUnLike, isPending: unLikePending } = useProjectUnLike();
@@ -25,30 +20,31 @@ const useLike = ({
   const initLike = user && likedUsers.includes(user.uid);
   const [isLike, setIsLike] = useState(initLike || false);
 
-  const like = (): void => {
+  const updateLikeStatus = (): void => {
     if (!projectID) return;
-    if (likePending || unLikePending) {
-      alert("동작이 너무 빠릅니다. 잠시 후에 시도해주십시오.");
-      return;
-    }
-    setIsLike(true);
-    updateLike(projectID);
-  };
 
-  const unlike = (): void => {
-    if (!projectID) return;
+    if (!user) {
+      alert("로그인 해주세요.");
+      return;
+    }
+
     if (likePending || unLikePending) {
       alert("동작이 너무 빠릅니다. 잠시 후에 시도해주십시오.");
       return;
     }
-    setIsLike(false);
-    updateUnLike(projectID);
+
+    if (!isLike) {
+      setIsLike(true);
+      updateLike(projectID);
+    } else {
+      setIsLike(false);
+      updateUnLike(projectID);
+    }
   };
 
   return {
     isLike,
-    like,
-    unlike,
+    likeFn: updateLikeStatus,
   };
 };
 
