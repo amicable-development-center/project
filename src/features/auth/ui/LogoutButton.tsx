@@ -14,7 +14,7 @@ const LogoutButton = (): JSX.Element => {
   };
 
   return (
-    <Button variant="outlined" onClick={handleLogout}>
+    <Button variant="contained" onClick={handleLogout}>
       로그아웃
     </Button>
   );

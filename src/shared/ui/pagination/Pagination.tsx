@@ -1,6 +1,3 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   Box,
   Button,
@@ -12,6 +9,11 @@ import {
 import { type JSX } from "react";
 
 import usePagination from "@shared/hooks/usePagination";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizIcon,
+} from "@shared/ui/icons/CommonIcons";
 
 interface PaginationProps {
   currentPage: number;
@@ -25,7 +27,7 @@ const Pagination = ({
   totalPages,
   onPageChange,
   disabled = false,
-}: PaginationProps): JSX.Element => {
+}: PaginationProps): JSX.Element | null => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -35,7 +37,7 @@ const Pagination = ({
   });
 
   if (totalPages <= 1) {
-    return <></>;
+    return null;
   }
 
   return (
@@ -96,7 +98,10 @@ const PageNumbersContainer = styled(Box)(() => ({
   gap: "0.5rem",
 }));
 
-const PageButton = styled(Button)<{ $isActive: boolean; $isMobile: boolean }>(
+const PageButton = styled(Button, {
+  shouldForwardProp: (prop) =>
+    !["$isActive", "$isMobile"].includes(prop as string),
+})<{ $isActive: boolean; $isMobile: boolean }>(
   ({ theme, $isActive, $isMobile }) => ({
     minWidth: $isMobile ? "3.5rem" : "3rem",
     height: $isMobile ? "3.5rem" : "3rem",

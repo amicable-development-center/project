@@ -128,17 +128,17 @@ const HeaderSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StatusArea = styled(Box)<{ $hasActiveFilters: boolean }>(
-  ({ theme, $hasActiveFilters }) => ({
-    display: "flex",
-    alignItems: "center",
-    gap: theme.spacing(2),
+const StatusArea = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "$hasActiveFilters",
+})<{ $hasActiveFilters: boolean }>(({ theme, $hasActiveFilters }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
 
-    [theme.breakpoints.down("md")]: {
-      justifyContent: $hasActiveFilters ? "space-between" : "flex-end",
-    },
-  })
-);
+  [theme.breakpoints.down("md")]: {
+    justifyContent: $hasActiveFilters ? "space-between" : "flex-end",
+  },
+}));
 
 const SearchSection = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(2)} ${theme.spacing(4)}`,

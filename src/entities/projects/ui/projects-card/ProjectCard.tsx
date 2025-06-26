@@ -1,6 +1,3 @@
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import LocationPinIcon from "@mui/icons-material/LocationPin";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {
   Button,
   Card,
@@ -18,8 +15,13 @@ import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 
-import { type ProjectListRes } from "@shared/types/project";
+import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
+import {
+  AccessTimeIcon,
+  LocationPinIcon,
+  PeopleAltIcon,
+} from "@shared/ui/icons/CommonIcons";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
@@ -36,12 +38,17 @@ const ProjectCard = ({
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
+  const isRecruiting = project.status === RecruitmentStatus.recruiting;
 
   return (
     <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
       <StyledCardContent>
         <ProjectHeader>
-          <StatusChip label={project.status} color="primary" size="small" />
+          <StatusChip
+            label={project.status}
+            color={isRecruiting ? "primary" : "default"}
+            size="small"
+          />
         </ProjectHeader>
 
         <ContentSection>
@@ -172,15 +179,9 @@ const ProjectHeader = styled(Box)(() => ({
   alignItems: "center",
 }));
 
-const StatusChip = styled(Chip)(({ theme }) => ({
+const StatusChip = styled(Chip)(() => ({
   fontWeight: 600,
   letterSpacing: "0.025em",
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({

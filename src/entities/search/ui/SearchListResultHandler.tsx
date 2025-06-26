@@ -23,7 +23,21 @@ const SearchListResultHandler = ({
   onPageChange,
 }: SearchListResultHandlerProps): JSX.Element | null => {
   if (isLoading) {
-    return <SearchLoadingSpinner />;
+    return (
+      <>
+        <SearchLoadingSpinner />
+        {totalPages > 0 && (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={onPageChange}
+              disabled={true}
+            />
+          </Box>
+        )}
+      </>
+    );
   }
 
   if (isEmpty) {

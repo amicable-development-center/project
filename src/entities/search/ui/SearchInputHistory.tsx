@@ -1,5 +1,3 @@
-import { History, HistoryToggleOff } from "@mui/icons-material";
-import Clear from "@mui/icons-material/Clear";
 import {
   Paper,
   List,
@@ -21,6 +19,12 @@ import type { JSX } from "react";
 
 import { useSearchHistory } from "@entities/search/hooks/useSearchHistory";
 import SearchInputHistoryToggle from "@entities/search/ui/SearchInputHistoryToggle";
+
+import {
+  HistoryIcon as History,
+  HistoryToggleOffIcon as HistoryToggleOff,
+  ClearIcon as Clear,
+} from "@shared/ui/icons/CommonIcons";
 
 interface SearchInputHistoryProps {
   onItemClick: (item: string) => void;

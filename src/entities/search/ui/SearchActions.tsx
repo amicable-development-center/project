@@ -1,9 +1,12 @@
-import FilterListIcon from "@mui/icons-material/FilterList";
-import Search from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
 import { Button, Chip, alpha, styled } from "@mui/material";
 import { memo } from "react";
 import type { JSX } from "react";
+
+import {
+  FilterListIcon,
+  SearchIcon as Search,
+  TuneIcon,
+} from "@shared/ui/icons/CommonIcons";
 
 export const MemoizedActiveFiltersChip = memo(
   ({ count }: { count: number }): JSX.Element => (

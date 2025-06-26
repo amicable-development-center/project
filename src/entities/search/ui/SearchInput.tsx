@@ -1,4 +1,3 @@
-import Search from "@mui/icons-material/Search";
 import { TextField, Box, ClickAwayListener } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { memo } from "react";
@@ -6,6 +5,8 @@ import type { JSX } from "react";
 
 import { useSearchInput } from "@entities/search/hooks/useSearchInput";
 import SearchInputHistory from "@entities/search/ui/SearchInputHistory";
+
+import { SearchIcon } from "@shared/ui/icons/CommonIcons";
 
 interface SearchInputProps {
   onEnterPress?: () => void;
@@ -63,28 +64,28 @@ const SearchContainer = styled(Box)(() => ({
   width: "100%",
 }));
 
-const StyledSearchIcon = styled(Search)(({ theme }) => ({
+const StyledSearchIcon = styled(SearchIcon)(({ theme }) => ({
   color: theme.palette.text.secondary,
   marginRight: theme.spacing(1.5),
   fontSize: "1.5rem",
 }));
 
-const StyledTextField = styled(TextField)<{ showHistory: boolean }>(
-  ({ theme, showHistory }) => ({
-    "& .MuiOutlinedInput-root": {
-      borderRadius: theme.spacing(1.5),
-      backgroundColor: theme.palette.background.paper,
-      transition: "all 0.2s ease-in-out",
-      borderBottomLeftRadius: showHistory ? 0 : undefined,
-      borderBottomRightRadius: showHistory ? 0 : undefined,
-      "&:hover": {
-        boxShadow: `0 2px 8px ${theme.palette.action.hover}`,
-      },
-      "&.Mui-focused": {
-        boxShadow: `0 4px 12px ${theme.palette.primary.main}25`,
-      },
+const StyledTextField = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== "showHistory",
+})<{ showHistory: boolean }>(({ theme, showHistory }) => ({
+  "& .MuiOutlinedInput-root": {
+    borderRadius: theme.spacing(1.5),
+    backgroundColor: theme.palette.background.paper,
+    transition: "all 0.2s ease-in-out",
+    borderBottomLeftRadius: showHistory ? 0 : undefined,
+    borderBottomRightRadius: showHistory ? 0 : undefined,
+    "&:hover": {
+      boxShadow: `0 2px 8px ${theme.palette.action.hover}`,
     },
-  })
-);
+    "&.Mui-focused": {
+      boxShadow: `0 4px 12px ${theme.palette.primary.main}25`,
+    },
+  },
+}));
 
 export default SearchInput;
