@@ -6,6 +6,7 @@ import LoginButton from "@features/auth/ui/LoginButton";
 import LogoutButton from "@features/auth/ui/LogoutButton";
 
 import { useAuthStore } from "@shared/stores/authStore";
+import LogoBox from "@shared/ui/LogoBox";
 
 const Header = (): JSX.Element => {
   const user = useAuthStore((state) => state.user);
@@ -18,10 +19,7 @@ const Header = (): JSX.Element => {
     <HeaderContainer>
       <HeaderContent>
         <LeftSection>
-          <LogoBox onClick={() => navigate("/")}>
-            <LogoImage src="/public/logo.svg" alt="프로젝트 잼" />
-            <LogoText>프로젝트 잼</LogoText>
-          </LogoBox>
+          <LogoBox size="large" />
         </LeftSection>
 
         <CenterSection>
@@ -109,50 +107,6 @@ const RightSection = styled(Box)(() => ({
   flex: "0 0 auto",
 }));
 
-const LogoBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  cursor: "pointer",
-  padding: "0.5rem 1rem",
-  borderRadius: theme.spacing(1.5),
-  transition: "all 0.2s ease-in-out",
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.primary.main, 0.08),
-    transform: "translateY(-1px)",
-  },
-}));
-
-const LogoImage = styled("img")(({ theme }) => ({
-  height: "4rem",
-  width: "4rem",
-  marginRight: theme.spacing(1.5),
-  filter: "drop-shadow(0 0.2rem 0.4rem rgba(0,0,0,0.1))",
-  transition: "transform 0.2s ease-in-out",
-
-  [theme.breakpoints.down("md")]: {
-    height: "3.2rem",
-    width: "3.2rem",
-    marginRight: theme.spacing(1),
-  },
-}));
-
-const LogoText = styled("span")(({ theme }) => ({
-  fontWeight: 700,
-  fontSize: "1.875rem",
-  background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  letterSpacing: "-0.5px",
-
-  [theme.breakpoints.down("md")]: {
-    fontSize: "1.5rem",
-  },
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "1.2rem",
-  },
-}));
-
 const NavButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "$isActive",
 })<{ $isActive?: boolean }>(({ theme, $isActive }) => ({
@@ -198,13 +152,18 @@ const UserSection = styled(Box)(({ theme }) => ({
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: "4rem", // 40px = 4rem
-  height: "4rem",
+  height: "4rem", // 40px = 4rem
   cursor: "pointer",
-  border: `0.2rem solid ${alpha(theme.palette.primary.main, 0.2)}`, // 2px = 0.2rem
+  border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
   transition: "all 0.2s ease-in-out",
+
   "&:hover": {
-    transform: "scale(1.05)",
     borderColor: theme.palette.primary.main,
-    boxShadow: `0 0.4rem 1.2rem ${alpha(theme.palette.primary.main, 0.3)}`, // 4px 12px = 0.4rem 1.2rem
+    transform: "scale(1.05)",
+  },
+
+  [theme.breakpoints.down("md")]: {
+    width: "3.2rem", // 32px = 3.2rem
+    height: "3.2rem", // 32px = 3.2rem
   },
 }));
