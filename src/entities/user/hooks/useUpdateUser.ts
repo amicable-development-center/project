@@ -4,8 +4,7 @@ import {
   type UseMutationResult,
 } from "@tanstack/react-query";
 
-import { updateUser } from "@entities/user/api/userApi";
-
+import { updateUser } from "@shared/api/userApi";
 import type { User } from "@shared/types/user";
 
 export const useUpdateUser = (): UseMutationResult<
