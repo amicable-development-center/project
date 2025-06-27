@@ -1,5 +1,6 @@
 import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
-import type { JSX } from "react";
+import type { SelectChangeEvent } from "@mui/material";
+import type { JSX, ChangeEvent } from "react";
 
 import ProjectCategoryCard from "@entities/projects/ui/project-insert/ProjectCategoryCard";
 import ProjectDeadlineCard from "@entities/projects/ui/project-insert/ProjectDeadlineCard";
@@ -18,11 +19,13 @@ type SetpType = Pick<
 interface Step1Props {
   form: SetpType;
   onChangeForm: {
-    title: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    oneLineInfo: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    simpleInfo: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    category: (category: string) => void;
-    closedDate: (date: string) => void;
+    title: (e: ChangeEvent<HTMLInputElement>) => void;
+    oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
+    simpleInfo: (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
+    category: (event: SelectChangeEvent) => void;
+    closedDate: (e: ChangeEvent<HTMLInputElement>) => void;
   };
 }
 
