@@ -3,7 +3,6 @@ import { styled as muiStyled } from "@mui/material/styles";
 import type { JSX } from "react";
 import { useState, useEffect } from "react";
 
-import { useUserProfile } from "@features/auth/hooks/useUserProfile";
 import { removeProjectsFromUser } from "@features/projects/api/projectsApi";
 
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
@@ -11,6 +10,7 @@ import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
 import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader";
 import UserProfileProjectList from "@entities/user/ui/user-profile/UserProfileProjectList";
 
+import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
 import { useProjectStore } from "@shared/stores/projectStore";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
@@ -71,6 +71,7 @@ const UserProfilePage = (): JSX.Element => {
         gap={4}
         flexDirection={{ xs: "column", sm: "row" }}
         position="relative"
+        alignItems="flex-start"
       >
         {/* 왼쪽 프로필 사이드바 */}
         <UserProfileCard
