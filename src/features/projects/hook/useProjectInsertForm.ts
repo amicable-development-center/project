@@ -17,10 +17,15 @@ type Setp1Type = Pick<
   ProjectItemInsertReq,
   "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
 >;
+type Step2Type = Pick<
+  ProjectItemInsertReq,
+  "teamSize" | "expectedPeriod" | "techStack" | "positions"
+>;
 
 interface InsertFormResult {
   form: {
     step1: Setp1Type;
+    step2: Step2Type;
   };
   page: {
     currentStep: number;
@@ -28,16 +33,36 @@ interface InsertFormResult {
     goNext: () => void;
   };
   submit: () => Promise<void>;
+  onChange: {
+    step2: (field: keyof Step2Type, value: any) => void;
+  };
 }
 
 const useProjectInsertForm = (): InsertFormResult => {
   const { mutate: insertItem, isPending } = useProjectInsert();
 
   const [currentStep, setCurrentStep] = useState(1);
+  // Step1 상태
   // const [formStep1, setFormStep1] = useState<Setp1Type>(initForm1);
+  // Step2 상태
+  const [formStep2, setFormStep2] = useState<Step2Type>({
+    teamSize: 0,
+    expectedPeriod: "",
+    techStack: [],
+    positions: [],
+  });
+  const handleChangeStep2 = (field: keyof Step2Type, value: any) => {
+    setFormStep2((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handlePrev = (): void => setCurrentStep((prev) => prev - 1);
-  const handleNext = (): void => setCurrentStep((prev) => prev + 1);
+  const handlePrev = (): void => {
+    setCurrentStep((prev) => prev - 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const handleNext = (): void => {
+    setCurrentStep((prev) => prev + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const submit = async (): Promise<void> => {
     if (!window.confirm("등록을 완료 하시겠습니까?")) return;
@@ -49,6 +74,7 @@ const useProjectInsertForm = (): InsertFormResult => {
   return {
     form: {
       step1: initForm1,
+      step2: formStep2,
     },
     page: {
       currentStep: currentStep,
@@ -56,6 +82,9 @@ const useProjectInsertForm = (): InsertFormResult => {
       goNext: handleNext,
     },
     submit,
+    onChange: {
+      step2: handleChangeStep2,
+    },
   };
 };
 
