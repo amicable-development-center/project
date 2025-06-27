@@ -7,6 +7,7 @@ import { ExpectedPeriod } from "@shared/types/schedule";
 interface ApplyFormResult {
   formStep2: Step2Type;
   onChangeForm: (field: keyof Step2Type, value: any) => void;
+  validateForm: () => boolean;
 }
 
 const useInsertStep2 = ({ state }: { state?: Step2Type }): ApplyFormResult => {
@@ -18,9 +19,20 @@ const useInsertStep2 = ({ state }: { state?: Step2Type }): ApplyFormResult => {
     setFormStep2((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validateForm = (): boolean => {
+    //여기에 검사식을 넣어주세요.
+    // 아래는 예시 입니다.
+    if (formStep2.techStack.length === 0) {
+      alert("기술 스택을 적어주세욧요.");
+      return false;
+    }
+    return true;
+  };
+
   return {
     formStep2,
     onChangeForm: handleChangeStep2,
+    validateForm,
   };
 };
 

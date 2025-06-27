@@ -18,6 +18,7 @@ interface ApplyFormResult {
     field: keyof Step3Type,
     value: Step3Type[keyof Step3Type]
   ) => void;
+  validateForm: () => boolean;
 }
 
 const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
@@ -32,9 +33,20 @@ const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
     setFormStep3((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validateForm = (): boolean => {
+    //여기에 검사식을 넣어주세요.
+    // 아래는 예시 입니다.
+    if (!formStep3.description.trim()) {
+      alert("프로젝트 상세 설명을 적어주세욧요.");
+      return false;
+    }
+    return true;
+  };
+
   return {
     formStep3,
     onChangeForm: handleChangeStep3,
+    validateForm,
   };
 };
 

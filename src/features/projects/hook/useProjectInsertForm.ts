@@ -20,12 +20,9 @@ import {
 } from "@shared/types/project";
 
 interface InsertFormResult {
-  page: {
-    currentStep: number;
-    goPrev: () => void;
-    goNext: () => void;
-  };
+  currentStep: number;
   updateForm: UpdateAllFormType;
+  goPrevPageforTest: () => void;
 }
 
 const useProjectInsertForm = (): InsertFormResult => {
@@ -42,17 +39,18 @@ const useProjectInsertForm = (): InsertFormResult => {
     form4: {} as Step4Type,
   });
 
-  const updateForm: UpdateAllFormType = (formKey, data): void => {
+  /** allForm에 알맞은 form에 데이터 넣기 */
+  const updateCorrectForm: UpdateAllFormType = (formKey, data): void => {
     setAllForm((prev) => ({ ...prev, [formKey]: data }));
   };
 
-  const handlePrev = (): void => {
-    if (currentStep !== 1) {
-      setCurrentStep((prev) => prev - 1);
-      scrollToTop();
-    }
+  /** allForm업데이트 후 next페이지 이동 */
+  const updateForm: UpdateAllFormType = (formKey, data): void => {
+    updateCorrectForm(formKey, data);
+    handleNext();
   };
 
+  /** allForm에 알맞은 form에 데이터 넣기 */
   const handleNext = async (): Promise<void> => {
     if (currentStep !== 4) {
       setCurrentStep((prev) => prev + 1);
@@ -89,17 +87,19 @@ const useProjectInsertForm = (): InsertFormResult => {
     };
 
     // projects에 insert
+    return;
     insertProject(finalData);
     // insertProject(TestData(userProfile)); // 테스트 데이터
   };
 
   return {
-    page: {
-      currentStep: currentStep,
-      goPrev: handlePrev,
-      goNext: handleNext,
-    },
+    currentStep,
     updateForm,
+    goPrevPageforTest: () => {
+      if (currentStep !== 1) {
+        setCurrentStep((prev) => prev - 1);
+      }
+    },
   };
 };
 

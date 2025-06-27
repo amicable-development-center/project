@@ -18,6 +18,7 @@ interface ApplyFormResult {
     category: (event: SelectChangeEvent) => void;
     closedDate: (e: ChangeEvent<HTMLInputElement>) => void;
   };
+  validateForm: () => boolean;
 }
 
 const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
@@ -63,6 +64,16 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
     }));
   };
 
+  const validateForm = (): boolean => {
+    //여기에 검사식을 넣어주세요.
+    // 아래는 예시 입니다.
+    if (!form1.title.trim()) {
+      alert("프로젝트 이름을 적어주세욧요.");
+      return false;
+    }
+    return true;
+  };
+
   return {
     form1,
     update: {
@@ -72,6 +83,7 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
       category: updateCategory,
       closedDate: updateClosedDate,
     },
+    validateForm,
   };
 };
 

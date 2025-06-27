@@ -1,5 +1,5 @@
 import type { CSSObject } from "@emotion/react";
-import { Container } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import type { ContainerProps } from "@mui/material/Container";
 import type { Theme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
@@ -10,37 +10,28 @@ import StepBox from "@pages/project-insert/ui/StepBox";
 import TopTitle from "@pages/project-insert/ui/TopTitle";
 
 import useProjectInsert from "@features/projects/hook/useProjectInsertForm";
-import PageNaviBtn from "@features/projects/ui/project-insert/PageNaviBtn";
 import Step1 from "@features/projects/ui/project-insert/Step1";
 import Step2 from "@features/projects/ui/project-insert/Step2";
 import Step3 from "@features/projects/ui/project-insert/Step3";
 import Step4 from "@features/projects/ui/project-insert/Step4";
 
 const ProjectInsertPage = (): JSX.Element => {
-  const { page, updateForm } = useProjectInsert();
+  const { currentStep, updateForm, goPrevPageforTest } = useProjectInsert();
 
   return (
     <MainContainer>
-      {/* 상단 타이틀/설명 */}
       <TopTitle />
+      <StepBox currentStep={currentStep} />
 
-      {/* 스텝바 */}
-      <StepBox currentStep={page.currentStep} />
+      {currentStep === 1 && <Step1 updateForm={updateForm} />}
+      {currentStep === 2 && <Step2 updateForm={updateForm} />}
+      {currentStep === 3 && <Step3 updateForm={updateForm} />}
+      {currentStep === 4 && <Step4 updateForm={updateForm} />}
 
-      {/* Step별 컴포넌트 */}
-      {page.currentStep === 1 && <Step1 updateForm={updateForm} />}
-      {page.currentStep === 2 && <Step2 updateForm={updateForm} />}
-      {page.currentStep === 3 && <Step3 updateForm={updateForm} />}
-      {page.currentStep === 4 && <Step4 updateForm={updateForm} />}
+      <Button variant="contained" color="inherit" onClick={goPrevPageforTest}>
+        이것은 테스트용 뒤로가기 버튼입니다. 배포시에는 해당 버튼을 삭제해주세요
+      </Button>
 
-      {/* 네비게이션 버튼 */}
-      <PageNaviBtn
-        currentStep={page.currentStep}
-        handlePrev={page.goPrev}
-        handleNext={page.goNext}
-      />
-
-      {/* 꿀팁 모음집 */}
       <HoneyTipBox />
     </MainContainer>
   );
