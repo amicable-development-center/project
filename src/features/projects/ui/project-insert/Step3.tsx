@@ -1,7 +1,8 @@
 import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
-import type { Step3Type } from "@features/projects/hook/useProjectInsertForm";
+import useInsertStep3 from "@features/projects/hook/useInsertStep3";
+import type { Step3Type } from "@features/projects/type/project-update";
 
 import ProjectDetailDescriptionCard from "@entities/projects/ui/project-insert/ProjectDetailDescriptionCard";
 import ProjectScheduleManagementCard from "@entities/projects/ui/project-insert/ProjectScheduleManagementCard";
@@ -14,34 +15,42 @@ interface Schedule {
   description: string;
 }
 
-interface Step3Props {
-  form: Step3Type;
-  onChangeForm: (
-    field: keyof Step3Type,
-    value: Step3Type[keyof Step3Type]
-  ) => void;
-}
-
-const Step3 = ({ form, onChangeForm }: Step3Props): JSX.Element => {
+const Step3 = ({
+  setForm,
+}: {
+  setForm: (data: Step3Type) => void;
+}): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
-  return (
-    <StepBox>
-      <ProjectDetailDescriptionCard
-        value={form.description}
-        onChange={(value: string) => onChangeForm("description", value)}
-        large
-        style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
-      />
+  const { formStep3, onChangeForm } = useInsertStep3({});
 
-      <ProjectScheduleManagementCard
-        value={form.schedules}
-        onChange={(value: Schedule[]) => onChangeForm("schedules", value)}
-        large
-        style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
-      />
-    </StepBox>
+  const settingSetForm = (): void => {
+    // 검사식 추가해주세요~~
+    // ex) alert('요구사항을 채워주세요')
+    setForm(formStep3);
+  };
+
+  return (
+    <>
+      <StepBox>
+        <ProjectDetailDescriptionCard
+          value={formStep3.description}
+          onChange={(value: string) => onChangeForm("description", value)}
+          large
+          style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
+        />
+
+        <ProjectScheduleManagementCard
+          value={formStep3.schedules}
+          onChange={(value: Schedule[]) => onChangeForm("schedules", value)}
+          large
+          style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
+        />
+      </StepBox>
+
+      <button onClick={settingSetForm}>전체폼에 3번스탭데이터 넣기</button>
+    </>
   );
 };
 

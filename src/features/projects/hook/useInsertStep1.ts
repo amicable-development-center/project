@@ -1,20 +1,14 @@
 import type { SelectChangeEvent } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
-import { useState } from "react";
 import type { ChangeEvent } from "react";
+import { useState } from "react";
 
-import {
-  ProjectCategory,
-  type ProjectItemInsertReq,
-} from "@shared/types/project";
+import type { Step1Type } from "@features/projects/type/project-update";
 
-type Setp1Type = Pick<
-  ProjectItemInsertReq,
-  "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
->;
+import { ProjectCategory } from "@shared/types/project";
 
 interface ApplyFormResult {
-  form1: Setp1Type;
+  form1: Step1Type;
   update: {
     title: (e: ChangeEvent<HTMLInputElement>) => void;
     oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -26,7 +20,7 @@ interface ApplyFormResult {
   };
 }
 
-const useInsertStep1 = ({ state }: { state?: Setp1Type }): ApplyFormResult => {
+const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
 
   const [form1, setForm1] = useState(isModify ? state : initForm1);

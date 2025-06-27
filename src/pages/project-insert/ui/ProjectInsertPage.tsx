@@ -11,12 +11,13 @@ import TopTitle from "@pages/project-insert/ui/TopTitle";
 
 import useProjectInsert from "@features/projects/hook/useProjectInsertForm";
 import PageNaviBtn from "@features/projects/ui/project-insert/PageNaviBtn";
+import Step1 from "@features/projects/ui/project-insert/Step1";
 import Step2 from "@features/projects/ui/project-insert/Step2";
 import Step3 from "@features/projects/ui/project-insert/Step3";
 import Step4 from "@features/projects/ui/project-insert/Step4";
 
 const ProjectInsertPage = (): JSX.Element => {
-  const { form, page, submit, onChange } = useProjectInsert();
+  const { page, submit, setForm } = useProjectInsert();
 
   return (
     <MainContainer>
@@ -27,18 +28,12 @@ const ProjectInsertPage = (): JSX.Element => {
       <StepBox currentStep={page.currentStep} />
 
       {/* Step별 컴포넌트 */}
-      {/* {page.currentStep === 1 && (
-        <Step1 form={form.step1} onChangeForm={onChange.step1} />
-      )} */}
-      {page.currentStep === 2 && (
-        <Step2 form={form.step2} onChangeForm={onChange.step2} />
-      )}
-      {page.currentStep === 3 && (
-        <Step3 form={form.step3} onChangeForm={onChange.step3} />
-      )}
-      {page.currentStep === 4 && (
-        <Step4 form={form.step4} onChangeForm={onChange.step4} />
-      )}
+      {page.currentStep === 1 && <Step1 setForm={setForm.form1} />}
+      {page.currentStep === 2 && <Step2 setForm={setForm.form2} />}
+      {page.currentStep === 3 && <Step3 setForm={setForm.form3} />}
+      {page.currentStep === 4 && <Step4 setForm={setForm.form4} />}
+
+      <button onClick={submit}>테스트용 submit</button>
 
       {/* 네비게이션 버튼 */}
       <PageNaviBtn

@@ -1,6 +1,8 @@
 import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
-import type { JSX, ChangeEvent } from "react";
+import type { JSX } from "react";
+
+import useInsertStep1 from "@features/projects/hook/useInsertStep1";
+import type { Step1Type } from "@features/projects/type/project-update";
 
 import ProjectCategoryCard from "@entities/projects/ui/project-insert/ProjectCategoryCard";
 import ProjectDeadlineCard from "@entities/projects/ui/project-insert/ProjectDeadlineCard";
@@ -9,63 +11,60 @@ import ProjectSimpleDescCard from "@entities/projects/ui/project-insert/ProjectS
 import ProjectTitleCard from "@entities/projects/ui/project-insert/ProjectTitleCard";
 
 import { formatDate } from "@shared/libs/utils/projectDetail";
-import type { ProjectItemInsertReq } from "@shared/types/project";
 
-type SetpType = Pick<
-  ProjectItemInsertReq,
-  "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
->;
-
-interface Step1Props {
-  form: SetpType;
-  onChangeForm: {
-    title: (e: ChangeEvent<HTMLInputElement>) => void;
-    oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
-    simpleInfo: (
-      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => void;
-    category: (event: SelectChangeEvent) => void;
-    closedDate: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-}
-
-const Step1 = ({ form, onChangeForm }: Step1Props): JSX.Element => {
+const Step1 = ({
+  setForm,
+}: {
+  setForm: (data: Step1Type) => void;
+}): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
+  const { form1, update } = useInsertStep1({});
+
+  const settingSetForm = (): void => {
+    // 검사식 추가해주세요~~
+    // ex) alert('요구사항을 채워주세요')
+    setForm(form1);
+  };
+
   return (
-    <StepBox>
-      <ProjectTitleCard
-        value={form.title}
-        onChange={onChangeForm.title}
-        large
-        style={{ gridColumn: "span 1" }}
-      />
-      <ProjectOneLineCard
-        value={form.oneLineInfo}
-        onChange={onChangeForm.oneLineInfo}
-        large
-        style={{ gridColumn: "span 1" }}
-      />
-      <ProjectCategoryCard
-        value={form.category}
-        onChange={onChangeForm.category}
-        large
-        style={{ gridColumn: "span 1" }}
-      />
-      <ProjectDeadlineCard
-        value={formatDate(form.closedDate)}
-        onChange={onChangeForm.closedDate}
-        large
-        style={{ gridColumn: "span 1" }}
-      />
-      <ProjectSimpleDescCard
-        value={form.simpleInfo}
-        onChange={onChangeForm.simpleInfo}
-        large
-        style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
-      />
-    </StepBox>
+    <>
+      <StepBox>
+        <ProjectTitleCard
+          value={form1.title}
+          onChange={update.title}
+          large
+          style={{ gridColumn: "span 1" }}
+        />
+        <ProjectOneLineCard
+          value={form1.oneLineInfo}
+          onChange={update.oneLineInfo}
+          large
+          style={{ gridColumn: "span 1" }}
+        />
+        <ProjectCategoryCard
+          value={form1.category}
+          onChange={update.category}
+          large
+          style={{ gridColumn: "span 1" }}
+        />
+        <ProjectDeadlineCard
+          value={formatDate(form1.closedDate)}
+          onChange={update.closedDate}
+          large
+          style={{ gridColumn: "span 1" }}
+        />
+        <ProjectSimpleDescCard
+          value={form1.simpleInfo}
+          onChange={update.simpleInfo}
+          large
+          style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
+        />
+      </StepBox>
+
+      <button onClick={settingSetForm}>전체폼에 2번스탭데이터 넣기</button>
+    </>
   );
 };
 
@@ -73,9 +72,8 @@ export default Step1;
 
 export const StepBox = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "1fr", // 기본값(xs)
-
-  gap: theme.spacing(2), // 기본값(sm 이하)
+  gridTemplateColumns: "1fr",
+  gap: theme.spacing(2),
 
   marginBottom: 0,
 
