@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
 
+import { scrollToTopSmooth } from "@shared/libs/utils/scrollUtils";
 import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
 import {
@@ -94,11 +95,13 @@ const useProjectInsertForm = (): InsertFormResult => {
 
   const handlePrev = (): void => {
     setCurrentStep((prev) => prev - 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // 프로젝트 등록 폼 스텝 변경 시 부드럽게 최상단으로 스크롤
+    scrollToTopSmooth();
   };
   const handleNext = (): void => {
     setCurrentStep((prev) => prev + 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // 프로젝트 등록 폼 스텝 변경 시 부드럽게 최상단으로 스크롤
+    scrollToTopSmooth();
   };
 
   const submit = async (): Promise<void> => {

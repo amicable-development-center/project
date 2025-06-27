@@ -55,8 +55,8 @@ export const cancelProjectApplications = async (
     throw new Error("유효하지 않은 프로젝트 정보입니다.");
   }
 
-  const APPLY_ID = `${userId}_${projectId}`;
-  const applyRef = doc(db, "applications", APPLY_ID);
+  const APPLICATIONS_ID = `${userId}_${projectId}`;
+  const applicationsRef = doc(db, "applications", APPLICATIONS_ID);
 
-  await deleteDoc(applyRef);
+  await deleteDoc(applicationsRef);
 };
