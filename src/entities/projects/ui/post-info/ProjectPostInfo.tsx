@@ -1,6 +1,8 @@
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import type { JSX } from "react";
 
+import { useGetProjectLikedUsers } from "@entities/projects/queries/useGetProjectLike";
+
 import { formatDate } from "@shared/libs/utils/projectDetail";
 import type { ProjectListRes } from "@shared/types/project";
 import InfoRow from "@shared/ui/project-detail/InfoRow";
@@ -16,6 +18,7 @@ const ProjectPostInfo = ({
 }: {
   values: PostInfoType | null;
 }): JSX.Element | null => {
+  const { data: likedUsers } = useGetProjectLikedUsers();
   if (!values) return null;
 
   return (
@@ -34,7 +37,7 @@ const ProjectPostInfo = ({
       />
       <InfoRow
         title="관심 등록"
-        content={`${values.likedUsers.length}명`}
+        content={`${likedUsers?.length || 0}명`}
         color="error"
       />
     </>

@@ -1,0 +1,87 @@
+import {
+  useMutation,
+  useQueryClient,
+  type UseMutationResult,
+} from "@tanstack/react-query";
+import { useCallback, useRef, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
+import { toggleProjectLike } from "@features/projects/api/createProjectLikeApi";
+
+import { useGetProjectLike } from "@entities/projects/queries/useGetProjectLike";
+
+import queryKeys from "@shared/react-query/queryKey";
+import { useAuthStore } from "@shared/stores/authStore";
+import type { ToggleProjectLikeResponse } from "@shared/types/like";
+
+const DEBOUNCE_DELAY_MS = 1000;
+
+export const useToggleProjectLikeSync = (): UseMutationResult<
+  ToggleProjectLikeResponse,
+  Error,
+  string
+> => {
+  const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (projectId: string) => toggleProjectLike(user?.uid, projectId),
+
+    onSettled: (_data, _error, projectId) => {
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.projectLikedUser, projectId],
+      });
+    },
+  });
+};
+
+interface UseOptimisticProjectLikeProps {
+  isLiked: boolean;
+  isLoading: boolean;
+  toggleLike: () => void;
+}
+
+export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
+  const { id: projectId } = useParams();
+  const { data: serverLikeStatus, isLoading } = useGetProjectLike();
+  const { mutate: syncToServer } = useToggleProjectLikeSync();
+
+  const [optimisticLikeStatus, setOptimisticLikeStatus] = useState<
+    boolean | undefined
+  >();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pendingServerSync = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (serverLikeStatus !== undefined && !pendingServerSync.current) {
+      setOptimisticLikeStatus(serverLikeStatus);
+    }
+  }, [serverLikeStatus]);
+
+  const toggleLike = useCallback(() => {
+    if (!projectId || isLoading) return;
+
+    setOptimisticLikeStatus((prev) => !prev);
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    pendingServerSync.current = true;
+    debounceTimerRef.current = setTimeout(() => {
+      syncToServer(projectId, {
+        onSettled: () => {
+          pendingServerSync.current = false;
+        },
+      });
+    }, DEBOUNCE_DELAY_MS);
+  }, [projectId, isLoading, syncToServer]);
+
+  const displayLikeStatus = optimisticLikeStatus ?? serverLikeStatus ?? false;
+
+  return {
+    isLiked: displayLikeStatus,
+    isLoading,
+    toggleLike,
+  };
+};

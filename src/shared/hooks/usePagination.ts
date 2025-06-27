@@ -26,47 +26,87 @@ interface UsePaginationWithStateReturn extends UsePaginationReturn {
   goToReset: () => void;
 }
 
+const range = (start: number, end: number): number[] => {
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+};
+
+const isEarlyPages = (currentPage: number): boolean => {
+  return currentPage <= 3;
+};
+
+const isLatePages = (currentPage: number, totalPages: number): boolean => {
+  return currentPage >= totalPages - 2;
+};
+
+const shouldShowEllipsis = (
+  totalPages: number,
+  maxVisiblePages: number
+): boolean => {
+  return totalPages > maxVisiblePages;
+};
+
+const createSimplePattern = (totalPages: number): (number | "ellipsis")[] => {
+  return range(1, totalPages);
+};
+
+const createEarlyPattern = (
+  maxVisiblePages: number,
+  totalPages: number
+): (number | "ellipsis")[] => {
+  const basePages = range(1, maxVisiblePages);
+  const shouldAddEllipsis = shouldShowEllipsis(totalPages, maxVisiblePages);
+
+  return shouldAddEllipsis ? [...basePages, "ellipsis", totalPages] : basePages;
+};
+
+const createLatePattern = (
+  totalPages: number,
+  maxVisiblePages: number
+): (number | "ellipsis")[] => {
+  const startPage = totalPages - (maxVisiblePages - 1);
+  const endPages = range(startPage, totalPages);
+  const shouldAddEllipsis = shouldShowEllipsis(totalPages, maxVisiblePages);
+
+  return shouldAddEllipsis ? [1, "ellipsis", ...endPages] : [1, ...endPages];
+};
+
+const createMiddlePattern = (
+  currentPage: number,
+  totalPages: number
+): (number | "ellipsis")[] => {
+  const middlePages = range(currentPage - 1, currentPage + 1);
+  return [1, "ellipsis", ...middlePages, "ellipsis", totalPages];
+};
+
 const usePagination = ({
   currentPage,
   totalPages,
   maxVisiblePages = 5,
 }: UsePaginationProps): UsePaginationReturn => {
   const generatePageNumbers = (): (number | "ellipsis")[] => {
-    const pages: (number | "ellipsis")[] = [];
+    const patternDecision = [
+      {
+        condition: () => totalPages <= maxVisiblePages,
+        pattern: () => createSimplePattern(totalPages),
+      },
+      {
+        condition: () => isEarlyPages(currentPage),
+        pattern: () => createEarlyPattern(maxVisiblePages, totalPages),
+      },
+      {
+        condition: () => isLatePages(currentPage, totalPages),
+        pattern: () => createLatePattern(totalPages, maxVisiblePages),
+      },
+      {
+        condition: () => true,
+        pattern: () => createMiddlePattern(currentPage, totalPages),
+      },
+    ];
 
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= maxVisiblePages; i++) {
-          pages.push(i);
-        }
-        if (totalPages > maxVisiblePages) {
-          pages.push("ellipsis");
-          pages.push(totalPages);
-        }
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        if (totalPages > maxVisiblePages) {
-          pages.push("ellipsis");
-        }
-        for (let i = totalPages - (maxVisiblePages - 1); i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push("ellipsis");
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
-        }
-        pages.push("ellipsis");
-        pages.push(totalPages);
-      }
-    }
-
-    return pages;
+    const selectedPattern = patternDecision.find(({ condition }) =>
+      condition()
+    );
+    return selectedPattern?.pattern() ?? [];
   };
 
   const pageNumbers = generatePageNumbers();
@@ -132,10 +172,7 @@ export const usePaginationWithState = ({
     const validPage = urlPage > 0 ? urlPage : 1;
 
     setCurrentPage((prevPage) => {
-      if (validPage !== prevPage) {
-        return validPage;
-      }
-      return prevPage;
+      return validPage !== prevPage ? validPage : prevPage;
     });
   }, [searchParams]);
 

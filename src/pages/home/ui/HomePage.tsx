@@ -7,8 +7,9 @@ import useGetProjects from "@entities/projects/hook/useGetProjects";
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import ProjectsStats from "@entities/projects/ui/projects-stats/ProjectsStats";
 
+import FadeInUpOnView from "@shared/ui/animations/FadeInUpOnView";
+
 const HomePage = (): JSX.Element => {
-  console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
   const { data: projects } = useGetProjects({ pageSize: 3 });
 
   return (
@@ -16,14 +17,20 @@ const HomePage = (): JSX.Element => {
       <HeroContainer>
         <Hero />
       </HeroContainer>
+
       <ProjectStatsContainer>
         <ProjectsStats />
       </ProjectStatsContainer>
-      <ProjectCardContainer>
-        {projects?.projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </ProjectCardContainer>
+
+      <ProjectSectionContainer>
+        <ProjectCardContainer>
+          {projects?.projects.map((project, index) => (
+            <FadeInUpOnView key={project.id} delay={index + 1}>
+              <ProjectCard project={project} />
+            </FadeInUpOnView>
+          ))}
+        </ProjectCardContainer>
+      </ProjectSectionContainer>
     </MainContainer>
   );
 };
@@ -42,41 +49,56 @@ const HeroContainer = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: theme.palette.background.default,
-  padding: "2rem 0rem",
+  padding: "2rem 0",
   [theme.breakpoints.up("sm")]: {
-    padding: "4rem 2rem",
+    padding: "4rem 0",
   },
   [theme.breakpoints.up("md")]: {
-    padding: "6rem 2.4rem",
+    padding: "6rem 0",
   },
 }));
 
 const ProjectStatsContainer = styled(Box)(({ theme }) => ({
   display: "flex",
-  flexDirection: "column",
-  gap: "3.2rem",
-  justifyContent: "center",
-  padding: "2rem 0rem",
+  width: "100%",
+  padding: "2rem 0",
   [theme.breakpoints.up("sm")]: {
-    flexDirection: "row",
-    padding: "4rem 2rem",
+    padding: "4rem 0",
   },
   [theme.breakpoints.up("md")]: {
-    padding: "6rem 2.4rem",
+    padding: "6rem 0",
   },
 }));
 
 const ProjectCardContainer = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr",
+  gridAutoRows: "1fr",
   gap: "1.6rem",
-  padding: "2rem 0rem",
+  alignItems: "stretch",
+
   [theme.breakpoints.up("sm")]: {
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-    padding: "4rem 2rem",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
   },
+
   [theme.breakpoints.up("md")]: {
     gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-    padding: "6rem 2.4rem",
+  },
+
+  "& > div": {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: 0,
+  },
+}));
+
+const ProjectSectionContainer = styled(Box)(({ theme }) => ({
+  padding: "2rem 0",
+  [theme.breakpoints.up("sm")]: {
+    padding: "4rem 0",
+  },
+  [theme.breakpoints.up("md")]: {
+    padding: "6rem 0",
   },
 }));

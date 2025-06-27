@@ -1,7 +1,7 @@
-import type { JSX } from "@emotion/react/jsx-runtime";
 import { Box, styled } from "@mui/material";
+import type { JSX } from "react";
 
-import useLike from "@features/projects/hook/useLike";
+import { useOptimisticProjectLike } from "@features/projects/queries/useCreateProjectLike";
 
 import {
   getStatusClassname,
@@ -14,12 +14,19 @@ import {
   ShareIcon,
 } from "@shared/ui/icons/CommonIcons";
 
-type ProjectLikeType = Pick<ProjectListRes, "status" | "likedUsers">;
+type ProjectLikeType = Pick<ProjectListRes, "status">;
 
-const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
-  const { likeFn, isLike } = useLike({
-    likedUsers: values.likedUsers,
-  });
+interface ProjectLikeProps {
+  values: ProjectLikeType;
+}
+
+const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
+  const { isLiked, isLoading, toggleLike } = useOptimisticProjectLike();
+
+  const handleLikeClick = (): void => {
+    if (isLoading) return;
+    toggleLike();
+  };
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -28,8 +35,8 @@ const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
       </StatusBox>
 
       <Box display="flex">
-        <HeadIconBox onClick={likeFn}>
-          {isLike ? (
+        <HeadIconBox onClick={handleLikeClick}>
+          {isLiked ? (
             <FavoriteOutlinedIcon color="error" />
           ) : (
             <FavoriteBorderIcon />
@@ -42,6 +49,7 @@ const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
     </Box>
   );
 };
+
 export default ProjectLike;
 
 const HeadIconBox = styled(Box)`
