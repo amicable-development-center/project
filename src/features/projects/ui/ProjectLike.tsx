@@ -67,13 +67,14 @@ const StatusBox = styled("div")`
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.025em;
-  color: white;
-  border-radius: 50px;
+  border-radius: 4px;
 
   &.ing {
+    color: white;
     background-color: black;
   }
   &.done {
-    background-color: ${({ theme }) => theme.palette.primary.main};
+    color: #303030;
+    background-color: #f0f0f0;
   }
 `;
