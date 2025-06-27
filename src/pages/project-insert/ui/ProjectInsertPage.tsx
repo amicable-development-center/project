@@ -11,7 +11,6 @@ import TopTitle from "@pages/project-insert/ui/TopTitle";
 
 import useProjectInsert from "@features/projects/hook/useProjectInsertForm";
 import PageNaviBtn from "@features/projects/ui/project-insert/PageNaviBtn";
-import Step1 from "@features/projects/ui/project-insert/Step1";
 import Step2 from "@features/projects/ui/project-insert/Step2";
 import Step3 from "@features/projects/ui/project-insert/Step3";
 import Step4 from "@features/projects/ui/project-insert/Step4";
@@ -28,9 +27,9 @@ const ProjectInsertPage = (): JSX.Element => {
       <StepBox currentStep={page.currentStep} />
 
       {/* Step별 컴포넌트 */}
-      {page.currentStep === 1 && (
+      {/* {page.currentStep === 1 && (
         <Step1 form={form.step1} onChangeForm={onChange.step1} />
-      )}
+      )} */}
       {page.currentStep === 2 && (
         <Step2 form={form.step2} onChangeForm={onChange.step2} />
       )}
