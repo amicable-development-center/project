@@ -4,6 +4,7 @@ const queryKeys = {
   project: "project",
   projects: "projects",
   projectStats: "project-stats",
+  myLikedProjects: "my-liked-projects",
 };
 
 export default queryKeys;
