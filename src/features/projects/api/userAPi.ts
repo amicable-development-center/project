@@ -16,7 +16,7 @@ export const updateUserMyProject = async (
 
   try {
     await updateDoc(usersRef, {
-      myProjects에: arrayUnion(projectID),
+      myProjects: arrayUnion(projectID),
     });
 
     return {

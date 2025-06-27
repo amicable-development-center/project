@@ -61,3 +61,9 @@ export enum RecruitmentStatus {
   recruiting = "모집중",
   completed = "모집완료",
 }
+
+export enum ProjectCollectionTabType {
+  Likes = "likes",
+  Applied = "applied",
+  Created = "created",
+}

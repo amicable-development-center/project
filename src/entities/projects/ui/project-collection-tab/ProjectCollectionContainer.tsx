@@ -1,8 +1,18 @@
-import { Box, Button, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  styled,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+} from "@mui/material";
 import type { JSX } from "react";
 import { useState, useCallback } from "react";
 
 import type { ProjectListRes } from "@shared/types/project";
+import { ProjectCollectionTabType } from "@shared/types/project";
 import DeleteButton from "@shared/ui/DeleteButton";
 
 import ProjectCollectionTab from "./ProjectCollectionTab";
@@ -14,7 +24,7 @@ interface ProjectCollectionContainerProps {
   createdProjects: ProjectListRes[];
   loading?: boolean;
   onDeleteProjects?: (
-    type: "liked" | "applied" | "created",
+    type: ProjectCollectionTabType,
     ids: string[]
   ) => Promise<void>;
 }
@@ -29,6 +39,7 @@ const ProjectCollectionContainer = ({
   const [currentTab, setCurrentTab] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const getCurrentProjects = useCallback((): ProjectListRes[] => {
     switch (currentTab) {
@@ -63,14 +74,27 @@ const ProjectCollectionContainer = ({
     setSelectedIds(isAllSelected ? [] : allIds);
   }, [selectedIds, getCurrentProjects]);
 
-  const handleDelete = useCallback(async () => {
-    if (!onDeleteProjects || selectedIds.length === 0) return;
+  const handleDelete = useCallback(() => {
+    if (selectedIds.length === 0) return;
+    setOpenDialog(true);
+  }, [selectedIds]);
 
+  const handleConfirmDelete = useCallback(async () => {
+    if (!onDeleteProjects || selectedIds.length === 0) return;
     const type =
-      currentTab === 0 ? "liked" : currentTab === 1 ? "applied" : "created";
+      currentTab === 0
+        ? ProjectCollectionTabType.Likes
+        : currentTab === 1
+          ? ProjectCollectionTabType.Applied
+          : ProjectCollectionTabType.Created;
     await onDeleteProjects(type, selectedIds);
     setSelectedIds([]);
+    setOpenDialog(false);
   }, [currentTab, selectedIds, onDeleteProjects]);
+
+  const handleCancelDelete = useCallback(() => {
+    setOpenDialog(false);
+  }, []);
 
   const currentProjects = getCurrentProjects();
   const allIds = currentProjects.map((p) => p.id);
@@ -127,6 +151,7 @@ const ProjectCollectionContainer = ({
         editMode={editMode}
         selectedIds={selectedIds}
         onSelectProject={handleSelectProject}
+        type={ProjectCollectionTabType.Likes}
       />
 
       <ProjectCollectionTabPanel
@@ -137,6 +162,7 @@ const ProjectCollectionContainer = ({
         editMode={editMode}
         selectedIds={selectedIds}
         onSelectProject={handleSelectProject}
+        type={ProjectCollectionTabType.Applied}
       />
 
       <ProjectCollectionTabPanel
@@ -147,7 +173,22 @@ const ProjectCollectionContainer = ({
         editMode={editMode}
         selectedIds={selectedIds}
         onSelectProject={handleSelectProject}
+        type={ProjectCollectionTabType.Created}
       />
+
+      {/* 삭제 확인 다이얼로그 */}
+      <Dialog open={openDialog} onClose={handleCancelDelete}>
+        <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            선택한 프로젝트를 삭제하면 되돌릴 수 없습니다.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete}>취소</Button>
+          <DeleteButton onClick={handleConfirmDelete}>삭제</DeleteButton>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
