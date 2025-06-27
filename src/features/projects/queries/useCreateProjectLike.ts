@@ -14,7 +14,7 @@ import queryKeys from "@shared/react-query/queryKey";
 import { useAuthStore } from "@shared/stores/authStore";
 import type { ToggleProjectLikeResponse } from "@shared/types/like";
 
-const DEBOUNCE_DELAY_MS = 1000;
+const DEBOUNCE_DELAY_MS = 100;
 
 export const useToggleProjectLikeSync = (): UseMutationResult<
   ToggleProjectLikeResponse,
@@ -29,7 +29,16 @@ export const useToggleProjectLikeSync = (): UseMutationResult<
 
     onSettled: (_data, _error, projectId) => {
       queryClient.invalidateQueries({
+        queryKey: [queryKeys.projectLike, projectId],
+      });
+      queryClient.invalidateQueries({
         queryKey: [queryKeys.projectLikedUser, projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.projects],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.project, projectId],
       });
     },
   });
@@ -48,7 +57,7 @@ export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
 
   const [optimisticLikeStatus, setOptimisticLikeStatus] = useState<
     boolean | undefined
-  >();
+  >(serverLikeStatus);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingServerSync = useRef<boolean>(false);
 
@@ -57,6 +66,15 @@ export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
       setOptimisticLikeStatus(serverLikeStatus);
     }
   }, [serverLikeStatus]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      pendingServerSync.current = false;
+    };
+  }, [projectId]);
 
   const toggleLike = useCallback(() => {
     if (!projectId || isLoading) return;

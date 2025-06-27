@@ -10,12 +10,14 @@ import {
   Typography,
 } from "@mui/material";
 import type { JSX } from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 
+import { useGetMyLikedProjectsWithDetails } from "@entities/projects/queries/useGetProjectLike";
 import ProjectTabPanel from "@entities/user/ui/user-profile/ProjectTabPanel";
 
 import { useProjectStore } from "@shared/stores/projectStore";
 import DeleteButton from "@shared/ui/DeleteButton";
+import Pagination from "@shared/ui/pagination/Pagination";
 import SnackbarAlert from "@shared/ui/SnackbarAlert";
 
 interface UserProfileProjectListProps {
@@ -38,6 +40,7 @@ const UserProfileProjectList = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     likeProjects,
@@ -45,6 +48,22 @@ const UserProfileProjectList = ({
     removeLikeProjects,
     removeAppliedProjects,
   } = useProjectStore();
+
+  const { data: myLikedProjects } = useGetMyLikedProjectsWithDetails();
+
+  const ITEMS_PER_PAGE = 6;
+
+  const paginatedLikedProjects = useMemo(() => {
+    if (!myLikedProjects) return [];
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return myLikedProjects.slice(startIndex, endIndex);
+  }, [myLikedProjects, currentPage]);
+
+  const totalLikedPages = useMemo(() => {
+    if (!myLikedProjects) return 0;
+    return Math.ceil(myLikedProjects.length / ITEMS_PER_PAGE);
+  }, [myLikedProjects]);
 
   const currentProjects = tab === 0 ? likeProjects : appliedProjects;
   const allIds = currentProjects.map((p) => p.id);
@@ -83,16 +102,23 @@ const UserProfileProjectList = ({
     removeAppliedProjects,
   ]);
 
+  const handleTabChange = useCallback(
+    (newTab: number) => {
+      setTab(newTab);
+      setCurrentPage(1);
+    },
+    [setTab]
+  );
+
   return (
     <Box flex={1}>
-      {/* Tabs와 버튼을 한 줄에 배치 */}
       <Box
         display="flex"
         alignItems="center"
         justifyContent="space-between"
         mb={2}
       >
-        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
+        <Tabs value={tab} onChange={(_, v) => handleTabChange(v)}>
           {PROFILE_TABS.map((tabInfo, _idx) => (
             <Tab key={tabInfo.label} label={tabInfo.label} />
           ))}
@@ -130,13 +156,22 @@ const UserProfileProjectList = ({
         </Box>
       </Box>
       {tab === 0 && (
-        <ProjectTabPanel
-          projects={likeProjects}
-          emptyMessage="아직 관심 프로젝트가 없습니다."
-          editMode={editMode}
-          selectedIds={selectedIds}
-          onSelectProject={handleSelectProject}
-        />
+        <>
+          <ProjectTabPanel
+            projects={paginatedLikedProjects}
+            emptyMessage="아직 관심 프로젝트가 없습니다."
+            editMode={editMode}
+            selectedIds={selectedIds}
+            onSelectProject={handleSelectProject}
+          />
+          {myLikedProjects && myLikedProjects.length > ITEMS_PER_PAGE && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalLikedPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </>
       )}
       {tab === 1 && (
         <ProjectTabPanel
@@ -147,7 +182,6 @@ const UserProfileProjectList = ({
           onSelectProject={handleSelectProject}
         />
       )}
-      {/* 삭제 확인 다이얼로그 */}
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
         <DialogContent>

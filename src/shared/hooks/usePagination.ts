@@ -11,6 +11,8 @@ interface UsePaginationReturn {
   pageNumbers: (number | "ellipsis")[];
   canGoPrev: boolean;
   canGoNext: boolean;
+  canGoFastPrev: boolean;
+  canGoFastNext: boolean;
 }
 
 interface UsePaginationWithStateProps {
@@ -24,58 +26,32 @@ interface UsePaginationWithStateReturn extends UsePaginationReturn {
   totalPages: number;
   setPage: (page: number) => void;
   goToReset: () => void;
+  goFastPrev: () => void;
+  goFastNext: () => void;
 }
 
 const range = (start: number, end: number): number[] => {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 };
 
-const isEarlyPages = (currentPage: number): boolean => {
-  return currentPage <= 3;
-};
-
-const isLatePages = (currentPage: number, totalPages: number): boolean => {
-  return currentPage >= totalPages - 2;
-};
-
-const shouldShowEllipsis = (
-  totalPages: number,
-  maxVisiblePages: number
-): boolean => {
-  return totalPages > maxVisiblePages;
-};
-
-const createSimplePattern = (totalPages: number): (number | "ellipsis")[] => {
-  return range(1, totalPages);
-};
-
-const createEarlyPattern = (
-  maxVisiblePages: number,
-  totalPages: number
-): (number | "ellipsis")[] => {
-  const basePages = range(1, maxVisiblePages);
-  const shouldAddEllipsis = shouldShowEllipsis(totalPages, maxVisiblePages);
-
-  return shouldAddEllipsis ? [...basePages, "ellipsis", totalPages] : basePages;
-};
-
-const createLatePattern = (
-  totalPages: number,
-  maxVisiblePages: number
-): (number | "ellipsis")[] => {
-  const startPage = totalPages - (maxVisiblePages - 1);
-  const endPages = range(startPage, totalPages);
-  const shouldAddEllipsis = shouldShowEllipsis(totalPages, maxVisiblePages);
-
-  return shouldAddEllipsis ? [1, "ellipsis", ...endPages] : [1, ...endPages];
-};
-
-const createMiddlePattern = (
+const generateBlockPageNumbers = (
   currentPage: number,
-  totalPages: number
+  totalPages: number,
+  maxVisiblePages: number
 ): (number | "ellipsis")[] => {
-  const middlePages = range(currentPage - 1, currentPage + 1);
-  return [1, "ellipsis", ...middlePages, "ellipsis", totalPages];
+  if (totalPages <= maxVisiblePages) {
+    return range(1, totalPages);
+  }
+
+  const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+
+  const blockStartPage = currentBlock * maxVisiblePages + 1;
+  const blockEndPage = Math.min(
+    blockStartPage + maxVisiblePages - 1,
+    totalPages
+  );
+
+  return range(blockStartPage, blockEndPage);
 };
 
 const usePagination = ({
@@ -83,40 +59,25 @@ const usePagination = ({
   totalPages,
   maxVisiblePages = 5,
 }: UsePaginationProps): UsePaginationReturn => {
-  const generatePageNumbers = (): (number | "ellipsis")[] => {
-    const patternDecision = [
-      {
-        condition: () => totalPages <= maxVisiblePages,
-        pattern: () => createSimplePattern(totalPages),
-      },
-      {
-        condition: () => isEarlyPages(currentPage),
-        pattern: () => createEarlyPattern(maxVisiblePages, totalPages),
-      },
-      {
-        condition: () => isLatePages(currentPage, totalPages),
-        pattern: () => createLatePattern(totalPages, maxVisiblePages),
-      },
-      {
-        condition: () => true,
-        pattern: () => createMiddlePattern(currentPage, totalPages),
-      },
-    ];
+  const pageNumbers = generateBlockPageNumbers(
+    currentPage,
+    totalPages,
+    maxVisiblePages
+  );
 
-    const selectedPattern = patternDecision.find(({ condition }) =>
-      condition()
-    );
-    return selectedPattern?.pattern() ?? [];
-  };
-
-  const pageNumbers = generatePageNumbers();
   const canGoPrev = currentPage > 1;
   const canGoNext = currentPage < totalPages;
+
+  const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+  const canGoFastPrev = currentBlock > 0;
+  const canGoFastNext = (currentBlock + 1) * maxVisiblePages < totalPages;
 
   return {
     pageNumbers,
     canGoPrev,
     canGoNext,
+    canGoFastPrev,
+    canGoFastNext,
   };
 };
 
@@ -161,6 +122,20 @@ export const usePaginationWithState = ({
     updatePageInURL(1);
   };
 
+  const goFastPrev = (): void => {
+    const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+    const prevBlockLastPage = currentBlock * maxVisiblePages;
+    const newPage = Math.max(1, prevBlockLastPage);
+    setPage(newPage);
+  };
+
+  const goFastNext = (): void => {
+    const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+    const nextBlockFirstPage = (currentBlock + 1) * maxVisiblePages + 1;
+    const newPage = Math.min(totalPages, nextBlockFirstPage);
+    setPage(newPage);
+  };
+
   useEffect(() => {
     if (isInternalUpdate.current) {
       isInternalUpdate.current = false;
@@ -188,11 +163,12 @@ export const usePaginationWithState = ({
     }
   }, [totalPages, updatePageInURL]);
 
-  const { pageNumbers, canGoPrev, canGoNext } = usePagination({
-    currentPage,
-    totalPages,
-    maxVisiblePages,
-  });
+  const { pageNumbers, canGoPrev, canGoNext, canGoFastPrev, canGoFastNext } =
+    usePagination({
+      currentPage,
+      totalPages,
+      maxVisiblePages,
+    });
 
   return {
     currentPage,
@@ -200,8 +176,12 @@ export const usePaginationWithState = ({
     pageNumbers,
     canGoPrev,
     canGoNext,
+    canGoFastPrev,
+    canGoFastNext,
     setPage,
     goToReset,
+    goFastPrev,
+    goFastNext,
   };
 };
 

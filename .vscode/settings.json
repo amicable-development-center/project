@@ -9,6 +9,7 @@
     "Neue",
     "Pretendard",
     "Segoe",
+    "treemap",
     "TTFB"
   ],
   "css.lint.unknownAtRules": "ignore",

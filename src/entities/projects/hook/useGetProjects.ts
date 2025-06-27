@@ -3,6 +3,7 @@ import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 import { getProjectList } from "@entities/projects/api/projectsAPi";
 
+import queryKeys from "@shared/react-query/queryKey";
 import type { ProjectListRes } from "@shared/types/project";
 
 const useGetProjects = ({
@@ -14,7 +15,7 @@ const useGetProjects = ({
   lastVisible: QueryDocumentSnapshot<DocumentData> | null;
 }> => {
   return useQuery({
-    queryKey: ["projects"],
+    queryKey: [queryKeys.projects],
     queryFn: () => getProjectList({ pageSize, lastDoc: null }),
   });
 };

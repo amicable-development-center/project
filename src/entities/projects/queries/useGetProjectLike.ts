@@ -2,13 +2,15 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import {
-  getMyLikedProjects,
+  getMyLikedProjectsIds,
+  getMyLikedProjectsWithDetails,
   getProjectLikedUsers,
   getProjectLikeStatus,
 } from "@entities/projects/api/getProjectLikeApi";
 
 import queryKeys from "@shared/react-query/queryKey";
 import { useAuthStore } from "@shared/stores/authStore";
+import type { ProjectListRes } from "@shared/types/project";
 
 export const useGetProjectLike = (): UseQueryResult<boolean, Error> => {
   const user = useAuthStore((state) => state.user);
@@ -38,12 +40,25 @@ export const useGetProjectLikedUsers = (
   return query;
 };
 
-export const useGetMyLikedProjects = (): UseQueryResult<string[], Error> => {
+export const useGetMyLikedProjectsIds = (): UseQueryResult<string[], Error> => {
   const user = useAuthStore((state) => state.user);
 
   return useQuery({
     queryKey: [queryKeys.myLikedProjects],
-    queryFn: () => getMyLikedProjects(user?.uid),
+    queryFn: () => getMyLikedProjectsIds(user?.uid),
+    enabled: !!user,
+  });
+};
+
+export const useGetMyLikedProjectsWithDetails = (): UseQueryResult<
+  ProjectListRes[],
+  Error
+> => {
+  const user = useAuthStore((state) => state.user);
+
+  return useQuery({
+    queryKey: [queryKeys.myLikedProjects],
+    queryFn: () => getMyLikedProjectsWithDetails(user?.uid),
     enabled: !!user,
   });
 };
