@@ -4,6 +4,7 @@ import type { ExpectedPeriod, ProjectSchedule } from "@shared/types/schedule";
 import type { User, UserRole } from "@shared/types/user";
 
 export interface ProjectItemInsertReq {
+  projectOwnerID: string; // 작성자
   projectOwner: User; // 프로젝트 오너 유저 정보
   status: RecruitmentStatus;
   category: ProjectCategory; // 프로젝트 분야

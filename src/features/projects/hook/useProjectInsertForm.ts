@@ -123,6 +123,7 @@ const initForm4 = {
 
 // 테스트용 form 입니다.
 const TestData = (user: User): ProjectItemInsertReq => ({
+  projectOwnerID: user.id, // 요거 추가!!
   projectOwner: {
     id: user.id,
     name: user.name,
