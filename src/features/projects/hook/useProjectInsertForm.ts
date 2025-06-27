@@ -68,7 +68,6 @@ const useProjectInsertForm = (): InsertFormResult => {
   const [formStep3, setFormStep3] = useState<Step3Type>(initForm3);
   const [formStep4, setFormStep4] = useState<Step4Type>(initForm4);
 
-
   const handleChangeStep2 = (field: keyof Step2Type, value: any): void => {
     setFormStep2((prev) => ({ ...prev, [field]: value }));
   };
