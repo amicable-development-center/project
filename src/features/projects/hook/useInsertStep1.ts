@@ -1,5 +1,7 @@
+import type { SelectChangeEvent } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
+import type { ChangeEvent } from "react";
 
 import {
   ProjectCategory,
@@ -16,9 +18,11 @@ interface ApplyFormResult {
   update: {
     title: (e: ChangeEvent<HTMLInputElement>) => void;
     oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
-    simpleInfo: (e: ChangeEvent<HTMLInputElement>) => void;
-    category: (category: ProjectCategory) => void;
-    closedDate: (date: string) => void;
+    simpleInfo: (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
+    category: (event: SelectChangeEvent) => void;
+    closedDate: (e: ChangeEvent<HTMLInputElement>) => void;
   };
 }
 
@@ -41,22 +45,24 @@ const useInsertStep1 = ({ state }: { state?: Setp1Type }): ApplyFormResult => {
     }));
   };
 
-  const updateSimpleInfo = (e: ChangeEvent<HTMLInputElement>): void => {
+  const updateSimpleInfo = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
     setForm1((prev) => ({
       ...prev,
       simpleInfo: e.target.value,
     }));
   };
 
-  const updateCategory = (category: ProjectCategory): void => {
+  const updateCategory = (event: SelectChangeEvent): void => {
     setForm1((prev) => ({
       ...prev,
-      category,
+      category: event.target.value as ProjectCategory,
     }));
   };
 
-  const updateClosedDate = (closedDate: string): void => {
-    const formateTimeStamp = Timestamp.fromDate(new Date(closedDate));
+  const updateClosedDate = (e: ChangeEvent<HTMLInputElement>): void => {
+    const formateTimeStamp = Timestamp.fromDate(new Date(e.target.value));
     setForm1((prev) => ({
       ...prev,
       closedDate: formateTimeStamp,

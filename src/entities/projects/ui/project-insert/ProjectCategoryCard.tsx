@@ -3,15 +3,14 @@ import type { SelectChangeEvent } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { CSSProperties, JSX } from "react";
 
+import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
+
 interface ProjectCategoryCardProps {
   value: string;
   onChange: (event: SelectChangeEvent) => void;
   large?: boolean;
   style?: CSSProperties;
 }
-
-const CARD_SHADOW =
-  "0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)";
 
 const ProjectCategoryCard = ({
   value,
@@ -21,49 +20,13 @@ const ProjectCategoryCard = ({
 }: ProjectCategoryCardProps): JSX.Element => {
   const theme = useTheme();
   return (
-    <div
-      style={{
-        background: theme.palette.background.paper,
-        borderRadius: theme.shape.borderRadius,
-        border: `1px solid ${theme.palette.divider}`,
-        boxShadow: CARD_SHADOW,
-        padding: large ? theme.spacing(4) : theme.spacing(3),
-        minHeight: large ? 220 : 180,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        width: "100%",
-        overflow: "visible",
-        fontFamily: theme.typography.fontFamily,
-        ...style,
-      }}
+    <SimpleFormCard
+      title="프로젝트 분야"
+      description="어떤 분야의 프로젝트인지 선택해주세요"
+      helpText="가장 가까운 분야를 선택해주세요"
+      large={large}
+      style={style}
     >
-      <div
-        style={{
-          fontWeight: theme.typography.h3.fontWeight,
-          fontSize: large
-            ? theme.typography.h3.fontSize
-            : theme.typography.h4.fontSize,
-          marginBottom: 14,
-          color: theme.palette.text.primary,
-        }}
-      >
-        <span role="img" aria-label="분야">
-          🏷️
-        </span>{" "}
-        프로젝트 분야
-      </div>
-      <div
-        style={{
-          color: theme.palette.text.secondary,
-          fontSize: large
-            ? theme.typography.h6.fontSize
-            : theme.typography.body1.fontSize,
-          marginBottom: 18,
-        }}
-      >
-        어떤 분야의 프로젝트인지 선택해주세요
-      </div>
       <FormControl fullWidth>
         <Select
           value={value || ""}
@@ -100,16 +63,7 @@ const ProjectCategoryCard = ({
           <MenuItem value="other">기타</MenuItem>
         </Select>
       </FormControl>
-      <div
-        style={{
-          color: theme.palette.text.disabled,
-          fontSize: large ? theme.typography.body1.fontSize : "1.2rem",
-          marginTop: 10,
-        }}
-      >
-        가장 가까운 분야를 선택해주세요
-      </div>
-    </div>
+    </SimpleFormCard>
   );
 };
 
