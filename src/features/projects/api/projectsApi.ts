@@ -156,3 +156,28 @@ export const updateUnLike = async (
     };
   }
 };
+
+export type UserProjectField = "likeProjects" | "appliedProjects";
+
+export const removeProjectsFromUser = async (
+  uid: string,
+  type: UserProjectField,
+  projectIds: string[]
+): Promise<{ success: boolean; error?: string }> => {
+  if (!uid || projectIds.length === 0) {
+    return {
+      success: false,
+      error: "유저 ID 또는 삭제할 프로젝트가 없습니다.",
+    };
+  }
+  try {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+      [type]: arrayRemove(...projectIds),
+    });
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: "파이어베이스 업데이트 실패" };
+  }
+};
