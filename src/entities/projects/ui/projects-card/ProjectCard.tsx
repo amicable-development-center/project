@@ -15,6 +15,7 @@ import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 
+import { useGetProjectApplicationUsers } from "@entities/projects/queries/useGetProjectApplications";
 import { useGetProjectLikedUsers } from "@entities/projects/queries/useGetProjectLike";
 
 import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
@@ -41,6 +42,7 @@ const ProjectCard = ({
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
   const isRecruiting = project.status === RecruitmentStatus.recruiting;
   const { data: likedUsers } = useGetProjectLikedUsers(project.id);
+  const { data: appliedUsers } = useGetProjectApplicationUsers(project.id);
 
   return (
     <StyledCard simple={simple}>
@@ -132,7 +134,7 @@ const ProjectCard = ({
 
         <FooterSection>
           <Typography variant="body1" color="textPrimary">
-            <TextHighlight>{project.applicants.length}명</TextHighlight> 지원
+            <TextHighlight>{appliedUsers?.length || 0}명</TextHighlight> 지원
           </Typography>
           <StyledLink to={`/project/${project.id}`}>
             <ActionButton variant="contained" color="primary" size="medium">

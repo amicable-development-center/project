@@ -17,11 +17,11 @@ const ProjectApplyForm = (): JSX.Element => {
   const user = useAuthStore((state) => state.user);
 
   const { openForm, message } = useApplyFrom(projectId || "");
+  const { data: isApplied } = useGetProjectApplicationStatus();
 
   const { mutate: createProjectApplication, isPending: createPending } =
     useCreateProjectApplications();
 
-  const { data: isApplied } = useGetProjectApplicationStatus();
   const { mutate: cancelProjectApplication, isPending: cancelPending } =
     useCancelProjectApplication();
 
@@ -49,20 +49,37 @@ const ProjectApplyForm = (): JSX.Element => {
     );
   };
 
-  // 이미 지원한 경우
+  const handleCancelSubmit = (): void => {
+    if (!projectId) return;
+
+    if (confirm("정말로 지원을 취소하시겠습니까?")) {
+      cancelProjectApplication(projectId, {
+        onSuccess: () => {
+          alert("지원이 취소되었습니다.");
+        },
+        onError: (error) => {
+          alert(`지원 취소 실패: ${error.message}`);
+        },
+      });
+    }
+  };
+
+  // 지원된 상태
   if (isApplied) {
     return (
       <MessageBtn
         className="cancel"
-        onClick={() => cancelProjectApplication(projectId || "")}
+        onClick={handleCancelSubmit}
         disabled={cancelPending}
       >
-        <Typography>지원 취소</Typography>
+        <Typography variant="body2" color="secondary">
+          {cancelPending ? "취소 중..." : "지원 취소"}
+        </Typography>
       </MessageBtn>
     );
   }
 
-  /* 지원하기 폼 닫혀있을 때 */
+  // 지원 폼이 닫힌 상태
   if (!openForm.isOpen) {
     return (
       <MessageBtn
@@ -76,7 +93,7 @@ const ProjectApplyForm = (): JSX.Element => {
     );
   }
 
-  /* 지원하기 폼 열려 있을 때 */
+  // 지원 폼이 열린 상태
   return (
     <>
       <Typography variant="body2" fontWeight={500}>
@@ -89,7 +106,7 @@ const ProjectApplyForm = (): JSX.Element => {
         placeholder="자기소개와 프로젝트에 기여할 수 있는 부분을 작성해주세요! 열정적인 메세지를 기다리고 있어요 🔥"
       />
 
-      <Box display={"flex"} gap={1}>
+      <Box display="flex" gap={1}>
         <MessageBtn onClick={openForm.close} disabled={createPending}>
           <Typography>취소</Typography>
         </MessageBtn>
@@ -152,11 +169,5 @@ const MessageBtn = styled(Box)<{ disabled?: boolean }>`
           ? "linear-gradient(to bottom right, #666df2, #9134ea)"
           : "linear-gradient(to bottom right, #474dc0, #7324bd)"};
     }
-  }
-
-  &.done {
-    cursor: default;
-    color: #858585;
-    background-color: #f0f0f0;
   }
 `;
