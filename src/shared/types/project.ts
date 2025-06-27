@@ -1,3 +1,4 @@
+import type { User as FirebaseUser } from "firebase/auth";
 import type { Timestamp } from "firebase/firestore";
 
 import type { ExpectedPeriod, ProjectSchedule } from "@shared/types/schedule";
@@ -60,6 +61,34 @@ export interface ProjectListRes extends ProjectItemInsertReq {
 export enum RecruitmentStatus {
   recruiting = "모집중",
   completed = "모집완료",
+}
+
+export interface ProjectApplication {
+  projectId: string;
+  userId: string;
+  message: string;
+  createdAt: Timestamp;
+  status: "pending" | "accepted" | "rejected";
+}
+
+export interface CreateProjectApplicationRequest {
+  userId: FirebaseUser["uid"];
+  projectId: string;
+  message: string;
+  status: "pending" | "accepted" | "rejected";
+  createdAt: Timestamp;
+}
+
+export interface CreateProjectApplicationInput {
+  userId: FirebaseUser["uid"];
+  projectId: string;
+  message: string;
+}
+
+export interface UseOptimisticProjectApplyProps {
+  isApplied: boolean;
+  isLoading: boolean;
+  toggleApplications: () => void;
 }
 
 export enum ProjectCollectionTabType {

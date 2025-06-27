@@ -15,10 +15,10 @@ import { ExpectedPeriod } from "@shared/types/schedule";
 import { type User } from "@shared/types/user";
 
 // 이하 InitData 개선 예정
-type Setp1Type = Pick<
-  ProjectItemInsertReq,
-  "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
->;
+// type Setp1Type = Pick<
+//   ProjectItemInsertReq,
+//   "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
+// >;
 export type Step2Type = Pick<
   ProjectItemInsertReq,
   "teamSize" | "techStack" | "positions"
@@ -33,7 +33,7 @@ export type Step4Type = Pick<
 
 interface InsertFormResult {
   form: {
-    step1: Setp1Type;
+    // step1: Setp1Type;
     step2: Step2Type;
     step3: Step3Type;
     step4: Step4Type;
@@ -45,6 +45,13 @@ interface InsertFormResult {
   };
   submit: () => Promise<void>;
   onChange: {
+    // step1: {
+    //   title: (e: ChangeEvent<HTMLInputElement>) => void;
+    //   oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
+    //   simpleInfo: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+    //   category: (category: ProjectCategory) => void;
+    //   closedDate: (date: string) => void;
+    // };
     step2: (field: keyof Step2Type, value: Step2Type[keyof Step2Type]) => void;
     step3: (field: keyof Step3Type, value: Step3Type[keyof Step3Type]) => void;
     step4: (field: keyof Step4Type, value: Step4Type[keyof Step4Type]) => void;
@@ -55,6 +62,7 @@ const useProjectInsertForm = (): InsertFormResult => {
   const user = useAuthStore((state) => state.user);
   const { data: userProfile } = useUserProfile(user?.uid || "");
   const { mutate: insertProject, isPending } = useProjectInsert();
+  // const step1FormHook = useInsertStep1({ state: undefined });
 
   const [currentStep, setCurrentStep] = useState(1);
   // const [formStep1, setFormStep1] = useState<Setp1Type>(initForm1);
@@ -110,7 +118,7 @@ const useProjectInsertForm = (): InsertFormResult => {
 
   return {
     form: {
-      step1: initForm1,
+      // step1: step1FormHook.form1,
       step2: formStep2,
       step3: formStep3,
       step4: formStep4,
@@ -122,6 +130,7 @@ const useProjectInsertForm = (): InsertFormResult => {
     },
     submit,
     onChange: {
+      // step1: step1FormHook.update,
       step2: handleChangeStep2,
       step3: handleChangeStep3,
       step4: handleChangeStep4,
@@ -131,13 +140,13 @@ const useProjectInsertForm = (): InsertFormResult => {
 
 export default useProjectInsertForm;
 
-const initForm1 = {
-  title: "",
-  category: ProjectCategory.webDevelopment,
-  simpleInfo: "",
-  closedDate: Timestamp.now(),
-  oneLineInfo: "",
-};
+// const initForm1 = {
+//   title: "",
+//   category: ProjectCategory.webDevelopment,
+//   simpleInfo: "",
+//   closedDate: Timestamp.now(),
+//   oneLineInfo: "",
+// };
 const initForm2 = {
   teamSize: 0,
   techStack: [],

@@ -120,14 +120,14 @@ const ProjectDetailPage = (): JSX.Element | null => {
             <ProjectLeader projectOwner={project?.projectOwner} />
           </CardBox>
           <CardBox>
-            <ProjectApply applicants={project.applicants.length} />
+            <ProjectApply />
 
             {project.status === "모집완료" ? (
               <ProjectDone />
             ) : user?.uid === project.projectOwner.id ? (
               <ProjectDones projectOwnerID={project?.projectOwner.id} />
             ) : (
-              <ProjectApplyForm applicants={project?.applicants || []} />
+              <ProjectApplyForm />
             )}
           </CardBox>
           <CardBox>

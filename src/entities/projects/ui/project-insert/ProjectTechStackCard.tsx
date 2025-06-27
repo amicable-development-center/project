@@ -63,7 +63,7 @@ const ProjectTechStackCard = ({
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setNewTech(e.target.value)
           }
-          onKeyPress={handleKeyPress}
+          onKeyUp={handleKeyPress}
           placeholder="React, Python, Figma... 뭐든 좋아요!"
           style={{
             flex: 1,

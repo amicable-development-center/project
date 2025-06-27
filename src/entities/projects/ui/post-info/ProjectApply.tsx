@@ -2,9 +2,13 @@ import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { Typography } from "@mui/material";
 import type { JSX } from "react";
 
+import { useGetProjectApplicationUsers } from "@entities/projects/queries/useGetProjectApplications";
+
 import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
-const ProjectApply = ({ applicants }: { applicants: number }): JSX.Element => {
+const ProjectApply = (): JSX.Element => {
+  const { data: applicants } = useGetProjectApplicationUsers();
+
   return (
     <>
       <TitleWithIcon
@@ -14,7 +18,7 @@ const ProjectApply = ({ applicants }: { applicants: number }): JSX.Element => {
         marginBottom={0}
       />
       <Typography variant="body2" marginBottom={2}>
-        현재 {applicants}명이 지원했습니다
+        현재 {applicants?.length || 0}명이 지원했습니다
       </Typography>
     </>
   );

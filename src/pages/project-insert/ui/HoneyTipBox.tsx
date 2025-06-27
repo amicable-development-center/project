@@ -1,77 +1,169 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, alpha } from "@mui/material";
 import type { JSX } from "react";
-
-import TextWithEmoji from "@shared/ui/project-insert/TextWithEmoji";
-
-// Typography에 fontSize={number}은 적용되지 않으므로 삭제하엿습니다.
-// 스타일이 반복되어 사용되고 있기에 공통 컴포넌트로 만들어 재사용하였습니다.
 
 const HoneyTipBox = (): JSX.Element => {
   return (
-    <TipBox>
-      <TextWithEmoji
-        emoji="💡"
-        emoji_label="lightbulb"
-        mainText="꿀팁 모음집"
-      />
+    <TipContainer>
+      {/* 헤더 섹션 */}
+      <TipHeader>
+        <HeaderIcon>💡</HeaderIcon>
+        <HeaderTitle>꿀팁 모음집</HeaderTitle>
+      </TipHeader>
 
-      <Box
-        display="flex"
-        flexWrap="wrap"
-        gap={4}
-        mt={3}
-        flexDirection={{ xs: "column", sm: "row" }}
-      >
-        <Box flex={1}>
-          <TextWithEmoji
-            emoji="🎯"
-            emoji_label="dart"
-            mainText="구체적인 계획을 세우세요"
-            subText="일정과 역할이 명확할수록 좋은 팀원을 만날 수 있어요"
-          />
-          <TextWithEmoji
-            emoji="🤝"
-            emoji_label="handshake"
-            mainText="초보자도 환영해요"
-            subText="경험보다 열정이 더 중요할 때가 많아요"
-          />
-        </Box>
-        <Box flex={1}>
-          <TextWithEmoji
-            emoji="💬"
-            emoji_label="chat"
-            mainText="소통 방식 미리 정하기"
-            subText="언제, 어떻게 만날지 미리 정해두면 좋아요"
-          />
-          <TextWithEmoji
-            emoji="🎉"
-            emoji_label="fun"
-            mainText="재미있게 표현하기"
-            subText="딱딱한 설명보다 재미있는 설명이 더 매력적이에요"
-          />
-        </Box>
-      </Box>
-    </TipBox>
+      {/* 팁 그리드 */}
+      <TipGrid>
+        <TipCard>
+          <CardIcon>🎯</CardIcon>
+          <CardContent>
+            <CardTitle>구체적인 계획을 세우세요</CardTitle>
+            <CardSubtext>
+              일정과 역할이 명확할수록 좋은 팀원을 만날 수 있어요
+            </CardSubtext>
+          </CardContent>
+        </TipCard>
+
+        <TipCard>
+          <CardIcon>🤝</CardIcon>
+          <CardContent>
+            <CardTitle>초보자도 환영해요</CardTitle>
+            <CardSubtext>경험보다 열정이 더 중요할 때가 많아요</CardSubtext>
+          </CardContent>
+        </TipCard>
+
+        <TipCard>
+          <CardIcon>💬</CardIcon>
+          <CardContent>
+            <CardTitle>소통 방식 미리 정하기</CardTitle>
+            <CardSubtext>언제, 어떻게 만날지 미리 정해두면 좋아요</CardSubtext>
+          </CardContent>
+        </TipCard>
+
+        <TipCard>
+          <CardIcon>🎉</CardIcon>
+          <CardContent>
+            <CardTitle>재미있게 표현하기</CardTitle>
+            <CardSubtext>
+              딱딱한 설명보다 재미있는 설명이 더 매력적이에요
+            </CardSubtext>
+          </CardContent>
+        </TipCard>
+      </TipGrid>
+    </TipContainer>
   );
 };
 
 export default HoneyTipBox;
 
-// 해당 Box는 부모의 MainContainer 밖으로 넘어가지 않으므로 MaxWidth, marginX 설정을 제거하였습니다.
-const TipBox = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(6), // default spacing이 8px ... 라고 하네요
+// 메인 컨테이너 - 폼과 통일감 있는 디자인
+const TipContainer = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
   backgroundColor: "#fffbe6",
-  border: "1.5px solid #ffe6a0",
-  borderRadius: theme.spacing(1),
-  padding: theme.spacing(3),
-  paddingLeft: theme.spacing(1),
-  paddingRight: theme.spacing(1),
+  border: "1px solid #e0e0e0",
+  borderRadius: "12px",
+  padding: theme.spacing(2),
+
   [theme.breakpoints.up("sm")]: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    padding: theme.spacing(3),
   },
+}));
+
+// 헤더 섹션 - 간결하고 명확한 스타일
+const TipHeader = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  marginBottom: theme.spacing(2),
+  paddingBottom: theme.spacing(1),
+  borderBottom: `1px solid ${alpha("#000", 0.08)}`,
+}));
+
+// 헤더 아이콘
+const HeaderIcon = styled(Box)(() => ({
+  fontSize: "20px",
+  fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"',
+}));
+
+// 헤더 타이틀
+const HeaderTitle = styled(Box)(({ theme }) => ({
+  fontSize: "18px",
+  fontWeight: 600,
+  color: "#333",
+  letterSpacing: "-0.02em",
+
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "19px",
+  },
+}));
+
+// 팁 그리드 - 폼과 동일한 간격
+const TipGrid = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr",
+  gap: theme.spacing(2),
+
+  [theme.breakpoints.up("sm")]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: theme.spacing(2),
+  },
+}));
+
+// 개별 팁 카드 - 폼 요소와 유사한 스타일
+const TipCard = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1.5),
+  padding: theme.spacing(2),
+  backgroundColor: "#fff",
+  border: "1px solid #e8e8e8",
+  borderRadius: "8px",
+
+  // 서브틀한 그림자로 깊이감
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+
   [theme.breakpoints.up("md")]: {
-    paddingLeft: theme.spacing(3),
-    paddingRight: theme.spacing(3),
+    padding: theme.spacing(2),
+    gap: theme.spacing(2),
   },
+}));
+
+// 카드 아이콘 - 심플하고 깔끔한 스타일
+const CardIcon = styled(Box)(() => ({
+  fontSize: "28px",
+  flexShrink: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "40px",
+  height: "40px",
+
+  // 이모지 최적화
+  fontFamily: '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"',
+}));
+
+// 카드 컨텐츠
+const CardContent = styled(Box)(() => ({
+  flex: 1,
+  minWidth: 0,
+}));
+
+// 카드 타이틀 - 폼 레이블과 유사한 스타일
+const CardTitle = styled(Box)(({ theme }) => ({
+  fontSize: "15px",
+  fontWeight: 600,
+  color: "#333",
+  marginBottom: theme.spacing(0.5),
+  lineHeight: 1.4,
+  letterSpacing: "-0.01em",
+
+  [theme.breakpoints.up("md")]: {
+    fontSize: "16px",
+  },
+}));
+
+// 카드 서브텍스트 - 폼 헬퍼 텍스트와 유사한 스타일
+const CardSubtext = styled(Box)(() => ({
+  fontSize: "14px",
+  color: "#666",
+  lineHeight: 1.5,
+  letterSpacing: "-0.005em",
 }));
