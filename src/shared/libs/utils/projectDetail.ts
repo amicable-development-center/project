@@ -16,3 +16,10 @@ export const formatDate = (date?: string | Timestamp): string => {
   }
   return date;
 };
+
+export const shareProjectUrl = (): void => {
+  navigator.clipboard
+    .writeText(window.location.href)
+    .then(() => alert("URL이 복사되었습니다."))
+    .catch(() => alert("복사 실패"));
+};
