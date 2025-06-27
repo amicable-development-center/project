@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogActions,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import type { JSX } from "react";
 import { useState, useCallback } from "react";
@@ -27,6 +28,8 @@ interface ProjectCollectionContainerProps {
     type: ProjectCollectionTabType,
     ids: string[]
   ) => Promise<void>;
+  currentTab: ProjectCollectionTabType;
+  onTabChange: (tab: ProjectCollectionTabType) => void;
 }
 
 const ProjectCollectionContainer = ({
@@ -35,30 +38,26 @@ const ProjectCollectionContainer = ({
   createdProjects,
   loading = false,
   onDeleteProjects,
+  currentTab,
+  onTabChange,
 }: ProjectCollectionContainerProps): JSX.Element => {
-  const [currentTab, setCurrentTab] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const getCurrentProjects = useCallback((): ProjectListRes[] => {
     switch (currentTab) {
-      case 0:
+      case ProjectCollectionTabType.Likes:
         return likedProjects;
-      case 1:
+      case ProjectCollectionTabType.Applied:
         return appliedProjects;
-      case 2:
+      case ProjectCollectionTabType.Created:
         return createdProjects;
       default:
         return [];
     }
   }, [currentTab, likedProjects, appliedProjects, createdProjects]);
-
-  const handleTabChange = useCallback((tabIndex: number) => {
-    setCurrentTab(tabIndex);
-    setEditMode(false);
-    setSelectedIds([]);
-  }, []);
 
   const handleSelectProject = useCallback((id: string) => {
     setSelectedIds((prev) =>
@@ -81,15 +80,11 @@ const ProjectCollectionContainer = ({
 
   const handleConfirmDelete = useCallback(async () => {
     if (!onDeleteProjects || selectedIds.length === 0) return;
-    const type =
-      currentTab === 0
-        ? ProjectCollectionTabType.Likes
-        : currentTab === 1
-          ? ProjectCollectionTabType.Applied
-          : ProjectCollectionTabType.Created;
-    await onDeleteProjects(type, selectedIds);
+    setIsDeleting(true);
+    await onDeleteProjects(currentTab, selectedIds);
     setSelectedIds([]);
     setOpenDialog(false);
+    setIsDeleting(false);
   }, [currentTab, selectedIds, onDeleteProjects]);
 
   const handleCancelDelete = useCallback(() => {
@@ -106,7 +101,7 @@ const ProjectCollectionContainer = ({
       <TabHeader>
         <ProjectCollectionTab
           currentTab={currentTab}
-          onTabChange={handleTabChange}
+          onTabChange={onTabChange}
         />
 
         <ActionButtons>
@@ -145,7 +140,7 @@ const ProjectCollectionContainer = ({
 
       <ProjectCollectionTabPanel
         value={currentTab}
-        index={0}
+        index={ProjectCollectionTabType.Likes}
         projects={likedProjects}
         loading={loading}
         editMode={editMode}
@@ -156,7 +151,7 @@ const ProjectCollectionContainer = ({
 
       <ProjectCollectionTabPanel
         value={currentTab}
-        index={1}
+        index={ProjectCollectionTabType.Applied}
         projects={appliedProjects}
         loading={loading}
         editMode={editMode}
@@ -167,7 +162,7 @@ const ProjectCollectionContainer = ({
 
       <ProjectCollectionTabPanel
         value={currentTab}
-        index={2}
+        index={ProjectCollectionTabType.Created}
         projects={createdProjects}
         loading={loading}
         editMode={editMode}
@@ -180,13 +175,29 @@ const ProjectCollectionContainer = ({
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
         <DialogContent>
-          <Typography>
-            선택한 프로젝트를 삭제하면 되돌릴 수 없습니다.
-          </Typography>
+          {isDeleting ? (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              minHeight={80}
+            >
+              <CircularProgress size={32} />
+              <Typography sx={{ ml: 2 }}>삭제 중입니다...</Typography>
+            </Box>
+          ) : (
+            <Typography>
+              선택한 프로젝트를 삭제하면 되돌릴 수 없습니다.
+            </Typography>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete}>취소</Button>
-          <DeleteButton onClick={handleConfirmDelete}>삭제</DeleteButton>
+          <Button onClick={handleCancelDelete} disabled={isDeleting}>
+            취소
+          </Button>
+          <DeleteButton onClick={handleConfirmDelete} disabled={isDeleting}>
+            삭제
+          </DeleteButton>
         </DialogActions>
       </Dialog>
     </Container>

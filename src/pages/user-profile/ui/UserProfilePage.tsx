@@ -4,8 +4,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState, useEffect, useCallback } from "react";
 
+import { deleteApplication } from "@entities/projects/api/getProjectApplicationsApi";
 import { deleteUserLikes } from "@entities/projects/api/getProjectLikeApi";
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
+import { useGetMyAppliedProjectsWithDetails } from "@entities/projects/queries/useGetProjectApplications";
 import { useGetMyLikedProjectsWithDetails } from "@entities/projects/queries/useGetProjectLike";
 import ProjectCollectionContainer from "@entities/projects/ui/project-collection-tab/ProjectCollectionContainer";
 import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
@@ -52,13 +54,13 @@ const UserProfilePage = (): JSX.Element => {
   const { setLikedProjectIds, removeLikeProjects } = useLikeStore();
   const queryClient = useQueryClient();
 
-  // 관심있는/지원한/만든 프로젝트 id 배열
-  const appliedIds = userProfile?.appliedProjects ?? [];
+  // 만든 프로젝트 id 배열
   const createdIds = userProfile?.myProjects ?? [];
 
-  // 프로젝트 데이터 가져오기
+  // 지원한 프로젝트 데이터 가져오기 (applications 컬렉션 기반)
   const { data: appliedProjectsData, isLoading: appliedProjectsLoading } =
-    useProjectsByIds(appliedIds);
+    useGetMyAppliedProjectsWithDetails();
+  // 만든 프로젝트는 기존대로 id 배열로 fetch
   const { data: createdProjectsData, isLoading: createdProjectsLoading } =
     useProjectsByIds(createdIds);
 
@@ -91,7 +93,15 @@ const UserProfilePage = (): JSX.Element => {
           queryKey: [queryKeys.myLikedProjects, "details"],
         });
       }
-      // TODO: 지원/등록 프로젝트 삭제 구현
+      if (type === ProjectCollectionTabType.Applied && user) {
+        for (const projectId of ids) {
+          await deleteApplication(user.uid, projectId);
+        }
+        await queryClient.invalidateQueries({
+          queryKey: [queryKeys.myAppliedProjects, "details"],
+        });
+      }
+      // TODO: 등록 프로젝트 삭제 구현
     },
     [user, removeLikeProjects, queryClient]
   );
@@ -134,6 +144,8 @@ const UserProfilePage = (): JSX.Element => {
             createdProjectsLoading
           }
           onDeleteProjects={handleDeleteProjects}
+          currentTab={tab}
+          onTabChange={setTab}
         />
       </Box>
     </MainContainer>

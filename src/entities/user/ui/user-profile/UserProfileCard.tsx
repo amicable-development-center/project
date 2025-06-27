@@ -68,9 +68,9 @@ const UserProfileCard = ({
   const [open, setOpen] = useState(false);
   const updateUserMutation = useUpdateUser();
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleUpdate = (userInfo: any) => {
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
+  const handleUpdate = (userInfo: any): void => {
     if (user?.uid) {
       updateUserMutation.mutate({ uid: user.uid, userInfo });
       handleClose();

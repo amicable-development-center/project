@@ -8,8 +8,8 @@ import type { ProjectListRes } from "@shared/types/project";
 import { ProjectCollectionTabType } from "@shared/types/project";
 
 interface ProjectCollectionTabPanelProps {
-  value: number;
-  index: number;
+  value: ProjectCollectionTabType;
+  index: ProjectCollectionTabType;
   projects: ProjectListRes[];
   loading?: boolean;
   editMode?: boolean;

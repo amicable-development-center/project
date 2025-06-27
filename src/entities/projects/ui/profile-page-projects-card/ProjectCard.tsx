@@ -15,18 +15,18 @@ import {
   useTheme,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
+import { useQuery } from "@tanstack/react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
+
+import { getProjectApplicantsCount } from "@entities/projects/api/getProjectApplicationsApi";
 
 import { type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
-
-// 여러곳에서 사용될 것 같아서 shared로 빼놓음 (현재 경로 @shared/ui/ProjectCard.tsx)
-// 기존 entities/projects/ui/projects-card/ProjectCard.tsx 는 사용하시는 분들 오류가 있을 것 같아 파일 삭제하지 않음
-// 해당 경로로 import 하고 계신분들은 확인하시고 경로수정 확인 바래요!
 
 interface ProjectCardProps {
   project: ProjectListRes;
@@ -35,6 +35,19 @@ interface ProjectCardProps {
   editMode?: boolean;
   selected?: boolean;
   onSelect?: () => void;
+  applicantsCount?: number;
+}
+
+// 지원자 수 fetch 훅
+function useProjectApplicantsCount(
+  projectId: string,
+  enabled: boolean = true
+): UseQueryResult<number> {
+  return useQuery({
+    queryKey: ["projectApplicantsCount", projectId],
+    queryFn: () => getProjectApplicantsCount(projectId),
+    enabled,
+  });
 }
 
 const ProjectCard = ({
@@ -44,9 +57,23 @@ const ProjectCard = ({
   editMode = false,
   selected = false,
   onSelect,
+  applicantsCount: applicantsCountProp,
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
+
+  // applicantsCountProp이 없을 때만 훅 실행
+  const { data: applicantsCountQuery = 0, isLoading: applicantsLoading } =
+    useProjectApplicantsCount(
+      project.id,
+      typeof applicantsCountProp !== "number"
+    );
+
+  // 프롭이 있으면 우선 사용, 없으면 쿼리 fallback
+  const applicantsCount =
+    typeof applicantsCountProp === "number"
+      ? applicantsCountProp
+      : applicantsCountQuery;
 
   return (
     <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
@@ -124,7 +151,10 @@ const ProjectCard = ({
 
         <FooterSection>
           <Typography variant="body1" color="textPrimary">
-            <TextHighlight>명</TextHighlight> 지원
+            <TextHighlight>
+              {applicantsLoading ? "-" : applicantsCount}{" "}
+            </TextHighlight>
+            명 지원
           </Typography>
           <StyledLink to={`/project/${project.id}`}>
             <ActionButton variant="contained" color="primary" size="medium">

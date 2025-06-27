@@ -2,12 +2,12 @@ import { Box, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import LikedProjectsEmpty from "@entities/projects/ui/liked-projects/LikedProjectsEmpty";
+import ProjectCard from "@entities/projects/ui/profile-page-projects-card/ProjectCard";
 
 import { useArrayPagination } from "@shared/hooks/usePagination";
 import type { ProjectListRes } from "@shared/types/project";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 import Pagination from "@shared/ui/pagination/Pagination";
-import ProjectCard from "@shared/ui/ProjectCard";
 
 interface LikedProjectsListProps {
   projects: ProjectListRes[];
@@ -61,6 +61,7 @@ const LikedProjectsList = ({
             editMode={editMode}
             selected={selectedIds.includes(project.id)}
             onSelect={() => onSelectProject && onSelectProject(project.id)}
+            applicantsCount={(project as any).applicantsCount}
           />
         ))}
       </ProjectGrid>
