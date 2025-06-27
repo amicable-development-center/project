@@ -6,7 +6,6 @@ import BackToHome from "@widgets/BackToHome/BackToHome";
 import { LoginForm } from "@features/auth/ui/LoginForm";
 
 const LoginPage = (): JSX.Element => {
-  console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
   return (
     <PageWrapper>
       <Typography variant="h3" fontWeight={700} mb={1} color="#4F46E5B">

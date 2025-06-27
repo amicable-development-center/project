@@ -8,7 +8,6 @@ import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import ProjectsStats from "@entities/projects/ui/projects-stats/ProjectsStats";
 
 const HomePage = (): JSX.Element => {
-  console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
   const { data: projects } = useGetProjects({ pageSize: 3 });
 
   return (
