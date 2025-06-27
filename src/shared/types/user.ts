@@ -8,6 +8,7 @@ export interface User {
   likeProjects?: string[]; // 좋아요 누른 프로젝트
   appliedProjects?: string[]; // 지원한 프로젝트
   introduceMyself?: string; // 자기소개
+  myProjects?: string[]; // 내가 등록한 프로젝트
 }
 
 export type UserRole = "frontend" | "backend" | "fullstack" | "designer" | "pm";
