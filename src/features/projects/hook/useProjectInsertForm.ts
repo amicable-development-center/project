@@ -3,10 +3,12 @@ import { useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
 import type {
+  AllFormType,
   Step1Type,
   Step2Type,
   Step3Type,
   Step4Type,
+  UpdateAllFormType,
 } from "@features/projects/type/project-update";
 
 import { useUserProfile } from "@shared/queries/useUserProfile";
@@ -26,12 +28,7 @@ interface InsertFormResult {
     goPrev: () => void;
     goNext: () => void;
   };
-  setForm: {
-    form1: (data: Step1Type) => void;
-    form2: (data: Step2Type) => void;
-    form3: (data: Step3Type) => void;
-    form4: (data: Step4Type) => void;
-  };
+  updateForm: UpdateAllFormType;
   submit: () => Promise<void>;
 }
 
@@ -42,27 +39,15 @@ const useProjectInsertForm = (): InsertFormResult => {
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [allForm, setAllForm] = useState({
+  const [allForm, setAllForm] = useState<AllFormType>({
     form1: {} as Step1Type,
     form2: {} as Step2Type,
     form3: {} as Step3Type,
     form4: {} as Step4Type,
   });
 
-  const updateForm1 = (data: Step1Type): void => {
-    setAllForm((prev) => ({ ...prev, form1: data }));
-  };
-
-  const updateForm2 = (data: Step2Type): void => {
-    setAllForm((prev) => ({ ...prev, form2: data }));
-  };
-
-  const updateForm3 = (data: Step3Type): void => {
-    setAllForm((prev) => ({ ...prev, form3: data }));
-  };
-
-  const updateForm4 = (data: Step4Type): void => {
-    setAllForm((prev) => ({ ...prev, form4: data }));
+  const updateForm: UpdateAllFormType = (formKey, data): void => {
+    setAllForm((prev) => ({ ...prev, [formKey]: data }));
   };
 
   const handlePrev = (): void => {
@@ -97,12 +82,7 @@ const useProjectInsertForm = (): InsertFormResult => {
       goPrev: handlePrev,
       goNext: handleNext,
     },
-    setForm: {
-      form1: updateForm1,
-      form2: updateForm2,
-      form3: updateForm3,
-      form4: updateForm4,
-    },
+    updateForm,
     submit,
   };
 };

@@ -2,7 +2,7 @@ import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
 import useInsertStep1 from "@features/projects/hook/useInsertStep1";
-import type { Step1Type } from "@features/projects/type/project-update";
+import type { UpdateAllFormType } from "@features/projects/type/project-update";
 
 import ProjectCategoryCard from "@entities/projects/ui/project-insert/ProjectCategoryCard";
 import ProjectDeadlineCard from "@entities/projects/ui/project-insert/ProjectDeadlineCard";
@@ -13,9 +13,9 @@ import ProjectTitleCard from "@entities/projects/ui/project-insert/ProjectTitleC
 import { formatDate } from "@shared/libs/utils/projectDetail";
 
 const Step1 = ({
-  setForm,
+  updateForm,
 }: {
-  setForm: (data: Step1Type) => void;
+  updateForm: UpdateAllFormType;
 }): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
@@ -25,7 +25,7 @@ const Step1 = ({
   const settingSetForm = (): void => {
     // 검사식 추가해주세요~~
     // ex) alert('요구사항을 채워주세요')
-    setForm(form1);
+    updateForm("form1", form1);
   };
 
   return (

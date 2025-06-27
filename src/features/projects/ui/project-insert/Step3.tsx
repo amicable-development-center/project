@@ -2,7 +2,7 @@ import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
 import useInsertStep3 from "@features/projects/hook/useInsertStep3";
-import type { Step3Type } from "@features/projects/type/project-update";
+import type { UpdateAllFormType } from "@features/projects/type/project-update";
 
 import ProjectDetailDescriptionCard from "@entities/projects/ui/project-insert/ProjectDetailDescriptionCard";
 import ProjectScheduleManagementCard from "@entities/projects/ui/project-insert/ProjectScheduleManagementCard";
@@ -16,9 +16,9 @@ interface Schedule {
 }
 
 const Step3 = ({
-  setForm,
+  updateForm,
 }: {
-  setForm: (data: Step3Type) => void;
+  updateForm: UpdateAllFormType;
 }): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
@@ -28,7 +28,7 @@ const Step3 = ({
   const settingSetForm = (): void => {
     // 검사식 추가해주세요~~
     // ex) alert('요구사항을 채워주세요')
-    setForm(formStep3);
+    updateForm("form3", formStep3);
   };
 
   return (
