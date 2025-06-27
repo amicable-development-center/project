@@ -4,6 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState, useEffect, useCallback } from "react";
 
+import { deleteProjectsEverywhere } from "@features/projects/api/projectsApi";
+
 import { deleteApplication } from "@entities/projects/api/getProjectApplicationsApi";
 import { deleteUserLikes } from "@entities/projects/api/getProjectLikeApi";
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
@@ -101,9 +103,48 @@ const UserProfilePage = (): JSX.Element => {
           queryKey: [queryKeys.myAppliedProjects, "details"],
         });
       }
-      // TODO: 등록 프로젝트 삭제 구현
+      if (type === ProjectCollectionTabType.Created && user) {
+        // 만든 프로젝트 완전 삭제
+        const res = await deleteProjectsEverywhere(ids, user.uid);
+        if (res.success) {
+          // zustand store 동기화
+          setAppliedProjects(
+            appliedProjectsData
+              ? appliedProjectsData.filter((p) => !ids.includes(p.id))
+              : []
+          );
+          setLikeProjects(
+            myLikedProjectsData
+              ? myLikedProjectsData.filter((p) => !ids.includes(p.id))
+              : []
+          );
+          // 쿼리 invalidate
+          await queryClient.invalidateQueries({
+            queryKey: [queryKeys.myLikedProjects, "details"],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [queryKeys.myAppliedProjects, "details"],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [queryKeys.projects],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: ["userProfile", user.uid],
+          });
+        } else {
+          alert(res.error || "프로젝트 삭제에 실패했습니다.");
+        }
+      }
     },
-    [user, removeLikeProjects, queryClient]
+    [
+      user,
+      removeLikeProjects,
+      queryClient,
+      setAppliedProjects,
+      setLikeProjects,
+      appliedProjectsData,
+      myLikedProjectsData,
+    ]
   );
 
   // 사용자 프로필이 로딩 중이거나 없으면 early return

@@ -6,6 +6,10 @@ import {
   doc,
   serverTimestamp,
   updateDoc,
+  getDocs,
+  where,
+  deleteDoc,
+  query,
 } from "firebase/firestore";
 
 import type { ApiResMessage } from "@entities/projects/types/firebase";
@@ -183,5 +187,45 @@ export const removeProjectsFromUser = async (
   } catch (err) {
     console.error(err);
     return { success: false, error: "파이어베이스 업데이트 실패" };
+  }
+};
+
+/** 여러 프로젝트를 완전히 삭제 (likes, applications, projects, users 컬렉션 모두) */
+export const deleteProjectsEverywhere = async (
+  projectIds: string[],
+  userId: string
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    // 1. likes 컬렉션에서 삭제
+    for (const projectId of projectIds) {
+      const likesSnap = await getDocs(
+        query(collection(db, "likes"), where("projectId", "==", projectId))
+      );
+      await Promise.all(likesSnap.docs.map((doc) => deleteDoc(doc.ref)));
+    }
+    // 2. applications 컬렉션에서 삭제
+    for (const projectId of projectIds) {
+      const appsSnap = await getDocs(
+        query(
+          collection(db, "applications"),
+          where("projectId", "==", projectId)
+        )
+      );
+      await Promise.all(appsSnap.docs.map((doc) => deleteDoc(doc.ref)));
+    }
+    // 3. projects 컬렉션에서 삭제
+    await Promise.all(
+      projectIds.map((projectId) => deleteDoc(doc(db, "projects", projectId)))
+    );
+    // 4. users 컬렉션에서 myProjects, likeProjects, appliedProjects에서 제거
+    await updateDoc(doc(db, "users", userId), {
+      myProjects: arrayRemove(...projectIds),
+      likeProjects: arrayRemove(...projectIds),
+      appliedProjects: arrayRemove(...projectIds),
+    });
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: "프로젝트 완전 삭제 실패" };
   }
 };
