@@ -25,7 +25,7 @@ export const useSocialLogin = (): {
       const isNewUser = additionalInfo?.isNewUser;
 
       if (isNewUser) {
-        navigate("/signup");
+        navigate("/signup", { state: { fromSocial: true } });
       } else {
         navigate(redirect);
       }
