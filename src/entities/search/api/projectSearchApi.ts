@@ -9,14 +9,22 @@ const DEFAULT_PAGE_SIZE = 6;
 const MEMORY_FETCH_MULTIPLIER = 10;
 const PREFETCH_BUFFER_SIZE = 2;
 
+const shouldApplyFilter = <T>(value: T | "all" | undefined): value is T => {
+  return value !== undefined && value !== "all";
+};
+
+const getFilteredValue = <T>(value: T | "all" | undefined): T | undefined => {
+  return shouldApplyFilter(value) ? value : undefined;
+};
+
 const createBaseQuery = (
   collectionName: string,
   filter: ProjectSearchFilterOption
 ): SearchQueryBuilder => {
   return new SearchQueryBuilder(collectionName)
-    .setCategory(filter.category === "all" ? undefined : filter.category)
-    .setStatus(filter.status === "all" ? undefined : filter.status)
-    .setWorkflow(filter.workflow === "all" ? undefined : filter.workflow);
+    .setCategory(getFilteredValue(filter.category))
+    .setStatus(getFilteredValue(filter.status))
+    .setWorkflow(getFilteredValue(filter.workflow));
 };
 
 const needsInMemoryFiltering = (filter: ProjectSearchFilterOption): boolean => {
