@@ -1,8 +1,16 @@
 import { Button, styled } from "@mui/material";
 import type { JSX } from "react";
 
-const SubmitButton = ({ onClick }: { onClick: () => void }): JSX.Element => {
-  return <SignupButton onClick={onClick}>회원가입 완료</SignupButton>;
+interface SubmitButtonProps {
+  onClick: () => void;
+  text?: string;
+}
+
+const SubmitButton = ({
+  onClick,
+  text = "회원가입 완료",
+}: SubmitButtonProps): JSX.Element => {
+  return <SignupButton onClick={onClick}>{text}</SignupButton>;
 };
 
 export default SubmitButton;

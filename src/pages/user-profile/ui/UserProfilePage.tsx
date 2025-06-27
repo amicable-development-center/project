@@ -71,6 +71,7 @@ const UserProfilePage = (): JSX.Element => {
         gap={4}
         flexDirection={{ xs: "column", sm: "row" }}
         position="relative"
+        alignItems="flex-start"
       >
         {/* 왼쪽 프로필 사이드바 */}
         <UserProfileCard

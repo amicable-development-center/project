@@ -1,4 +1,4 @@
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 import { db } from "@shared/firebase/firebase";
 import type { User } from "@shared/types/user";
@@ -15,4 +15,12 @@ export const getUser = async (uid: string): Promise<User | null> => {
     return userSnap.data() as User;
   }
   return null;
+};
+
+export const updateUser = async (
+  uid: string,
+  userInfo: Partial<User>
+): Promise<void> => {
+  const userDoc = doc(db, "users", uid);
+  await updateDoc(userDoc, userInfo);
 };
