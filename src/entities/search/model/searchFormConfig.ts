@@ -3,7 +3,7 @@ import {
   POSITION_OPTIONS,
   SEARCH_FORM_LABELS,
   SORT_OPTIONS,
-} from "@entities/search/model/searchOptions";
+} from "@entities/search/model/searchConstants";
 
 import {
   ProjectCategory,

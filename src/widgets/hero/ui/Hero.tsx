@@ -1,5 +1,3 @@
-import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Button,
@@ -9,6 +7,8 @@ import {
 } from "@mui/material";
 import type { JSX } from "react";
 import { Link } from "react-router-dom";
+
+import { AddIcon, SearchIcon } from "@shared/ui/icons/CommonIcons";
 
 const Hero = (): JSX.Element => {
   return (

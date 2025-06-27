@@ -10,8 +10,6 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 
-import type { ProjectSearchFilterOption, SortBy } from "@entities/search/types";
-
 import { db } from "@shared/firebase/firebase";
 import type { FilterBuilder } from "@shared/types/firebase";
 import type {
@@ -19,9 +17,10 @@ import type {
   RecruitmentStatus,
   Workflow,
 } from "@shared/types/project";
+import type { ProjectSearchFilterOption, SortBy } from "@shared/types/search";
 import type { UserRole } from "@shared/types/user";
 
-export class SearchFilterBuilder implements FilterBuilder {
+export class SearchQueryBuilder implements FilterBuilder {
   private filter: ProjectSearchFilterOption;
   private baseQuery: Query;
   private limitValue?: number;
@@ -86,15 +85,6 @@ export class SearchFilterBuilder implements FilterBuilder {
 
   build(): Query {
     let builtQuery: Query = this.baseQuery;
-
-    if (this.filter.title) {
-      const titleLower = this.filter.title.toLowerCase();
-      builtQuery = query(
-        builtQuery,
-        where("title", ">=", titleLower),
-        where("title", "<", titleLower + "\uf8ff")
-      );
-    }
 
     if (this.filter.category) {
       builtQuery = query(

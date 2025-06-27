@@ -1,12 +1,12 @@
-import { Badge } from "@mui/material";
-import type { JSX } from "react";
+import { Badge, styled } from "@mui/material";
+import type { JSX, ComponentType } from "react";
 
 interface TabWithBadgeProps {
   label: string;
   count: number;
   active: boolean;
   onClick: () => void;
-  ProfileTabChip: any;
+  ProfileTabChip: ComponentType<any>;
 }
 
 const TabWithBadge = ({
@@ -16,22 +16,23 @@ const TabWithBadge = ({
   onClick,
   ProfileTabChip,
 }: TabWithBadgeProps): JSX.Element => (
-  <Badge
+  <StyledBadge
     badgeContent={count}
     color={active ? "primary" : "secondary"}
     anchorOrigin={{ vertical: "top", horizontal: "right" }}
     overlap="rectangular"
-    sx={{
-      "& .MuiBadge-badge": {
-        fontSize: "1.1rem",
-        fontWeight: 700,
-        minWidth: 24,
-        height: 24,
-      },
-    }}
   >
     <ProfileTabChip label={label} active={active} clickable onClick={onClick} />
-  </Badge>
+  </StyledBadge>
 );
 
 export default TabWithBadge;
+
+const StyledBadge = styled(Badge)((_theme) => ({
+  "& .MuiBadge-badge": {
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    minWidth: 24,
+    height: 24,
+  },
+}));

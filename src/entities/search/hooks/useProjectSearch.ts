@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 import {
-  useGetFilteredProjectsByPage,
-  useGetFilteredProjectsCount,
-} from "@entities/search/queries/useGetFilteredProjectLists";
-import type { ProjectSearchFilterOption } from "@entities/search/types";
+  useProjectsByPage,
+  useProjectsCount,
+} from "@entities/search/queries/useProjectSearchQueries";
 
 import { usePaginationWithState } from "@shared/hooks/usePagination";
 import type { ProjectListRes } from "@shared/types/project";
+import type { ProjectSearchFilterOption } from "@shared/types/search";
 
 const ITEMS_PER_PAGE = 6;
 
-interface UseProjectListPageReturn {
+interface UseProjectSearchReturn {
   projects: ProjectListRes[];
   totalCount: number;
   currentFilter: ProjectSearchFilterOption;
@@ -26,16 +26,22 @@ interface UseProjectListPageReturn {
   handlePageChange: (page: number) => void;
 }
 
-const useProjectListPage = (): UseProjectListPageReturn => {
+const useProjectSearch = (): UseProjectSearchReturn => {
   const [currentFilter, setCurrentFilter] = useState<ProjectSearchFilterOption>(
-    {}
+    {
+      category: "all",
+      status: "all",
+      workflow: "all",
+      position: "all",
+      sortBy: "latest",
+    }
   );
 
   const {
     data: totalCount = 0,
     isLoading: isCountLoading,
     isError: isCountError,
-  } = useGetFilteredProjectsCount(currentFilter);
+  } = useProjectsCount(currentFilter);
 
   const { currentPage, totalPages, setPage, goToReset } =
     usePaginationWithState({
@@ -47,15 +53,18 @@ const useProjectListPage = (): UseProjectListPageReturn => {
     data: projects = [],
     isLoading: isProjectsLoading,
     isError: isProjectsError,
-  } = useGetFilteredProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
+  } = useProjectsByPage(currentFilter, currentPage, ITEMS_PER_PAGE);
 
   const isLoading = isProjectsLoading || isCountLoading;
   const isError = isProjectsError || isCountError;
 
-  const handleSearch = (filter: ProjectSearchFilterOption): void => {
-    setCurrentFilter(filter);
-    goToReset();
-  };
+  const handleSearch = useCallback(
+    (filter: ProjectSearchFilterOption): void => {
+      setCurrentFilter(filter);
+      goToReset();
+    },
+    [goToReset]
+  );
 
   const handlePageChange = (page: number): void => {
     if (page === currentPage || isLoading) return;
@@ -78,4 +87,4 @@ const useProjectListPage = (): UseProjectListPageReturn => {
   };
 };
 
-export default useProjectListPage;
+export default useProjectSearch;

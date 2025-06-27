@@ -20,7 +20,7 @@ const ProjectDelete = ({
 
   return (
     <MessageBtn onClick={handleDeleteBtn}>
-      <Typography>삭제</Typography>
+      <Typography>프로젝트 삭제</Typography>
     </MessageBtn>
   );
 };

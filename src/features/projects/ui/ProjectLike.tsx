@@ -1,21 +1,23 @@
 import type { JSX } from "@emotion/react/jsx-runtime";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import ShareIcon from "@mui/icons-material/Share";
 import { Box, styled } from "@mui/material";
-import { useParams } from "react-router-dom";
 
 import useLike from "@features/projects/hook/useLike";
 
-import { getStatusClassname } from "@shared/libs/utils/projectDetail";
+import {
+  getStatusClassname,
+  shareProjectUrl,
+} from "@shared/libs/utils/projectDetail";
 import type { ProjectListRes } from "@shared/types/project";
+import {
+  FavoriteBorderIcon,
+  FavoriteOutlinedIcon,
+  ShareIcon,
+} from "@shared/ui/icons/CommonIcons";
 
 type ProjectLikeType = Pick<ProjectListRes, "status" | "likedUsers">;
 
 const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
-  const { id } = useParams();
-  const { like, unlike, isLike } = useLike({
-    projectID: id || "",
+  const { likeFn, isLike } = useLike({
     likedUsers: values.likedUsers,
   });
 
@@ -26,14 +28,14 @@ const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
       </StatusBox>
 
       <Box display="flex">
-        <HeadIconBox>
+        <HeadIconBox onClick={likeFn}>
           {isLike ? (
-            <FavoriteOutlinedIcon color="error" onClick={unlike} />
+            <FavoriteOutlinedIcon color="error" />
           ) : (
-            <FavoriteBorderIcon onClick={like} />
+            <FavoriteBorderIcon />
           )}
         </HeadIconBox>
-        <HeadIconBox>
+        <HeadIconBox onClick={shareProjectUrl}>
           <ShareIcon />
         </HeadIconBox>
       </Box>
