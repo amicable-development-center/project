@@ -51,6 +51,7 @@ const UserProfileProjectList = ({
 
   const { data: myLikedProjects } = useGetMyLikedProjectsWithDetails();
 
+  // 페이지네이션 계산
   const ITEMS_PER_PAGE = 6;
 
   const paginatedLikedProjects = useMemo(() => {
@@ -102,23 +103,16 @@ const UserProfileProjectList = ({
     removeAppliedProjects,
   ]);
 
-  const handleTabChange = useCallback(
-    (newTab: number) => {
-      setTab(newTab);
-      setCurrentPage(1);
-    },
-    [setTab]
-  );
-
   return (
     <Box flex={1}>
+      {/* Tabs와 버튼을 한 줄에 배치 */}
       <Box
         display="flex"
         alignItems="center"
         justifyContent="space-between"
         mb={2}
       >
-        <Tabs value={tab} onChange={(_, v) => handleTabChange(v)}>
+        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
           {PROFILE_TABS.map((tabInfo, _idx) => (
             <Tab key={tabInfo.label} label={tabInfo.label} />
           ))}
@@ -156,23 +150,23 @@ const UserProfileProjectList = ({
         </Box>
       </Box>
       {tab === 0 && (
-        <>
-          <ProjectTabPanel
-            projects={paginatedLikedProjects}
-            emptyMessage="아직 관심 프로젝트가 없습니다."
-            editMode={editMode}
-            selectedIds={selectedIds}
-            onSelectProject={handleSelectProject}
-          />
-          {myLikedProjects && myLikedProjects.length > ITEMS_PER_PAGE && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalLikedPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </>
+        <ProjectTabPanel
+          projects={paginatedLikedProjects}
+          emptyMessage="아직 관심 프로젝트가 없습니다."
+          editMode={editMode}
+          selectedIds={selectedIds}
+          onSelectProject={handleSelectProject}
+        />
       )}
+      {tab === 0 &&
+        myLikedProjects &&
+        myLikedProjects.length > ITEMS_PER_PAGE && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalLikedPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       {tab === 1 && (
         <ProjectTabPanel
           projects={appliedProjects}
@@ -182,6 +176,7 @@ const UserProfileProjectList = ({
           onSelectProject={handleSelectProject}
         />
       )}
+      {/* 삭제 확인 다이얼로그 */}
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
         <DialogContent>
