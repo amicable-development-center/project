@@ -3,9 +3,8 @@ import { type JSX } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
-import ProjectDelete from "@features/projects/ui/ProjectDelete";
+import { ProjectDone, ProjectDones } from "@features/projects/ui/ProjectDelete";
 import ProjectLike from "@features/projects/ui/ProjectLike";
-import ProjectModify from "@features/projects/ui/ProjectModify";
 
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
 import ProjectApply from "@entities/projects/ui/post-info/ProjectApply";
@@ -122,11 +121,11 @@ const ProjectDetailPage = (): JSX.Element | null => {
           </CardBox>
           <CardBox>
             <ProjectApply applicants={project.applicants.length} />
-            {user?.uid !== project.projectOwner.id ? (
-              <Box display={"flex"} gap={1}>
-                <ProjectModify />
-                <ProjectDelete projectOwnerID={project?.projectOwner.id} />
-              </Box>
+
+            {project.status === "모집완료" ? (
+              <ProjectDone />
+            ) : user?.uid === project.projectOwner.id ? (
+              <ProjectDones projectOwnerID={project?.projectOwner.id} />
             ) : (
               <ProjectApplyForm applicants={project?.applicants || []} />
             )}

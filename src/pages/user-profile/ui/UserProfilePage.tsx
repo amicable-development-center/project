@@ -11,6 +11,7 @@ import ProjectCollectionContainer from "@entities/projects/ui/project-collection
 import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
 import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader";
 
+import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
 import { useLikeStore } from "@shared/stores/likeStore";
 import { useProjectStore } from "@shared/stores/projectStore";
@@ -91,6 +92,7 @@ const UserProfilePage = (): JSX.Element => {
         gap={4}
         flexDirection={{ xs: "column", sm: "row" }}
         position="relative"
+        alignItems="flex-start"
       >
         {/* 왼쪽 프로필 사이드바 */}
         <UserProfileCard

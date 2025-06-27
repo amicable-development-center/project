@@ -32,8 +32,12 @@ const ProjectInsertPage = (): JSX.Element => {
       {page.currentStep === 2 && (
         <Step2 form={form.step2} onChangeForm={onChange.step2} />
       )}
-      {page.currentStep === 3 && <Step3 />}
-      {page.currentStep === 4 && <Step4 />}
+      {page.currentStep === 3 && (
+        <Step3 form={form.step3} onChangeForm={onChange.step3} />
+      )}
+      {page.currentStep === 4 && (
+        <Step4 form={form.step4} onChangeForm={onChange.step4} />
+      )}
 
       {/* 네비게이션 버튼 */}
       <PageNaviBtn

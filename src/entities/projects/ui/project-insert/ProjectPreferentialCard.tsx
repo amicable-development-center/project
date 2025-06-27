@@ -5,7 +5,6 @@ import type {
   ChangeEvent,
   CSSProperties,
   JSX,
-  KeyboardEvent,
   FocusEvent,
   MouseEvent,
 } from "react";
@@ -13,45 +12,38 @@ import { useState } from "react";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
 
-interface ProjectTechStackCardProps {
+interface ProjectPreferentialCardProps {
   value: string[];
   onChange: (value: string[]) => void;
   large?: boolean;
   style?: CSSProperties;
 }
 
-const ProjectTechStackCard = ({
+const ProjectPreferentialCard = ({
   value,
   onChange,
   large,
   style,
-}: ProjectTechStackCardProps): JSX.Element => {
+}: ProjectPreferentialCardProps): JSX.Element => {
   const theme = useTheme();
-  const [newTech, setNewTech] = useState("");
+  const [newPreferential, setNewPreferential] = useState("");
 
-  const addTech = (): void => {
-    if (newTech.trim() && !value.includes(newTech.trim())) {
-      onChange([...value, newTech.trim()]);
-      setNewTech("");
+  const addPreferential = (): void => {
+    if (newPreferential.trim() && !value.includes(newPreferential.trim())) {
+      onChange([...value, newPreferential.trim()]);
+      setNewPreferential("");
     }
   };
 
-  const removeTech = (techToRemove: string): void => {
-    onChange(value.filter((tech) => tech !== techToRemove));
-  };
-
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTech();
-    }
+  const removePreferential = (preferentialToRemove: string): void => {
+    onChange(value.filter((pref) => pref !== preferentialToRemove));
   };
 
   return (
     <SimpleFormCard
-      title="기술 스택"
-      description="어떤 기술을 사용할 예정인가요? 확실하지 않아도 괜찮아요!"
-      helpText="사용할 기술들을 추가해주세요 (최소 1개 이상)"
+      title="우대사항"
+      description="있으면 좋은 기술이나 경험이 있나요?"
+      helpText="우대사항은 선택사항입니다. 있으면 더 좋은 조건들을 적어주세요"
       large={large}
       style={style}
     >
@@ -59,12 +51,11 @@ const ProjectTechStackCard = ({
       <Box display="flex" gap={1} mb={2}>
         <input
           type="text"
-          value={newTech}
+          value={newPreferential}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setNewTech(e.target.value)
+            setNewPreferential(e.target.value)
           }
-          onKeyPress={handleKeyPress}
-          placeholder="React, Python, Figma... 뭐든 좋아요!"
+          placeholder="예: AWS, Docker, 스타트업 경험..."
           style={{
             flex: 1,
             height: 40,
@@ -81,7 +72,6 @@ const ProjectTechStackCard = ({
             transition: "border-color 0.2s ease-in-out",
           }}
           onFocus={(e) => {
-            // 포커스 시: 파란색 테두리 + 두껍게
             e.target.style.borderColor = theme.palette.primary.main;
             e.target.style.borderWidth = "2px";
           }}
@@ -102,8 +92,8 @@ const ProjectTechStackCard = ({
         />
         <Button
           variant="contained"
-          onClick={addTech}
-          disabled={!newTech.trim()}
+          onClick={addPreferential}
+          disabled={!newPreferential.trim()}
           sx={{
             minWidth: 48,
             height: 46,
@@ -115,10 +105,10 @@ const ProjectTechStackCard = ({
         </Button>
       </Box>
 
-      {/* 기술 태그들 */}
+      {/* 우대사항 태그들 */}
       {value.length > 0 && (
         <Box display="flex" flexWrap="wrap" gap={1}>
-          {value.map((tech, index) => (
+          {value.map((preferential, index) => (
             <Box
               key={index}
               sx={{
@@ -128,15 +118,15 @@ const ProjectTechStackCard = ({
                 px: 2,
                 py: 1,
                 backgroundColor: theme.palette.grey[100],
-                borderRadius: 2,
+                borderRadius: "999px",
                 fontSize: "1.5rem",
                 color: theme.palette.text.primary,
               }}
             >
-              <span>{tech}</span>
+              <span>{preferential}</span>
               <Box
                 component="button"
-                onClick={() => removeTech(tech)}
+                onClick={() => removePreferential(preferential)}
                 sx={{
                   width: 18,
                   height: 18,
@@ -161,4 +151,4 @@ const ProjectTechStackCard = ({
   );
 };
 
-export default ProjectTechStackCard;
+export default ProjectPreferentialCard;

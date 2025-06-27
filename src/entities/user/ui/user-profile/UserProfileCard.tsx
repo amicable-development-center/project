@@ -14,6 +14,7 @@ import type { ComponentType, JSX } from "react";
 import { useLikeStore } from "@shared/stores/likeStore";
 import { useProjectStore } from "@shared/stores/projectStore";
 import type { User } from "@shared/types/user";
+import { UserExperience } from "@shared/types/user";
 
 import TabWithBadge from "./TapWithBadge";
 
@@ -34,10 +35,11 @@ const userRoleMap: Record<string, string> = {
   designer: "디자이너",
   pm: "PM",
 };
+
 const experienceMap: Record<string, string> = {
-  junior: "주니어 (3년 이하) 🌱",
-  mid: "미들 (3년 이상 10년 이하) 🌿",
-  senior: "시니어 (10년 이상) 🌳",
+  [UserExperience.junior]: "주니어 (3년 이하) 🌱",
+  [UserExperience.mid]: "미들 (3년 이상 10년 이하) 🌿",
+  [UserExperience.senior]: "시니어 (10년 이상) 🌳",
 };
 
 const UserProfileCard = ({
@@ -105,13 +107,11 @@ export default UserProfileCard;
 // 스타일 컴포넌트 재사용
 const ProfileCard = muiStyled(Card)(({ theme }) => ({
   minWidth: 280,
-  maxWidth: "100%",
+  maxWidth: 380,
   borderRadius: 12,
   boxShadow: theme.shadows[2],
   position: "relative",
   padding: "0 2rem",
-  maxHeight: "350px",
-  overflow: "auto",
 }));
 const ProfileCardContent = muiStyled(CardContent)(({ theme }) => ({
   padding: theme.spacing(3),

@@ -1,11 +1,33 @@
 import { Box, Paper, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
+import { useState } from "react";
+import { useLocation, Navigate } from "react-router-dom";
 
 import BackToHome from "@widgets/BackToHome/BackToHome";
 
 import UserInfoForm from "@entities/user/ui/UserInfoForm";
 
+import SnackbarAlert from "@shared/ui/SnackbarAlert";
+
 const SignUpPage = (): JSX.Element => {
+  const location = useLocation();
+  const fromSocial = location.state?.fromSocial;
+  const [open, setOpen] = useState(!fromSocial);
+
+  if (!fromSocial) {
+    if (open) {
+      return (
+        <SnackbarAlert
+          open={open}
+          onClose={() => setOpen(false)}
+          message="잘못된 접근입니다."
+          severity="error"
+        />
+      );
+    }
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <PageContainer>
       <Typography variant="h4" mb={2}>

@@ -25,11 +25,18 @@ export type Step2Type = Pick<
 > & {
   expectedPeriod: ExpectedPeriod | "";
 };
+export type Step3Type = Pick<ProjectItemInsertReq, "description" | "schedules">;
+export type Step4Type = Pick<
+  ProjectItemInsertReq,
+  "workflow" | "requirements" | "preferentialTreatment"
+>;
 
 interface InsertFormResult {
   form: {
     step1: Setp1Type;
     step2: Step2Type;
+    step3: Step3Type;
+    step4: Step4Type;
   };
   page: {
     currentStep: number;
@@ -38,7 +45,9 @@ interface InsertFormResult {
   };
   submit: () => Promise<void>;
   onChange: {
-    step2: (field: keyof Step2Type, value: any) => void;
+    step2: (field: keyof Step2Type, value: Step2Type[keyof Step2Type]) => void;
+    step3: (field: keyof Step3Type, value: Step3Type[keyof Step3Type]) => void;
+    step4: (field: keyof Step4Type, value: Step4Type[keyof Step4Type]) => void;
   };
 }
 
@@ -49,10 +58,30 @@ const useProjectInsertForm = (): InsertFormResult => {
 
   const [currentStep, setCurrentStep] = useState(1);
   // const [formStep1, setFormStep1] = useState<Setp1Type>(initForm1);
-  const [formStep2, setFormStep2] = useState<Step2Type>(initForm2);
+  // Step2 상태
+  const [formStep2, setFormStep2] = useState<Step2Type>({
+    teamSize: 0,
+    expectedPeriod: "",
+    techStack: [],
+    positions: [],
+  });
+  const [formStep3, setFormStep3] = useState<Step3Type>(initForm3);
+  const [formStep4, setFormStep4] = useState<Step4Type>(initForm4);
 
   const handleChangeStep2 = (field: keyof Step2Type, value: any): void => {
     setFormStep2((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleChangeStep3 = (
+    field: keyof Step3Type,
+    value: Step3Type[keyof Step3Type]
+  ): void => {
+    setFormStep3((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleChangeStep4 = (
+    field: keyof Step4Type,
+    value: Step4Type[keyof Step4Type]
+  ): void => {
+    setFormStep4((prev) => ({ ...prev, [field]: value }));
   };
 
   const handlePrev = (): void => {
@@ -83,6 +112,8 @@ const useProjectInsertForm = (): InsertFormResult => {
     form: {
       step1: initForm1,
       step2: formStep2,
+      step3: formStep3,
+      step4: formStep4,
     },
     page: {
       currentStep: currentStep,
@@ -92,6 +123,8 @@ const useProjectInsertForm = (): InsertFormResult => {
     submit,
     onChange: {
       step2: handleChangeStep2,
+      step3: handleChangeStep3,
+      step4: handleChangeStep4,
     },
   };
 };
@@ -123,6 +156,7 @@ const initForm4 = {
 
 // 테스트용 form 입니다.
 const TestData = (user: User): ProjectItemInsertReq => ({
+  projectOwnerID: user.id, // 요거 추가!!
   projectOwner: {
     id: user.id,
     name: user.name,

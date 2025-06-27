@@ -1,18 +1,20 @@
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   serverTimestamp,
-  deleteDoc,
   updateDoc,
-  arrayUnion,
-  arrayRemove,
 } from "firebase/firestore";
 
 import type { ApiResMessage } from "@entities/projects/types/firebase";
 
 import { db } from "@shared/firebase/firebase";
-import type { ProjectItemInsertReq } from "@shared/types/project";
+import {
+  RecruitmentStatus,
+  type ProjectItemInsertReq,
+} from "@shared/types/project";
 
 /** firebase projects에 item 등록 */
 export const insertProjectItem = async (
@@ -39,25 +41,27 @@ export const insertProjectItem = async (
   }
 };
 
-/** firebase projectsItem 삭제 */
-export const deleteProjectItem = async (id: string): Promise<ApiResMessage> => {
-  if (!window.confirm("정말로 삭제하시겠습니까?")) {
+/** project 모집 마감  */
+export const doneProjectItem = async (id: string): Promise<ApiResMessage> => {
+  if (!window.confirm("이대로 프로젝트를 모집을 마감 하시겠습니까?")) {
     return { success: false, message: "" };
   }
 
   try {
     const docRef = doc(db, "projects", id);
-    await deleteDoc(docRef);
+    await updateDoc(docRef, {
+      status: RecruitmentStatus.completed,
+    });
 
     return {
       success: true,
-      message: "프로젝트를 정상적으로 삭제하였습니다.",
+      message: "프로젝트가 정상적으로 마감 되었습니다.",
     };
   } catch (err) {
     console.log(err);
     return {
       success: false,
-      message: "프로젝트 삭제에 실패하였습니다.",
+      message: "프로젝트가 마감되지 않았습니다.",
     };
   }
 };
