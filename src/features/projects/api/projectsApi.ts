@@ -196,33 +196,51 @@ export const deleteProjectsEverywhere = async (
   userId: string
 ): Promise<{ success: boolean; error?: string }> => {
   try {
-    // 1. likes 컬렉션에서 삭제
-    for (const projectId of projectIds) {
+    // 모든 삭제 작업을 병렬로 실행하기 위한 함수들
+    const deleteLikesForProject = async (
+      projectId: string
+    ): Promise<void[]> => {
       const likesSnap = await getDocs(
         query(collection(db, "likes"), where("projectId", "==", projectId))
       );
-      await Promise.all(likesSnap.docs.map((doc) => deleteDoc(doc.ref)));
-    }
-    // 2. applications 컬렉션에서 삭제
-    for (const projectId of projectIds) {
+      return Promise.all(likesSnap.docs.map((doc) => deleteDoc(doc.ref)));
+    };
+
+    const deleteApplicationsForProject = async (
+      projectId: string
+    ): Promise<void[]> => {
       const appsSnap = await getDocs(
         query(
           collection(db, "applications"),
           where("projectId", "==", projectId)
         )
       );
-      await Promise.all(appsSnap.docs.map((doc) => deleteDoc(doc.ref)));
-    }
-    // 3. projects 컬렉션에서 삭제
-    await Promise.all(
-      projectIds.map((projectId) => deleteDoc(doc(db, "projects", projectId)))
-    );
-    // 4. users 컬렉션에서 myProjects, likeProjects, appliedProjects에서 제거
-    await updateDoc(doc(db, "users", userId), {
-      myProjects: arrayRemove(...projectIds),
-      likeProjects: arrayRemove(...projectIds),
-      appliedProjects: arrayRemove(...projectIds),
-    });
+      return Promise.all(appsSnap.docs.map((doc) => deleteDoc(doc.ref)));
+    };
+
+    const deleteProject = async (projectId: string): Promise<void> => {
+      return deleteDoc(doc(db, "projects", projectId));
+    };
+
+    // 모든 작업을 병렬로 실행
+    await Promise.all([
+      // 1. likes 컬렉션에서 모든 프로젝트의 likes 삭제 (병렬)
+      ...projectIds.map(deleteLikesForProject),
+
+      // 2. applications 컬렉션에서 모든 프로젝트의 applications 삭제 (병렬)
+      ...projectIds.map(deleteApplicationsForProject),
+
+      // 3. projects 컬렉션에서 모든 프로젝트 삭제 (병렬)
+      ...projectIds.map(deleteProject),
+
+      // 4. users 컬렉션에서 myProjects, likeProjects, appliedProjects에서 제거
+      updateDoc(doc(db, "users", userId), {
+        myProjects: arrayRemove(...projectIds),
+        likeProjects: arrayRemove(...projectIds),
+        appliedProjects: arrayRemove(...projectIds),
+      }),
+    ]);
+
     return { success: true };
   } catch (err) {
     console.error(err);
