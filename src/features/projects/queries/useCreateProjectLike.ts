@@ -41,7 +41,6 @@ export const useToggleProjectLikeSync = (): UseMutationResult<
       queryClient.invalidateQueries({
         queryKey: [queryKeys.project, projectId],
       });
-      // 좋아요 관련 데이터도 refetch
       queryClient.invalidateQueries({
         queryKey: [queryKeys.myLikedProjects, "ids"],
       });
