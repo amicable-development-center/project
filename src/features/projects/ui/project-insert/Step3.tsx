@@ -6,9 +6,11 @@ import type { Step3Type } from "@features/projects/hook/useProjectInsertForm";
 import ProjectDetailDescriptionCard from "@entities/projects/ui/project-insert/ProjectDetailDescriptionCard";
 import ProjectScheduleManagementCard from "@entities/projects/ui/project-insert/ProjectScheduleManagementCard";
 
+import type { ExpectedPeriod } from "@shared/types/schedule";
+
 interface Schedule {
   stageName: string;
-  period: string; // ExpectedPeriod enum 값
+  period: ExpectedPeriod; // ExpectedPeriod enum 값
   description: string;
 }
 
