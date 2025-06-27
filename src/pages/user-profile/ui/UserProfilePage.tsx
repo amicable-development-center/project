@@ -3,8 +3,6 @@ import { styled as muiStyled } from "@mui/material/styles";
 import type { JSX } from "react";
 import { useState, useEffect, useCallback } from "react";
 
-import { useUserProfile } from "@features/auth/hooks/useUserProfile";
-
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
 import { useGetMyLikedProjectsWithDetails } from "@entities/projects/queries/useGetProjectLike";
 import ProjectCollectionContainer from "@entities/projects/ui/project-collection-tab/ProjectCollectionContainer";
