@@ -31,7 +31,7 @@ const ProjectCollectionTabPanel = ({
   if (!isActive) {
     return <></>;
   }
-  // console.log("projects: ", projects);
+
   return (
     <TabPanelContainer
       role="tabpanel"

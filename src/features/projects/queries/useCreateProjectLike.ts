@@ -30,22 +30,16 @@ export const useToggleProjectLikeSync = (): UseMutationResult<
 
     onSettled: (_data, _error, projectId) => {
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.projectLike, projectId],
+        queryKey: [queryKeys.projectLike],
       });
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.projectLikedUser, projectId],
+        queryKey: [queryKeys.projectLikedUser],
       });
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.projects],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.project, projectId],
+        queryKey: [queryKeys.projects, projectId],
       });
       queryClient.invalidateQueries({
         queryKey: [queryKeys.myLikedProjects, "ids"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.myLikedProjects, "details"],
       });
     },
   });

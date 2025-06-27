@@ -1,25 +1,63 @@
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Box, styled, Typography } from "@mui/material";
-import type { JSX } from "react";
+import type { User } from "firebase/auth";
+import { type JSX } from "react";
 import { useParams } from "react-router-dom";
 
 import useApplyFrom from "@features/projects/hook/useApplyFrom";
+import { useCancelProjectApplication } from "@features/projects/queries/useCancelProjectApplication";
+import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjcetApplications";
+
+import { useGetProjectApplicationStatus } from "@entities/projects/queries/useGetProjectApplications";
 
 import { useAuthStore } from "@shared/stores/authStore";
 
-const ProjectApplyForm = ({
-  applicants,
-}: {
-  applicants: string[];
-}): JSX.Element => {
-  const { id } = useParams();
+const ProjectApplyForm = (): JSX.Element => {
+  const { id: projectId } = useParams();
   const user = useAuthStore((state) => state.user);
-  const { openForm, message, submit } = useApplyFrom(id || "");
 
-  if (user && applicants.includes(user?.uid || "")) {
+  const { openForm, message } = useApplyFrom(projectId || "");
+
+  const { mutate: createProjectApplication, isPending: createPending } =
+    useCreateProjectApplications();
+
+  const { data: isApplied } = useGetProjectApplicationStatus();
+  const { mutate: cancelProjectApplication, isPending: cancelPending } =
+    useCancelProjectApplication();
+
+  const handleApplySubmit = (): void => {
+    if (!projectId || !message.value.trim()) {
+      alert("메시지를 입력해주세요.");
+      return;
+    }
+
+    createProjectApplication(
+      {
+        userId: user?.uid as User["uid"],
+        projectId,
+        message: message.value.trim(),
+      },
+      {
+        onSuccess: () => {
+          alert("지원이 완료되었습니다! 🎉");
+          openForm.close();
+        },
+        onError: (error) => {
+          alert(`지원 실패: ${error.message}`);
+        },
+      }
+    );
+  };
+
+  // 이미 지원한 경우
+  if (isApplied) {
     return (
-      <MessageBtn className="done">
-        <Typography>지원완료</Typography>
+      <MessageBtn
+        className="cancel"
+        onClick={() => cancelProjectApplication(projectId || "")}
+        disabled={cancelPending}
+      >
+        <Typography>지원 취소</Typography>
       </MessageBtn>
     );
   }
@@ -27,7 +65,11 @@ const ProjectApplyForm = ({
   /* 지원하기 폼 닫혀있을 때 */
   if (!openForm.isOpen) {
     return (
-      <MessageBtn className="apply" onClick={openForm.open}>
+      <MessageBtn
+        className="apply"
+        onClick={openForm.open}
+        disabled={createPending}
+      >
         <RocketLaunchIcon />
         <Typography>지원하기 🚀</Typography>
       </MessageBtn>
@@ -48,11 +90,15 @@ const ProjectApplyForm = ({
       />
 
       <Box display={"flex"} gap={1}>
-        <MessageBtn onClick={openForm.close}>
+        <MessageBtn onClick={openForm.close} disabled={createPending}>
           <Typography>취소</Typography>
         </MessageBtn>
-        <MessageBtn className="apply" onClick={submit}>
-          <Typography>지원하기</Typography>
+        <MessageBtn
+          className="apply"
+          onClick={handleApplySubmit}
+          disabled={createPending || !message.value.trim()}
+        >
+          <Typography>{createPending ? "지원 중..." : "지원하기"}</Typography>
         </MessageBtn>
       </Box>
     </>
@@ -78,7 +124,7 @@ const ApplyTextarea = styled("textarea")`
   }
 `;
 
-const MessageBtn = styled(Box)`
+const MessageBtn = styled(Box)<{ disabled?: boolean }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -88,10 +134,12 @@ const MessageBtn = styled(Box)`
   border-radius: 4px;
   border: 1px solid #dddddd;
   transition: background-color 0.3s;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 
   &:hover {
-    background-color: #f4f4f4;
+    background-color: ${({ disabled }) =>
+      disabled ? "transparent" : "#f4f4f4"};
   }
 
   &.apply {
@@ -99,7 +147,10 @@ const MessageBtn = styled(Box)`
     border: 0;
     color: white;
     &:hover {
-      background: linear-gradient(to bottom right, #474dc0, #7324bd);
+      background: ${({ disabled }) =>
+        disabled
+          ? "linear-gradient(to bottom right, #666df2, #9134ea)"
+          : "linear-gradient(to bottom right, #474dc0, #7324bd)"};
     }
   }
 
