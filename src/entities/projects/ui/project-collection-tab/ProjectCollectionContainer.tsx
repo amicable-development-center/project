@@ -8,6 +8,8 @@ import {
   DialogActions,
   Typography,
   CircularProgress,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import type { JSX } from "react";
 import { useState, useCallback } from "react";
@@ -45,6 +47,9 @@ const ProjectCollectionContainer = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const getCurrentProjects = useCallback((): ProjectListRes[] => {
     switch (currentTab) {
@@ -98,44 +103,49 @@ const ProjectCollectionContainer = ({
 
   return (
     <Container>
-      <TabHeader>
+      <TabHeader isMobile={isMobile}>
         <ProjectCollectionTab
           currentTab={currentTab}
           onTabChange={onTabChange}
         />
-
-        <ActionButtons>
-          {editMode ? (
-            <>
-              <Button variant="outlined" size="small" onClick={handleToggleAll}>
-                {isAllSelected ? "전체선택해제" : "전체선택"}
-              </Button>
-              <DeleteButton
-                onClick={handleDelete}
-                sx={{ minWidth: 80 }}
-                disabled={selectedIds.length === 0}
-              >
-                삭제
-              </DeleteButton>
+        <Box>
+          <ActionButtons isMobile={isMobile}>
+            {editMode ? (
+              <>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleToggleAll}
+                >
+                  {isAllSelected ? "전체선택해제" : "전체선택"}
+                </Button>
+                <DeleteButton
+                  onClick={handleDelete}
+                  sx={{ minWidth: 80 }}
+                  disabled={selectedIds.length === 0}
+                >
+                  삭제
+                </DeleteButton>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => setEditMode(false)}
+                >
+                  완료
+                </Button>
+              </>
+            ) : (
               <Button
-                variant="text"
+                variant="outlined"
                 size="small"
-                onClick={() => setEditMode(false)}
+                onClick={() => setEditMode(true)}
+                disabled={currentProjects.length === 0}
               >
-                완료
+                편집
               </Button>
-            </>
-          ) : (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => setEditMode(true)}
-              disabled={currentProjects.length === 0}
-            >
-              편집
-            </Button>
-          )}
-        </ActionButtons>
+            )}
+          </ActionButtons>
+        </Box>
       </TabHeader>
 
       <ProjectCollectionTabPanel
@@ -210,19 +220,28 @@ const Container = styled(Box)(() => ({
   display: "flex",
   flex: 1,
   flexDirection: "column",
+  alignItems: "center",
+  width: "100%",
 }));
 
-const TabHeader = styled(Box)(({ theme }) => ({
+const TabHeader = styled(Box)<{ isMobile: boolean }>(({ theme, isMobile }) => ({
   display: "flex",
-  alignItems: "center",
   justifyContent: "space-between",
   marginBottom: theme.spacing(2),
-  gap: theme.spacing(2),
+  gap: isMobile ? theme.spacing(1) : theme.spacing(2),
+  flexDirection: isMobile ? "column" : "row",
+  alignItems: isMobile ? "stretch" : "center",
+  width: "100%",
 }));
 
-const ActionButtons = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(1),
-  flexShrink: 0,
-}));
+const ActionButtons = styled(Box)<{ isMobile: boolean }>(
+  ({ theme, isMobile }) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(1),
+    flexShrink: 0,
+    justifyContent: "flex-end",
+    width: "100%",
+    paddingRight: isMobile ? theme.spacing(0) : theme.spacing(2),
+  })
+);

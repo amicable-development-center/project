@@ -1,4 +1,10 @@
-import { Box, styled, Typography } from "@mui/material";
+import {
+  Box,
+  styled,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import type { JSX } from "react";
 
 import LikedProjectsEmpty from "@entities/projects/ui/liked-projects/LikedProjectsEmpty";
@@ -26,6 +32,8 @@ const LikedProjectsList = ({
   selectedIds = [],
   onSelectProject,
 }: LikedProjectsListProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const {
     currentPage,
     totalPages,
@@ -52,7 +60,7 @@ const LikedProjectsList = ({
 
   return (
     <Container>
-      <ProjectGrid>
+      <ProjectGrid isMobile={isMobile}>
         {paginatedProjects.map((project, index) => (
           <ProjectCard
             key={`${project.id}-${index}`}
@@ -83,16 +91,23 @@ const Container = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(3),
+  width: "100%",
 }));
 
-const ProjectGrid = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "1fr",
-  gap: theme.spacing(2),
-  [theme.breakpoints.up("sm")]: {
-    gridTemplateColumns: "repeat(2, 1fr)",
-  },
-  [theme.breakpoints.up("md")]: {
-    gridTemplateColumns: "repeat(3, 1fr)",
-  },
-}));
+const ProjectGrid = styled(Box)<{ isMobile: boolean }>(
+  ({ theme, isMobile }) => ({
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: theme.spacing(2),
+    ...(isMobile && {
+      justifyItems: "center",
+      maxWidth: "100%",
+    }),
+    [theme.breakpoints.up("sm")]: {
+      gridTemplateColumns: "repeat(2, 1fr)",
+    },
+    [theme.breakpoints.up("md")]: {
+      gridTemplateColumns: "repeat(3, 1fr)",
+    },
+  })
+);

@@ -1,7 +1,15 @@
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Typography, Box, Card, CardContent, styled } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  styled,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import type { JSX } from "react";
 
 import { ProjectCollectionTabType } from "@shared/types/project";
@@ -54,9 +62,11 @@ const EmptyProjectCard = ({
   type,
   message,
 }: EmptyProjectCardProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const config = typeConfig[type];
   return (
-    <StyledCard>
+    <StyledCard isMobile={isMobile}>
       <StyledCardContent>
         <Box
           flex={1}
@@ -102,38 +112,43 @@ const EmptyProjectCard = ({
 
 export default EmptyProjectCard;
 
-const StyledCard = styled(Card)(({ theme }) => ({
-  height: "auto",
-  minHeight: 180,
-  maxWidth: 320,
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  cursor: "pointer",
-  border: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(2.5, 1.5, 0, 1.5),
+const StyledCard = styled(Card)<{ isMobile: boolean }>(
+  ({ theme, isMobile }) => ({
+    height: "auto",
+    minHeight: 180,
+    maxWidth: 320,
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    cursor: "pointer",
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(2.5, 1.5, 0, 1.5),
+    ...(isMobile && {
+      margin: "0 auto",
+    }),
 
-  "&:hover": {
-    transform: "translateY(-0.4rem)",
-    boxShadow:
-      "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-    borderColor: theme.palette.primary.light,
-  },
-
-  [theme.breakpoints.up("sm")]: {
-    flex: 1,
-    maxWidth: 340,
     "&:hover": {
-      transform: "translateY(-0.6rem)",
+      transform: "translateY(-0.4rem)",
+      boxShadow:
+        "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+      borderColor: theme.palette.primary.light,
     },
-  },
 
-  [theme.breakpoints.up("md")]: {
-    maxWidth: 360,
-    maxHeight: 320,
-  },
-}));
+    [theme.breakpoints.up("sm")]: {
+      flex: 1,
+      maxWidth: 340,
+      "&:hover": {
+        transform: "translateY(-0.6rem)",
+      },
+    },
+
+    [theme.breakpoints.up("md")]: {
+      maxWidth: 360,
+      maxHeight: 320,
+    },
+  })
+);
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   height: "100%",

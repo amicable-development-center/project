@@ -1,4 +1,4 @@
-import { Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab, Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
 import { ProjectCollectionTabType } from "@shared/types/project";
@@ -30,6 +30,9 @@ const ProjectCollectionTab = ({
   currentTab,
   onTabChange,
 }: ProjectCollectionTabProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   // enum <-> index 매핑
   const tabIndex = PROJECT_COLLECTION_TABS.findIndex(
     (tab) => tab.type === currentTab
@@ -40,7 +43,7 @@ const ProjectCollectionTab = ({
   };
 
   return (
-    <Box>
+    <TabContainer isMobile={isMobile}>
       <Tabs
         value={tabIndex}
         onChange={handleTabChange}
@@ -61,9 +64,15 @@ const ProjectCollectionTab = ({
           />
         ))}
       </Tabs>
-    </Box>
+    </TabContainer>
   );
 };
 
 export default ProjectCollectionTab;
 export { PROJECT_COLLECTION_TABS };
+
+const TabContainer = styled(Box)<{ isMobile: boolean }>(({ isMobile }) => ({
+  display: "flex",
+  justifyContent: isMobile ? "space-around" : "flex-start",
+  width: "100%",
+}));

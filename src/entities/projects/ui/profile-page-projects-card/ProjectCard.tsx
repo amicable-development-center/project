@@ -26,7 +26,6 @@ import { getProjectApplicantsCount } from "@entities/projects/api/getProjectAppl
 import { type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
-import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
 interface ProjectCardProps {
   project: ProjectListRes;
@@ -60,7 +59,7 @@ const ProjectCard = ({
   applicantsCount: applicantsCountProp,
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // applicantsCountProp이 없을 때만 훅 실행
   const { data: applicantsCountQuery = 0, isLoading: applicantsLoading } =
@@ -79,7 +78,17 @@ const ProjectCard = ({
     <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
       <StyledCardContent>
         <ProjectHeader>
-          <StatusChip label={project.status} color="primary" size="small" />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <StatusChip label={project.status} color="primary" size="small" />
+            {isMobile && simple && (
+              <Typography variant="body1" color="textPrimary">
+                <TextHighlight>
+                  {applicantsLoading ? "-" : applicantsCount}{" "}
+                </TextHighlight>
+                명 지원
+              </Typography>
+            )}
+          </Box>
           {simple && editMode && (
             <Checkbox checked={selected} onChange={onSelect} sx={{ ml: 1 }} />
           )}
@@ -100,20 +109,29 @@ const ProjectCard = ({
             </>
           )}
         </ContentSection>
-        <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
-          {isMobile ? (
-            <UserProfileAvatar
-              name={project.projectOwner?.name}
-              userRole={project.projectOwner?.userRole}
-              avatar={project.projectOwner?.avatar}
-              flexDirection="row"
-            />
-          ) : (
-            <UserProfileWithNamePosition
-              name={project.projectOwner.name}
-              userRole={project.projectOwner.userRole}
-              flexDirection="row"
-            />
+        <Stack
+          flexDirection={"row"}
+          gap={"0.8rem"}
+          alignItems={isMobile && simple ? "center" : "flex-start"}
+          justifyContent="space-between"
+        >
+          <UserProfileAvatar
+            name={project.projectOwner?.name}
+            userRole={project.projectOwner?.userRole}
+            avatar={project.projectOwner?.avatar}
+            flexDirection="row"
+          />
+          {isMobile && simple && (
+            <StyledLink to={`/project/${project.id}`}>
+              <ActionButton
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{ fontSize: "1.1rem" }}
+              >
+                자세히 보기
+              </ActionButton>
+            </StyledLink>
           )}
         </Stack>
         {!simple && (
@@ -147,21 +165,23 @@ const ProjectCard = ({
           </ProjectDetails>
         )}
 
-        <StyledDivider />
+        {!isMobile || !simple ? <StyledDivider /> : null}
 
-        <FooterSection>
-          <Typography variant="body1" color="textPrimary">
-            <TextHighlight>
-              {applicantsLoading ? "-" : applicantsCount}{" "}
-            </TextHighlight>
-            명 지원
-          </Typography>
-          <StyledLink to={`/project/${project.id}`}>
-            <ActionButton variant="contained" color="primary" size="medium">
-              자세히 보기
-            </ActionButton>
-          </StyledLink>
-        </FooterSection>
+        {(!isMobile || !simple) && (
+          <FooterSection>
+            <Typography variant="body1" color="textPrimary">
+              <TextHighlight>
+                {applicantsLoading ? "-" : applicantsCount}{" "}
+              </TextHighlight>
+              명 지원
+            </Typography>
+            <StyledLink to={`/project/${project.id}`}>
+              <ActionButton variant="contained" color="primary" size="medium">
+                자세히 보기
+              </ActionButton>
+            </StyledLink>
+          </FooterSection>
+        )}
       </StyledCardContent>
     </StyledCard>
   );
@@ -186,6 +206,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
     borderColor: theme.palette.primary.light,
   },
 
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    maxWidth: "100%",
+    minHeight: "auto",
+  },
+
   [theme.breakpoints.up("sm")]: {
     flex: 1,
     "&:hover": {
@@ -204,6 +230,11 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(1),
+
+  [theme.breakpoints.down("sm")]: {
+    gap: theme.spacing(0.5),
+    padding: theme.spacing(1.5),
+  },
 
   [theme.breakpoints.up("sm")]: {
     gap: theme.spacing(2),
@@ -237,6 +268,11 @@ const ProjectTitle = styled(Typography)(({ theme }) => ({
   lineHeight: 1.3,
   letterSpacing: "-0.015em",
   color: theme.palette.text.primary,
+
+  [theme.breakpoints.down("sm")]: {
+    marginTop: theme.spacing(1),
+    fontSize: "1.8rem",
+  },
 }));
 
 const OneLineInfo = styled(Typography)(() => ({

@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
 import LikedProjectsList from "@entities/projects/ui/liked-projects/LikedProjectsList";
@@ -32,6 +32,8 @@ const ProjectCollectionTabPanel = ({
   type,
   itemsPerPage,
 }: ProjectCollectionTabPanelProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isActive = value === index;
 
   if (!isActive) {
@@ -43,6 +45,7 @@ const ProjectCollectionTabPanel = ({
   }
   return (
     <TabPanelContainer
+      isMobile={isMobile}
       role="tabpanel"
       id={`project-tabpanel-${index}`}
       aria-labelledby={`project-tab-${index}`}
@@ -63,7 +66,15 @@ const ProjectCollectionTabPanel = ({
 
 export default ProjectCollectionTabPanel;
 
-const TabPanelContainer = styled(Box)(({ theme }) => ({
-  paddingTop: theme.spacing(3),
-  minHeight: "400px",
-}));
+const TabPanelContainer = styled(Box)<{ isMobile: boolean }>(
+  ({ theme, isMobile }) => ({
+    width: "100%",
+    paddingTop: isMobile ? theme.spacing(0) : theme.spacing(3),
+    minHeight: "400px",
+    ...(isMobile && {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    }),
+  })
+);
