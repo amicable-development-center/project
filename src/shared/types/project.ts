@@ -63,12 +63,6 @@ export enum RecruitmentStatus {
   completed = "모집완료",
 }
 
-export interface ToggleProjectApplicationResponse {
-  success: boolean;
-  message: string;
-  applied: boolean;
-}
-
 export interface ProjectApplication {
   projectId: string;
   userId: string;
