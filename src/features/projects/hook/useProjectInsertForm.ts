@@ -51,7 +51,7 @@ const useProjectInsertForm = (): InsertFormResult => {
     techStack: [],
     positions: [],
   });
-  const handleChangeStep2 = (field: keyof Step2Type, value: any) => {
+  const handleChangeStep2 = (field: keyof Step2Type, value: any): void => {
     setFormStep2((prev) => ({ ...prev, [field]: value }));
   };
 

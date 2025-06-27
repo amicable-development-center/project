@@ -29,18 +29,18 @@ const ProjectTechStackCard = ({
   const theme = useTheme();
   const [newTech, setNewTech] = useState("");
 
-  const addTech = () => {
+  const addTech = (): void => {
     if (newTech.trim() && !value.includes(newTech.trim())) {
       onChange([...value, newTech.trim()]);
       setNewTech("");
     }
   };
 
-  const removeTech = (techToRemove: string) => {
+  const removeTech = (techToRemove: string): void => {
     onChange(value.filter((tech) => tech !== techToRemove));
   };
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
       e.preventDefault();
       addTech();

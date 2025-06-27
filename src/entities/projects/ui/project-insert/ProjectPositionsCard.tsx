@@ -52,7 +52,7 @@ const ProjectPositionsCard = ({
   const positions = value.length > 0 ? value : [];
 
   // 포지션 추가
-  const addPosition = () => {
+  const addPosition = (): void => {
     const newPosition: Positions = {
       position: "" as UserRole,
       count: 1,
@@ -63,7 +63,7 @@ const ProjectPositionsCard = ({
   };
 
   // 포지션 삭제
-  const removePosition = (index: number) => {
+  const removePosition = (index: number): void => {
     const newPositions = value.filter((_, i) => i !== index);
     onChange(newPositions);
   };
@@ -73,7 +73,7 @@ const ProjectPositionsCard = ({
     index: number,
     field: keyof Positions,
     newValue: string | number
-  ) => {
+  ): void => {
     const newPositions = [...value];
     if (index < newPositions.length) {
       newPositions[index] = { ...newPositions[index], [field]: newValue };
