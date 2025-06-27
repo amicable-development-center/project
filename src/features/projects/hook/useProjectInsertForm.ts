@@ -3,6 +3,8 @@ import { useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
 
+import { useUserProfile } from "@shared/queries/useUserProfile";
+import { useAuthStore } from "@shared/stores/authStore";
 import {
   ProjectCategory,
   RecruitmentStatus,
@@ -10,7 +12,7 @@ import {
   type ProjectItemInsertReq,
 } from "@shared/types/project";
 import { ExpectedPeriod } from "@shared/types/schedule";
-import { UserExperience } from "@shared/types/user";
+import { type User } from "@shared/types/user";
 
 // 이하 InitData 개선 예정
 type Setp1Type = Pick<
@@ -50,10 +52,11 @@ interface InsertFormResult {
 }
 
 const useProjectInsertForm = (): InsertFormResult => {
-  const { mutate: insertItem, isPending } = useProjectInsert();
+  const user = useAuthStore((state) => state.user);
+  const { data: userProfile } = useUserProfile(user?.uid || "");
+  const { mutate: insertProject, isPending } = useProjectInsert();
 
   const [currentStep, setCurrentStep] = useState(1);
-  // Step1 상태
   // const [formStep1, setFormStep1] = useState<Setp1Type>(initForm1);
   // Step2 상태
   const [formStep2, setFormStep2] = useState<Step2Type>({
@@ -64,6 +67,7 @@ const useProjectInsertForm = (): InsertFormResult => {
   });
   const [formStep3, setFormStep3] = useState<Step3Type>(initForm3);
   const [formStep4, setFormStep4] = useState<Step4Type>(initForm4);
+
 
   const handleChangeStep2 = (field: keyof Step2Type, value: any): void => {
     setFormStep2((prev) => ({ ...prev, [field]: value }));
@@ -91,15 +95,19 @@ const useProjectInsertForm = (): InsertFormResult => {
   };
 
   const submit = async (): Promise<void> => {
+    if (!userProfile) return;
     if (!window.confirm("등록을 완료 하시겠습니까?")) return;
     if (isPending) return;
-    // form 검사 추가 바람
-    insertItem(TestData);
-  };
 
-  // lint에러를 피하기 위한...
-  // 추후에 step3, step4 훅 만들 때 가져다 쓰시라고 미리 만들어놨습니다!
-  console.log(initForm2, initForm3, initForm4);
+    // lint에러를 피하기 위한...
+    // 추후에 step3, step4 훅 만들 때 가져다 쓰시라고 미리 만들어놨습니다!
+    console.log(initForm2, initForm3, initForm4);
+
+    // form 검사 추가 바람
+
+    // projects에 insert
+    insertProject(TestData(userProfile));
+  };
 
   return {
     form: {
@@ -148,14 +156,14 @@ const initForm4 = {
 };
 
 // 테스트용 form 입니다.
-const TestData: ProjectItemInsertReq = {
+const TestData = (user: User): ProjectItemInsertReq => ({
   projectOwner: {
-    id: "user1234",
-    name: "홍길동",
-    userRole: "frontend",
-    email: "test@test.com",
-    experience: UserExperience.junior,
-    avatar: "https://via.placeholder.com/150",
+    id: user.id,
+    name: user.name,
+    userRole: user.userRole,
+    email: user.email,
+    experience: user.experience,
+    avatar: user.avatar,
   },
   applicants: [],
   status: RecruitmentStatus.recruiting,
@@ -208,4 +216,4 @@ const TestData: ProjectItemInsertReq = {
   likedUsers: [],
   category: ProjectCategory.webDevelopment,
   closedDate: Timestamp.now(),
-};
+});
