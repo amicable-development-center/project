@@ -17,10 +17,12 @@ type Setp1Type = Pick<
   ProjectItemInsertReq,
   "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
 >;
-type Step2Type = Pick<
+export type Step2Type = Pick<
   ProjectItemInsertReq,
-  "teamSize" | "expectedPeriod" | "techStack" | "positions"
->;
+  "teamSize" | "techStack" | "positions"
+> & {
+  expectedPeriod: ExpectedPeriod | "";
+};
 
 interface InsertFormResult {
   form: {

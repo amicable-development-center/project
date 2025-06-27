@@ -7,7 +7,7 @@ import { ExpectedPeriod } from "@shared/types/schedule";
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
 
 interface ProjectScheduleCardProps {
-  value: ExpectedPeriod;
+  value: ExpectedPeriod | "";
   onChange: (event: SelectChangeEvent<ExpectedPeriod>) => void;
   large?: boolean;
   style?: CSSProperties;

@@ -2,17 +2,12 @@ import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
 import type { JSX } from "react";
 
+import type { Step2Type } from "@features/projects/hook/useProjectInsertForm";
+
 import ProjectExpectedPeriodCard from "@entities/projects/ui/project-insert/ProjectExpectedPeriodCard";
 import ProjectPositionsCard from "@entities/projects/ui/project-insert/ProjectPositionsCard";
 import ProjectTeamSizeCard from "@entities/projects/ui/project-insert/ProjectTeamSizeCard";
 import ProjectTechStackCard from "@entities/projects/ui/project-insert/ProjectTechStackCard";
-
-import type { ProjectItemInsertReq } from "@shared/types/project";
-
-type Step2Type = Pick<
-  ProjectItemInsertReq,
-  "teamSize" | "expectedPeriod" | "techStack" | "positions"
->;
 
 interface Step2Props {
   form: Step2Type;

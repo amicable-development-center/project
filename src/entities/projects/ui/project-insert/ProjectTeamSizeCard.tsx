@@ -6,8 +6,8 @@ import type { CSSProperties, JSX } from "react";
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
 
 interface ProjectTeamSizeCardProps {
-  value: number;
-  onChange: (event: SelectChangeEvent<number>) => void;
+  value: number; // 받을 때는 number
+  onChange: (e: SelectChangeEvent<string>) => void; // 변경할 때는 string으로 받기
   large?: boolean;
   style?: CSSProperties;
 }
