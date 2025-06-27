@@ -15,44 +15,51 @@ type SetpType = Pick<
   "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
 >;
 
-const Step1 = ({ form }: { form: SetpType }): JSX.Element => {
+interface Step1Props {
+  form: SetpType;
+  onChangeForm: {
+    title: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    oneLineInfo: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    simpleInfo: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    category: (category: string) => void;
+    closedDate: (date: string) => void;
+  };
+}
+
+const Step1 = ({ form, onChangeForm }: Step1Props): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleChange = (): void => {};
 
   return (
     <StepBox>
       <ProjectTitleCard
         value={form.title}
-        onChange={handleChange}
+        onChange={onChangeForm.title}
         large
         style={{ gridColumn: "span 1" }}
       />
       <ProjectOneLineCard
         value={form.oneLineInfo}
-        onChange={handleChange}
+        onChange={onChangeForm.oneLineInfo}
         large
         style={{ gridColumn: "span 1" }}
       />
-      {/* category의 type이 enum이라 콘솔에 경고가 뜹니다 */}
       <ProjectCategoryCard
         value={form.category}
-        onChange={handleChange}
+        onChange={onChangeForm.category}
         large
         style={{ gridColumn: "span 1" }}
       />
       <ProjectDeadlineCard
         value={formatDate(form.closedDate)}
-        onChange={handleChange}
+        onChange={onChangeForm.closedDate}
         large
         style={{ gridColumn: "span 1" }}
       />
       <ProjectSimpleDescCard
         value={form.simpleInfo}
-        onChange={handleChange}
+        onChange={onChangeForm.simpleInfo}
         large
-        // ??
         style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
       />
     </StepBox>

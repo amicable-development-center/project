@@ -28,7 +28,9 @@ const ProjectInsertPage = (): JSX.Element => {
       <StepBox currentStep={page.currentStep} />
 
       {/* Step별 컴포넌트 */}
-      {page.currentStep === 1 && <Step1 form={form.step1} />}
+      {page.currentStep === 1 && (
+        <Step1 form={form.step1} onChangeForm={onChange.step1} />
+      )}
       {page.currentStep === 2 && (
         <Step2 form={form.step2} onChangeForm={onChange.step2} />
       )}

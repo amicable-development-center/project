@@ -16,7 +16,9 @@ interface ApplyFormResult {
   update: {
     title: (e: ChangeEvent<HTMLInputElement>) => void;
     oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
-    simpleInfo: (e: ChangeEvent<HTMLInputElement>) => void;
+    simpleInfo: (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
     category: (category: ProjectCategory) => void;
     closedDate: (date: string) => void;
   };
@@ -41,7 +43,9 @@ const useInsertStep1 = ({ state }: { state?: Setp1Type }): ApplyFormResult => {
     }));
   };
 
-  const updateSimpleInfo = (e: ChangeEvent<HTMLInputElement>): void => {
+  const updateSimpleInfo = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
     setForm1((prev) => ({
       ...prev,
       simpleInfo: e.target.value,
