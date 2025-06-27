@@ -6,6 +6,7 @@ interface LogoBoxProps {
   size?: "small" | "medium" | "large";
   onClick?: () => void;
   showText?: boolean;
+  text?: string;
   className?: string;
 }
 
@@ -13,6 +14,7 @@ const LogoBox = ({
   size = "medium",
   onClick,
   showText = true,
+  text = "프로젝트 잼",
   className,
 }: LogoBoxProps): JSX.Element => {
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const LogoBox = ({
   return (
     <StyledLogoBox onClick={handleClick} $size={size} className={className}>
       <LogoImage src="/public/logo.svg" alt="프로젝트 잼" $size={size} />
-      {showText && <LogoText $size={size}>프로젝트 잼</LogoText>}
+      {showText && <LogoText $size={size}>{text}</LogoText>}
     </StyledLogoBox>
   );
 };

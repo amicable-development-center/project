@@ -116,12 +116,13 @@ const ProjectCollectionContainer = ({
                   variant="outlined"
                   size="small"
                   onClick={handleToggleAll}
+                  sx={{ whiteSpace: "nowrap", minWidth: 80 }}
                 >
                   {isAllSelected ? "전체선택해제" : "전체선택"}
                 </Button>
                 <DeleteButton
                   onClick={handleDelete}
-                  sx={{ minWidth: 80 }}
+                  sx={{ minWidth: 80, whiteSpace: "nowrap" }}
                   disabled={selectedIds.length === 0}
                 >
                   삭제
@@ -130,6 +131,7 @@ const ProjectCollectionContainer = ({
                   variant="text"
                   size="small"
                   onClick={() => setEditMode(false)}
+                  sx={{ whiteSpace: "nowrap" }}
                 >
                   완료
                 </Button>

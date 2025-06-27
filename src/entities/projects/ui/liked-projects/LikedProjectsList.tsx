@@ -1,10 +1,4 @@
-import {
-  Box,
-  styled,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
 import LikedProjectsEmpty from "@entities/projects/ui/liked-projects/LikedProjectsEmpty";
@@ -49,7 +43,6 @@ const LikedProjectsList = ({
     return (
       <Container>
         <LoadingSpinner />
-        <Typography>좋아요한 프로젝트를 불러오는 중...</Typography>
       </Container>
     );
   }
