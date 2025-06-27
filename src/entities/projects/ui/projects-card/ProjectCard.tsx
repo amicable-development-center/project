@@ -15,12 +15,15 @@ import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 
+import { useGetProjectLikedUsers } from "@entities/projects/queries/useGetProjectLike";
+
 import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import {
   AccessTimeIcon,
   LocationPinIcon,
   PeopleAltIcon,
+  FavoriteBorderIcon,
 } from "@shared/ui/icons/CommonIcons";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
@@ -37,6 +40,7 @@ const ProjectCard = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
   const isRecruiting = project.status === RecruitmentStatus.recruiting;
+  const { data: likedUsers } = useGetProjectLikedUsers(project.id);
 
   return (
     <StyledCard simple={simple}>
@@ -47,6 +51,19 @@ const ProjectCard = ({
             color={isRecruiting ? "primary" : "default"}
             size="small"
           />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 0.5,
+            }}
+          >
+            <FavoriteBorderIcon fontSize="large" color="error" />
+            <Typography variant="body1" color="text.secondary" fontWeight={500}>
+              {likedUsers?.length || 0}
+            </Typography>
+          </Box>
         </ProjectHeader>
 
         <ContentSection>
@@ -134,13 +151,15 @@ const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== "simple",
 })<{ simple?: boolean }>(({ theme, simple }) => ({
   height: "100%",
-  flex: 1,
-  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
   display: "flex",
   flexDirection: "column",
   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   cursor: "pointer",
   border: `1px solid ${theme.palette.divider}`,
+  boxSizing: "border-box",
+  overflow: "hidden",
   ...(simple && { minHeight: 260 }),
 
   "&:hover": {
@@ -149,25 +168,13 @@ const StyledCard = styled(Card, {
       "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
     borderColor: theme.palette.primary.light,
   },
-
-  [theme.breakpoints.up("sm")]: {
-    flex: 1,
-    "&:hover": {
-      transform: "translateY(-0.6rem)",
-    },
-  },
-
-  [theme.breakpoints.up("md")]: {
-    maxWidth: "48rem",
-    maxHeight: "54rem",
-  },
 }));
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(1),
+  gap: theme.spacing(1.5),
 
   [theme.breakpoints.up("sm")]: {
     gap: theme.spacing(2),
@@ -176,7 +183,7 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 
 const ProjectHeader = styled(Box)(() => ({
   display: "flex",
-  justifyContent: "flex-start",
+  justifyContent: "space-between",
   alignItems: "center",
 }));
 
@@ -195,11 +202,15 @@ const ProjectTitle = styled(Typography)(({ theme }) => ({
   lineHeight: 1.3,
   letterSpacing: "-0.015em",
   color: theme.palette.text.primary,
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
 }));
 
 const OneLineInfo = styled(Typography)(() => ({
   lineHeight: 1.4,
   fontWeight: 600,
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
 }));
 
 const SimpleInfo = styled(Typography)(() => ({
@@ -208,6 +219,8 @@ const SimpleInfo = styled(Typography)(() => ({
   display: "-webkit-box",
   WebkitLineClamp: 2,
   WebkitBoxOrient: "vertical",
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
 }));
 
 const UserProfileContainer = styled(Stack)(({ theme }) => ({

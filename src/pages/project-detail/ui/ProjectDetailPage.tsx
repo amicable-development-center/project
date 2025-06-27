@@ -32,11 +32,6 @@ const ProjectDetailPage = (): JSX.Element | null => {
     isError,
   } = useProjectsItem({ id: id || null });
 
-  const projectLikeValues = {
-    status: (project?.status as RecruitmentStatus) || "모집중",
-    likedUsers: project?.likedUsers || [],
-  };
-
   const projectInfoValues = !project
     ? null
     : {
@@ -51,6 +46,10 @@ const ProjectDetailPage = (): JSX.Element | null => {
 
   const techStackValues = {
     techStack: project?.techStack || [],
+  };
+
+  const projectLikeValues = {
+    status: (project?.status as RecruitmentStatus) || "모집중",
   };
 
   const descriptionlValues = {
