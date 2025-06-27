@@ -10,6 +10,7 @@ import type {
   UpdateAllFormType,
 } from "@features/projects/type/project-update";
 
+import { scrollToTop } from "@shared/libs/utils/pagination";
 import { projectOwnerData } from "@shared/libs/utils/projectInsert";
 import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
@@ -46,25 +47,35 @@ const useProjectInsertForm = (): InsertFormResult => {
   };
 
   const handlePrev = (): void => {
-    setCurrentStep((prev) => prev - 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (currentStep !== 1) {
+      setCurrentStep((prev) => prev - 1);
+      scrollToTop();
+    }
   };
 
-  const handleNext = (): void => {
+  const handleNext = async (): Promise<void> => {
     if (currentStep !== 4) {
       setCurrentStep((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
+      scrollToTop();
       return;
     }
 
-    submit();
+    await submit();
   };
 
   const submit = async (): Promise<void> => {
-    if (!userProfile) return;
-    if (!window.confirm("등록을 완료 하시겠습니까?")) return;
-    if (isPending) return;
+    if (!userProfile) {
+      console.log("비로그인");
+      return;
+    }
+
+    if (isPending) {
+      console.log("로딩중");
+      return;
+    }
+
+    const isRealInsert = window.confirm("등록을 완료 하시겠습니까?");
+    if (!isRealInsert) return;
 
     const finalData: ProjectItemInsertReq = {
       ...projectOwnerData(userProfile),
@@ -78,7 +89,6 @@ const useProjectInsertForm = (): InsertFormResult => {
     };
 
     // projects에 insert
-    return;
     insertProject(finalData);
     // insertProject(TestData(userProfile)); // 테스트 데이터
   };

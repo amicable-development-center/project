@@ -18,3 +18,7 @@ export const calculateTotalPages = (
   if (totalItems <= 0) return 0;
   return Math.ceil(totalItems / itemsPerPage);
 };
+
+export const scrollToTop = (): void => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
