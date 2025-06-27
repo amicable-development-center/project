@@ -1,6 +1,3 @@
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import LocationPinIcon from "@mui/icons-material/LocationPin";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {
   Button,
   Card,
@@ -18,30 +15,38 @@ import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 
-import { type ProjectListRes } from "@shared/types/project";
+import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
+import {
+  AccessTimeIcon,
+  LocationPinIcon,
+  PeopleAltIcon,
+} from "@shared/ui/icons/CommonIcons";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
 interface ProjectCardProps {
   project: ProjectListRes;
   simple?: boolean;
-  sx?: any;
 }
 
 const ProjectCard = ({
   project,
   simple = false,
-  sx,
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
+  const isRecruiting = project.status === RecruitmentStatus.recruiting;
 
   return (
-    <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
+    <StyledCard simple={simple}>
       <StyledCardContent>
         <ProjectHeader>
-          <StatusChip label={project.status} color="primary" size="small" />
+          <StatusChip
+            label={project.status}
+            color={isRecruiting ? "primary" : "default"}
+            size="small"
+          />
         </ProjectHeader>
 
         <ContentSection>
@@ -59,7 +64,7 @@ const ProjectCard = ({
             </>
           )}
         </ContentSection>
-        <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
+        <UserProfileContainer>
           {isMobile ? (
             <UserProfileAvatar
               name={project.projectOwner.name}
@@ -74,7 +79,7 @@ const ProjectCard = ({
               flexDirection="row"
             />
           )}
-        </Stack>
+        </UserProfileContainer>
         {!simple && (
           <DragScrollContainer>
             {project.techStack.map((stack, index) => (
@@ -125,7 +130,9 @@ const ProjectCard = ({
 
 export default memo(ProjectCard);
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== "simple",
+})<{ simple?: boolean }>(({ theme, simple }) => ({
   height: "100%",
   flex: 1,
   width: "100%",
@@ -134,6 +141,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   cursor: "pointer",
   border: `1px solid ${theme.palette.divider}`,
+  ...(simple && { minHeight: 260 }),
 
   "&:hover": {
     transform: "translateY(-0.4rem)",
@@ -172,15 +180,9 @@ const ProjectHeader = styled(Box)(() => ({
   alignItems: "center",
 }));
 
-const StatusChip = styled(Chip)(({ theme }) => ({
+const StatusChip = styled(Chip)(() => ({
   fontWeight: 600,
   letterSpacing: "0.025em",
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({
@@ -206,6 +208,12 @@ const SimpleInfo = styled(Typography)(() => ({
   display: "-webkit-box",
   WebkitLineClamp: 2,
   WebkitBoxOrient: "vertical",
+}));
+
+const UserProfileContainer = styled(Stack)(({ theme }) => ({
+  flexDirection: "row",
+  gap: theme.spacing(1),
+  alignItems: "flex-start",
 }));
 
 const TechChip = styled(Chip)(({ theme }) => ({

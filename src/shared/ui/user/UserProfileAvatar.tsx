@@ -1,5 +1,6 @@
 import { Avatar, Box, styled } from "@mui/material";
 import type { CSSProperties, JSX } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 
 import type { User } from "@shared/types/user";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
@@ -15,9 +16,21 @@ const UserProfileAvatar = ({
   avatar,
   flexDirection = "row",
 }: UserProfileAvatarProps): JSX.Element => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = useCallback((): void => {
+    setImageError(true);
+  }, []);
+
+  const avatarProps = useMemo(() => {
+    return imageError || !avatar
+      ? { children: name.charAt(0).toUpperCase() }
+      : { src: avatar, onError: handleImageError };
+  }, [imageError, avatar, name, handleImageError]);
+
   return (
     <UserProfileAvatarContainer>
-      <Avatar src={avatar} />
+      <Avatar {...avatarProps} />
       <UserProfileWithNamePosition
         name={name}
         userRole={userRole}
@@ -27,7 +40,7 @@ const UserProfileAvatar = ({
   );
 };
 
-export default UserProfileAvatar;
+export default memo(UserProfileAvatar);
 
 const UserProfileAvatarContainer = styled(Box)(() => ({
   display: "flex",

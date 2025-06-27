@@ -1,10 +1,19 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Box, Button, styled, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  styled,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { type JSX } from "react";
 
 import usePagination from "@shared/hooks/usePagination";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizIcon,
+} from "@shared/ui/icons/CommonIcons";
 
 interface PaginationProps {
   currentPage: number;
@@ -18,14 +27,17 @@ const Pagination = ({
   totalPages,
   onPageChange,
   disabled = false,
-}: PaginationProps): JSX.Element => {
+}: PaginationProps): JSX.Element | null => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const { pageNumbers, canGoPrev, canGoNext } = usePagination({
     currentPage,
     totalPages,
   });
 
   if (totalPages <= 1) {
-    return <></>;
+    return null;
   }
 
   return (
@@ -33,7 +45,7 @@ const Pagination = ({
       <NavButton
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!canGoPrev || disabled}
-        size="medium"
+        size={isMobile ? "large" : "medium"}
       >
         <ChevronLeftIcon />
       </NavButton>
@@ -41,16 +53,17 @@ const Pagination = ({
         {pageNumbers.map((page, index) => (
           <Box key={index}>
             {page === "ellipsis" ? (
-              <EllipsisButton disabled>
+              <EllipsisButton disabled size={isMobile ? "large" : "medium"}>
                 <MoreHorizIcon fontSize="medium" />
               </EllipsisButton>
             ) : (
               <PageButton
                 variant={page === currentPage ? "contained" : "outlined"}
-                size="medium"
+                size={isMobile ? "large" : "medium"}
                 onClick={() => onPageChange(page)}
                 disabled={disabled}
                 $isActive={page === currentPage}
+                $isMobile={isMobile}
               >
                 {page}
               </PageButton>
@@ -61,7 +74,7 @@ const Pagination = ({
       <NavButton
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!canGoNext || disabled}
-        size="medium"
+        size={isMobile ? "large" : "medium"}
       >
         <ChevronRightIcon />
       </NavButton>
@@ -85,12 +98,15 @@ const PageNumbersContainer = styled(Box)(() => ({
   gap: "0.5rem",
 }));
 
-const PageButton = styled(Button)<{ $isActive: boolean }>(
-  ({ theme, $isActive }) => ({
-    minWidth: "3rem",
-    height: "3rem",
+const PageButton = styled(Button, {
+  shouldForwardProp: (prop) =>
+    !["$isActive", "$isMobile"].includes(prop as string),
+})<{ $isActive: boolean; $isMobile: boolean }>(
+  ({ theme, $isActive, $isMobile }) => ({
+    minWidth: $isMobile ? "3.5rem" : "3rem",
+    height: $isMobile ? "3.5rem" : "3rem",
     padding: "0",
-    fontSize: "1rem",
+    fontSize: $isMobile ? "1.1rem" : "1rem",
     fontWeight: $isActive ? 600 : 500,
     borderRadius: "0.5rem",
     ...($isActive && {
@@ -119,6 +135,11 @@ const NavButton = styled(IconButton)(({ theme }) => ({
     boxShadow: theme.shadows[1],
   },
   transition: "all 0.2s ease-in-out",
+
+  [theme.breakpoints.down("sm")]: {
+    minWidth: "3.5rem",
+    height: "3.5rem",
+  },
 }));
 
 const EllipsisButton = styled(IconButton)(() => ({

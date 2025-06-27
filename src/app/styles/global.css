@@ -59,3 +59,11 @@ body {
 *::after {
   box-sizing: inherit;
 }
+
+body.page-loading {
+  cursor: wait;
+}
+
+body.page-loading * {
+  cursor: wait !important;
+}
