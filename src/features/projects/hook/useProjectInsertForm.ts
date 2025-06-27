@@ -73,6 +73,10 @@ const useProjectInsertForm = (): InsertFormResult => {
     insertItem(TestData);
   };
 
+  // lint에러를 피하기 위한...
+  // 추후에 step3, step4 훅 만들 때 가져다 쓰시라고 미리 만들어놨습니다!
+  console.log(initForm2, initForm3, initForm4);
+
   return {
     form: {
       step1: initForm1,
@@ -94,10 +98,25 @@ export default useProjectInsertForm;
 
 const initForm1 = {
   title: "",
-  oneLineInfo: "",
   category: ProjectCategory.webDevelopment,
-  closedDate: Timestamp.now(),
   simpleInfo: "",
+  closedDate: Timestamp.now(),
+  oneLineInfo: "",
+};
+const initForm2 = {
+  teamSize: 0,
+  techStack: [],
+  positions: [],
+  expectedPeriod: ExpectedPeriod.oneMonth,
+};
+const initForm3 = {
+  description: "",
+  schedules: [],
+};
+const initForm4 = {
+  workflow: Workflow.online,
+  requirements: [],
+  preferentialTreatment: [],
 };
 
 // 테스트용 form 입니다.
