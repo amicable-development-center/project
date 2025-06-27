@@ -106,7 +106,7 @@ const ProjectTechStackCard = ({
           disabled={!newTech.trim()}
           sx={{
             minWidth: 48,
-            height: 40,
+            height: 46,
             backgroundColor: "#2563EB",
             "&:hover": { backgroundColor: "#1d4ed8" },
           }}
