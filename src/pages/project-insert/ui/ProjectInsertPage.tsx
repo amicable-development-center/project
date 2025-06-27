@@ -17,7 +17,7 @@ import Step3 from "@features/projects/ui/project-insert/Step3";
 import Step4 from "@features/projects/ui/project-insert/Step4";
 
 const ProjectInsertPage = (): JSX.Element => {
-  const { form, page, submit } = useProjectInsert();
+  const { form, page, submit, onChange } = useProjectInsert();
 
   return (
     <MainContainer>
@@ -29,7 +29,9 @@ const ProjectInsertPage = (): JSX.Element => {
 
       {/* Step별 컴포넌트 */}
       {page.currentStep === 1 && <Step1 form={form.step1} />}
-      {page.currentStep === 2 && <Step2 />}
+      {page.currentStep === 2 && (
+        <Step2 form={form.step2} onChangeForm={onChange.step2} />
+      )}
       {page.currentStep === 3 && <Step3 />}
       {page.currentStep === 4 && <Step4 />}
 
