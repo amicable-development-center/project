@@ -44,22 +44,21 @@ const UserProfileProjectList = ({
 
   const { appliedProjects } = useProjectStore();
 
-  const { data: myLikedProjectsWithDetails } =
-    useGetMyLikedProjectsWithDetails();
+  const { data: myLikedProjects } = useGetMyLikedProjectsWithDetails();
 
   const ITEMS_PER_PAGE = 6;
 
   const paginatedLikedProjects = useMemo(() => {
-    if (!myLikedProjectsWithDetails) return [];
+    if (!myLikedProjects) return [];
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    return myLikedProjectsWithDetails.slice(startIndex, endIndex);
-  }, [myLikedProjectsWithDetails, currentPage]);
+    return myLikedProjects.slice(startIndex, endIndex);
+  }, [myLikedProjects, currentPage]);
 
   const totalLikedPages = useMemo(() => {
-    if (!myLikedProjectsWithDetails) return 0;
-    return Math.ceil(myLikedProjectsWithDetails.length / ITEMS_PER_PAGE);
-  }, [myLikedProjectsWithDetails]);
+    if (!myLikedProjects) return 0;
+    return Math.ceil(myLikedProjects.length / ITEMS_PER_PAGE);
+  }, [myLikedProjects]);
 
   const currentProjects = tab === 0 ? paginatedLikedProjects : appliedProjects;
   const allIds = currentProjects.map((p) => p.id);
@@ -138,7 +137,7 @@ const UserProfileProjectList = ({
       </Box>
       {tab === 0 && (
         <ProjectTabPanel
-          projects={myLikedProjectsWithDetails || []}
+          projects={paginatedLikedProjects}
           emptyMessage="아직 관심 프로젝트가 없습니다."
           editMode={editMode}
           selectedIds={selectedIds}
@@ -146,8 +145,8 @@ const UserProfileProjectList = ({
         />
       )}
       {tab === 0 &&
-        myLikedProjectsWithDetails &&
-        myLikedProjectsWithDetails.length > ITEMS_PER_PAGE && (
+        myLikedProjects &&
+        myLikedProjects.length > ITEMS_PER_PAGE && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalLikedPages}
@@ -163,6 +162,7 @@ const UserProfileProjectList = ({
           onSelectProject={handleSelectProject}
         />
       )}
+      {/* 삭제 확인 다이얼로그 */}
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
         <DialogContent>
