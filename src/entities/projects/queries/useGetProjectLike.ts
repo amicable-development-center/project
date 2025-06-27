@@ -44,7 +44,7 @@ export const useGetMyLikedProjectsIds = (): UseQueryResult<string[], Error> => {
   const user = useAuthStore((state) => state.user);
 
   return useQuery({
-    queryKey: [queryKeys.myLikedProjects],
+    queryKey: [queryKeys.myLikedProjects, "ids"],
     queryFn: () => getMyLikedProjectsIds(user?.uid),
     enabled: !!user,
   });
@@ -57,7 +57,7 @@ export const useGetMyLikedProjectsWithDetails = (): UseQueryResult<
   const user = useAuthStore((state) => state.user);
 
   return useQuery({
-    queryKey: [queryKeys.myLikedProjects],
+    queryKey: [queryKeys.myLikedProjects, "details"],
     queryFn: () => getMyLikedProjectsWithDetails(user?.uid),
     enabled: !!user,
   });

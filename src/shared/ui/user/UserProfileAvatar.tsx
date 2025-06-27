@@ -5,8 +5,10 @@ import { useState, useCallback, useMemo, memo } from "react";
 import type { User } from "@shared/types/user";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
-interface UserProfileAvatarProps
-  extends Pick<User, "name" | "userRole" | "avatar"> {
+interface UserProfileAvatarProps {
+  name?: string;
+  userRole: User["userRole"];
+  avatar?: User["avatar"];
   flexDirection?: CSSProperties["flexDirection"];
 }
 
@@ -23,8 +25,10 @@ const UserProfileAvatar = ({
   }, []);
 
   const avatarProps = useMemo(() => {
+    const fallbackText =
+      name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
     return imageError || !avatar
-      ? { children: name.charAt(0).toUpperCase() }
+      ? { children: fallbackText }
       : { src: avatar, onError: handleImageError };
   }, [imageError, avatar, name, handleImageError]);
 
@@ -32,7 +36,7 @@ const UserProfileAvatar = ({
     <UserProfileAvatarContainer>
       <Avatar {...avatarProps} />
       <UserProfileWithNamePosition
-        name={name}
+        name={name || ""}
         userRole={userRole}
         flexDirection={flexDirection}
       />

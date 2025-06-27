@@ -76,9 +76,9 @@ const ProjectCard = ({
         <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
           {isMobile ? (
             <UserProfileAvatar
-              name={project.projectOwner.name}
-              userRole={project.projectOwner.userRole}
-              avatar={project.projectOwner.avatar}
+              name={project.projectOwner?.name}
+              userRole={project.projectOwner?.userRole}
+              avatar={project.projectOwner?.avatar}
               flexDirection="row"
             />
           ) : (
@@ -124,7 +124,7 @@ const ProjectCard = ({
 
         <FooterSection>
           <Typography variant="body1" color="textPrimary">
-            <TextHighlight>{project.applicants.length}명</TextHighlight> 지원
+            <TextHighlight>명</TextHighlight> 지원
           </Typography>
           <StyledLink to={`/project/${project.id}`}>
             <ActionButton variant="contained" color="primary" size="medium">

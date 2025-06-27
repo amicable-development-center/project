@@ -64,7 +64,6 @@ export const getMyLikedProjectsIds = async (
   }
 };
 
-// 프로젝트 ID들로 실제 프로젝트 정보 가져오기
 export const getProjectsByIds = async (
   projectIds: string[]
 ): Promise<ProjectListRes[]> => {

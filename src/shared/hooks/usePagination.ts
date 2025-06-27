@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface UsePaginationProps {
@@ -24,6 +24,23 @@ interface UsePaginationWithStateProps {
 interface UsePaginationWithStateReturn extends UsePaginationReturn {
   currentPage: number;
   totalPages: number;
+  setPage: (page: number) => void;
+  goToReset: () => void;
+  goFastPrev: () => void;
+  goFastNext: () => void;
+}
+
+interface UseArrayPaginationProps<T> {
+  data: T[];
+  itemsPerPage?: number;
+  maxVisiblePages?: number;
+}
+
+interface UseArrayPaginationReturn<T> extends UsePaginationReturn {
+  currentPage: number;
+  totalPages: number;
+  paginatedData: T[];
+  isEmpty: boolean;
   setPage: (page: number) => void;
   goToReset: () => void;
   goFastPrev: () => void;
@@ -173,6 +190,138 @@ export const usePaginationWithState = ({
   return {
     currentPage,
     totalPages,
+    pageNumbers,
+    canGoPrev,
+    canGoNext,
+    canGoFastPrev,
+    canGoFastNext,
+    setPage,
+    goToReset,
+    goFastPrev,
+    goFastNext,
+  };
+};
+
+export const useLocalPagination = ({
+  totalCount,
+  perPage = 6,
+  maxVisiblePages = 5,
+}: UsePaginationWithStateProps): UsePaginationWithStateReturn => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(totalCount / perPage);
+
+  const setPage = (page: number): void => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
+  const goToReset = (): void => {
+    setCurrentPage(1);
+  };
+
+  const goFastPrev = (): void => {
+    const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+    const prevBlockLastPage = currentBlock * maxVisiblePages;
+    const newPage = Math.max(1, prevBlockLastPage);
+    setPage(newPage);
+  };
+
+  const goFastNext = (): void => {
+    const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+    const nextBlockFirstPage = (currentBlock + 1) * maxVisiblePages + 1;
+    const newPage = Math.min(totalPages, nextBlockFirstPage);
+    setPage(newPage);
+  };
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const { pageNumbers, canGoPrev, canGoNext, canGoFastPrev, canGoFastNext } =
+    usePagination({
+      currentPage,
+      totalPages,
+      maxVisiblePages,
+    });
+
+  return {
+    currentPage,
+    totalPages,
+    pageNumbers,
+    canGoPrev,
+    canGoNext,
+    canGoFastPrev,
+    canGoFastNext,
+    setPage,
+    goToReset,
+    goFastPrev,
+    goFastNext,
+  };
+};
+
+export const useArrayPagination = <T>({
+  data,
+  itemsPerPage = 6,
+  maxVisiblePages = 5,
+}: UseArrayPaginationProps<T>): UseArrayPaginationReturn<T> => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const isEmpty = !data || data.length === 0;
+  const totalPages = isEmpty ? 0 : Math.ceil(data.length / itemsPerPage);
+
+  const paginatedData = useMemo(() => {
+    if (isEmpty) return [];
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  }, [data, currentPage, itemsPerPage, isEmpty]);
+
+  const setPage = useCallback(
+    (page: number): void => {
+      if (page < 1 || page > totalPages) return;
+      setCurrentPage(page);
+    },
+    [totalPages]
+  );
+
+  const goToReset = useCallback((): void => {
+    setCurrentPage(1);
+  }, []);
+
+  const goFastPrev = useCallback((): void => {
+    const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+    const prevBlockLastPage = currentBlock * maxVisiblePages;
+    const newPage = Math.max(1, prevBlockLastPage);
+    setPage(newPage);
+  }, [currentPage, maxVisiblePages, setPage]);
+
+  const goFastNext = useCallback((): void => {
+    const currentBlock = Math.floor((currentPage - 1) / maxVisiblePages);
+    const nextBlockFirstPage = (currentBlock + 1) * maxVisiblePages + 1;
+    const newPage = Math.min(totalPages, nextBlockFirstPage);
+    setPage(newPage);
+  }, [currentPage, maxVisiblePages, totalPages, setPage]);
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const { pageNumbers, canGoPrev, canGoNext, canGoFastPrev, canGoFastNext } =
+    usePagination({
+      currentPage,
+      totalPages,
+      maxVisiblePages,
+    });
+
+  return {
+    currentPage,
+    totalPages,
+    paginatedData,
+    isEmpty,
     pageNumbers,
     canGoPrev,
     canGoNext,

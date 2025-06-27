@@ -1,11 +1,47 @@
 import { create } from "zustand";
 
-export const useLikeStore = create<LikeStore>((set) => ({
-  likedProjects: [],
-  setLikedProjects: (projects) => set({ likedProjects: projects }),
-}));
-
 interface LikeStore {
-  likedProjects: string[];
-  setLikedProjects: (projects: string[]) => void;
+  likedProjectIds: string[];
+  likedProjectsCount: number;
+  setLikedProjectIds: (projectIds: string[]) => void;
+  addLikedProject: (projectId: string) => void;
+  removeLikedProject: (projectId: string) => void;
+  isProjectLiked: (projectId: string) => boolean;
 }
+
+export const useLikeStore = create<LikeStore>((set, get) => ({
+  likedProjectIds: [],
+  likedProjectsCount: 0,
+
+  setLikedProjectIds: (projectIds) =>
+    set({
+      likedProjectIds: projectIds,
+      likedProjectsCount: projectIds.length,
+    }),
+
+  addLikedProject: (projectId) =>
+    set((state) => {
+      if (!state.likedProjectIds.includes(projectId)) {
+        const newIds = [...state.likedProjectIds, projectId];
+        return {
+          likedProjectIds: newIds,
+          likedProjectsCount: newIds.length,
+        };
+      }
+      return state;
+    }),
+
+  removeLikedProject: (projectId) =>
+    set((state) => {
+      const newIds = state.likedProjectIds.filter((id) => id !== projectId);
+      return {
+        likedProjectIds: newIds,
+        likedProjectsCount: newIds.length,
+      };
+    }),
+
+  isProjectLiked: (projectId) => {
+    const { likedProjectIds } = get();
+    return likedProjectIds.includes(projectId);
+  },
+}));

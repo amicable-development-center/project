@@ -42,31 +42,26 @@ const UserProfileProjectList = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    likeProjects,
-    appliedProjects,
-    removeLikeProjects,
-    removeAppliedProjects,
-  } = useProjectStore();
+  const { appliedProjects } = useProjectStore();
 
-  const { data: myLikedProjects } = useGetMyLikedProjectsWithDetails();
+  const { data: myLikedProjectsWithDetails } =
+    useGetMyLikedProjectsWithDetails();
 
-  // 페이지네이션 계산
   const ITEMS_PER_PAGE = 6;
 
   const paginatedLikedProjects = useMemo(() => {
-    if (!myLikedProjects) return [];
+    if (!myLikedProjectsWithDetails) return [];
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    return myLikedProjects.slice(startIndex, endIndex);
-  }, [myLikedProjects, currentPage]);
+    return myLikedProjectsWithDetails.slice(startIndex, endIndex);
+  }, [myLikedProjectsWithDetails, currentPage]);
 
   const totalLikedPages = useMemo(() => {
-    if (!myLikedProjects) return 0;
-    return Math.ceil(myLikedProjects.length / ITEMS_PER_PAGE);
-  }, [myLikedProjects]);
+    if (!myLikedProjectsWithDetails) return 0;
+    return Math.ceil(myLikedProjectsWithDetails.length / ITEMS_PER_PAGE);
+  }, [myLikedProjectsWithDetails]);
 
-  const currentProjects = tab === 0 ? likeProjects : appliedProjects;
+  const currentProjects = tab === 0 ? paginatedLikedProjects : appliedProjects;
   const allIds = currentProjects.map((p) => p.id);
   const isAllSelected =
     selectedIds.length === allIds.length && allIds.length > 0;
@@ -87,21 +82,13 @@ const UserProfileProjectList = ({
   const handleConfirmDelete = useCallback(async () => {
     if (tab === 0) {
       await onDeleteProjects("likeProjects", selectedIds);
-      removeLikeProjects(selectedIds);
     } else {
       await onDeleteProjects("appliedProjects", selectedIds);
-      removeAppliedProjects(selectedIds);
     }
     setOpenDialog(false);
     setSelectedIds([]);
     setSnackbarOpen(true);
-  }, [
-    tab,
-    selectedIds,
-    onDeleteProjects,
-    removeLikeProjects,
-    removeAppliedProjects,
-  ]);
+  }, [tab, selectedIds, onDeleteProjects]);
 
   return (
     <Box flex={1}>
@@ -151,7 +138,7 @@ const UserProfileProjectList = ({
       </Box>
       {tab === 0 && (
         <ProjectTabPanel
-          projects={paginatedLikedProjects}
+          projects={myLikedProjectsWithDetails || []}
           emptyMessage="아직 관심 프로젝트가 없습니다."
           editMode={editMode}
           selectedIds={selectedIds}
@@ -159,8 +146,8 @@ const UserProfileProjectList = ({
         />
       )}
       {tab === 0 &&
-        myLikedProjects &&
-        myLikedProjects.length > ITEMS_PER_PAGE && (
+        myLikedProjectsWithDetails &&
+        myLikedProjectsWithDetails.length > ITEMS_PER_PAGE && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalLikedPages}
@@ -176,7 +163,6 @@ const UserProfileProjectList = ({
           onSelectProject={handleSelectProject}
         />
       )}
-      {/* 삭제 확인 다이얼로그 */}
       <Dialog open={openDialog} onClose={handleCancelDelete}>
         <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
         <DialogContent>

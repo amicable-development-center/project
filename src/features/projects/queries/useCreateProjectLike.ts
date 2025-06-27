@@ -12,6 +12,7 @@ import { useGetProjectLike } from "@entities/projects/queries/useGetProjectLike"
 
 import queryKeys from "@shared/react-query/queryKey";
 import { useAuthStore } from "@shared/stores/authStore";
+import { useLikeStore } from "@shared/stores/likeStore";
 import type { ToggleProjectLikeResponse } from "@shared/types/like";
 
 const DEBOUNCE_DELAY_MS = 100;
@@ -40,6 +41,13 @@ export const useToggleProjectLikeSync = (): UseMutationResult<
       queryClient.invalidateQueries({
         queryKey: [queryKeys.project, projectId],
       });
+      // 좋아요 관련 데이터도 refetch
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.myLikedProjects, "ids"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.myLikedProjects, "details"],
+      });
     },
   });
 };
@@ -54,6 +62,7 @@ export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
   const { id: projectId } = useParams();
   const { data: serverLikeStatus, isLoading } = useGetProjectLike();
   const { mutate: syncToServer } = useToggleProjectLikeSync();
+  const { addLikedProject, removeLikedProject } = useLikeStore();
 
   const [optimisticLikeStatus, setOptimisticLikeStatus] = useState<
     boolean | undefined
@@ -79,7 +88,15 @@ export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
   const toggleLike = useCallback(() => {
     if (!projectId || isLoading) return;
 
-    setOptimisticLikeStatus((prev) => !prev);
+    const newLikeStatus = !optimisticLikeStatus;
+    setOptimisticLikeStatus(newLikeStatus);
+
+    // 전역 상태도 업데이트
+    if (newLikeStatus) {
+      addLikedProject(projectId);
+    } else {
+      removeLikedProject(projectId);
+    }
 
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -93,7 +110,14 @@ export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
         },
       });
     }, DEBOUNCE_DELAY_MS);
-  }, [projectId, isLoading, syncToServer]);
+  }, [
+    projectId,
+    isLoading,
+    optimisticLikeStatus,
+    addLikedProject,
+    removeLikedProject,
+    syncToServer,
+  ]);
 
   const displayLikeStatus = optimisticLikeStatus ?? serverLikeStatus ?? false;
 

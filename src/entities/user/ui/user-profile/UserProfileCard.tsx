@@ -11,6 +11,7 @@ import {
 import { styled as muiStyled } from "@mui/material/styles";
 import type { ComponentType, JSX } from "react";
 
+import { useLikeStore } from "@shared/stores/likeStore";
 import { useProjectStore } from "@shared/stores/projectStore";
 import type { User } from "@shared/types/user";
 
@@ -46,7 +47,8 @@ const UserProfileCard = ({
   setTab,
   ProfileTabChip,
 }: UserProfileCardProps): JSX.Element => {
-  const { likeProjects, appliedProjects } = useProjectStore();
+  const { appliedProjects } = useProjectStore();
+  const { likedProjectsCount } = useLikeStore();
 
   return (
     <ProfileCard>
@@ -84,9 +86,7 @@ const UserProfileCard = ({
               key={tabInfo.label}
               label={tabInfo.label}
               count={
-                idx === 0
-                  ? likeProjects?.length || 0
-                  : appliedProjects?.length || 0
+                idx === 0 ? likedProjectsCount : appliedProjects?.length || 0
               }
               active={tab === idx}
               onClick={() => setTab(idx)}
