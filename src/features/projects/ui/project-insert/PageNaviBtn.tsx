@@ -5,12 +5,10 @@ const PageNaviBtn = ({
   currentStep,
   handlePrev,
   handleNext,
-  handleSubmit, // type=submit 버튼이 노출될 때 submit이 실행되는 오류가 있어서 임시로 ..
 }: {
   currentStep: number;
   handlePrev: () => void;
   handleNext: () => void;
-  handleSubmit: () => void;
 }): JSX.Element => {
   return (
     <Box display="flex" justifyContent="space-between" mt={4}>
@@ -22,15 +20,9 @@ const PageNaviBtn = ({
         </PrevBtn>
       )}
 
-      {currentStep < 4 ? (
-        <Button variant="contained" onClick={handleNext}>
-          다음 단계 →
-        </Button>
-      ) : (
-        <Button onClick={handleSubmit} variant="contained">
-          프로젝트 등록하기
-        </Button>
-      )}
+      <Button variant="contained" onClick={handleNext}>
+        {currentStep < 4 ? "다음 단계 →" : " 프로젝트 등록하기"}
+      </Button>
     </Box>
   );
 };

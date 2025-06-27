@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
@@ -11,16 +10,13 @@ import type {
   UpdateAllFormType,
 } from "@features/projects/type/project-update";
 
+import { projectOwnerData } from "@shared/libs/utils/projectInsert";
 import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
 import {
-  ProjectCategory,
   RecruitmentStatus,
-  Workflow,
   type ProjectItemInsertReq,
 } from "@shared/types/project";
-import { ExpectedPeriod } from "@shared/types/schedule";
-import { type User } from "@shared/types/user";
 
 interface InsertFormResult {
   page: {
@@ -29,7 +25,6 @@ interface InsertFormResult {
     goNext: () => void;
   };
   updateForm: UpdateAllFormType;
-  submit: () => Promise<void>;
 }
 
 const useProjectInsertForm = (): InsertFormResult => {
@@ -54,9 +49,16 @@ const useProjectInsertForm = (): InsertFormResult => {
     setCurrentStep((prev) => prev - 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
   const handleNext = (): void => {
-    setCurrentStep((prev) => prev + 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (currentStep !== 4) {
+      setCurrentStep((prev) => prev + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      return;
+    }
+
+    submit();
   };
 
   const submit = async (): Promise<void> => {
@@ -64,16 +66,21 @@ const useProjectInsertForm = (): InsertFormResult => {
     if (!window.confirm("등록을 완료 하시겠습니까?")) return;
     if (isPending) return;
 
-    // form 검사 추가 바람
-    console.log({
+    const finalData: ProjectItemInsertReq = {
+      ...projectOwnerData(userProfile),
       ...allForm.form1,
       ...allForm.form2,
       ...allForm.form3,
       ...allForm.form4,
-    });
+      status: RecruitmentStatus.recruiting,
+      applicants: [], // 추후 삭제
+      likedUsers: [], // 추후 삭제
+    };
 
     // projects에 insert
-    insertProject(TestData(userProfile));
+    return;
+    insertProject(finalData);
+    // insertProject(TestData(userProfile)); // 테스트 데이터
   };
 
   return {
@@ -83,72 +90,7 @@ const useProjectInsertForm = (): InsertFormResult => {
       goNext: handleNext,
     },
     updateForm,
-    submit,
   };
 };
 
 export default useProjectInsertForm;
-
-// 테스트용 form 입니다.
-const TestData = (user: User): ProjectItemInsertReq => ({
-  projectOwnerID: user.id, // 요거 추가!!
-  projectOwner: {
-    id: user.id,
-    name: user.name,
-    userRole: user.userRole,
-    email: user.email,
-    experience: user.experience,
-    avatar: user.avatar,
-  },
-  applicants: [],
-  status: RecruitmentStatus.recruiting,
-  title: "AI 기반 음악 추천 서비스 개발",
-  oneLineInfo: "AI로 사용자 취향을 분석하는 음악 추천 프로젝트입니다.",
-  simpleInfo: "음악 취향 데이터를 기반으로 개인화 추천 시스템을 구현합니다.",
-  techStack: ["React", "Node.js", "Python", "TensorFlow", "MongoDB"],
-  teamSize: 5,
-  expectedPeriod: ExpectedPeriod.threeMonths,
-  description:
-    "이 프로젝트는 사용자의 음악 청취 데이터를 수집하여, AI 알고리즘을 통해 개인화된 추천 서비스를 제공하는 웹 앱을 개발하는 것이 목표입니다.",
-  workflow: Workflow.online,
-  requirements: [
-    "주 2회 이상 정기 미팅 참석 가능",
-    "기본적인 Git 사용 경험",
-    "성실한 커뮤니케이션",
-  ],
-  preferentialTreatment: [
-    "음악 도메인에 관심 있는 분",
-    "TensorFlow 사용 경험",
-    "UX/UI에 관심 있는 프론트엔드 개발자",
-  ],
-  positions: [
-    {
-      position: "frontend",
-      count: 2,
-      experience: ExpectedPeriod.oneMonth,
-      applicants: [],
-    },
-    {
-      position: "frontend",
-      count: 5,
-      experience: ExpectedPeriod.threeMonths,
-      applicants: [],
-    },
-    {
-      position: "frontend",
-      count: 6,
-      experience: ExpectedPeriod.fourMonths,
-      applicants: [],
-    },
-  ],
-  schedules: [
-    {
-      stageName: "기획",
-      period: ExpectedPeriod.oneMonth,
-      description: "기획 단계",
-    },
-  ],
-  likedUsers: [],
-  category: ProjectCategory.webDevelopment,
-  closedDate: Timestamp.now(),
-});

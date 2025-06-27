@@ -63,7 +63,7 @@ const Step1 = ({
         />
       </StepBox>
 
-      <button onClick={settingSetForm}>전체폼에 2번스탭데이터 넣기</button>
+      <button onClick={settingSetForm}>데이터 잘 들어갔는지 확인하기</button>
     </>
   );
 };

@@ -17,7 +17,7 @@ import Step3 from "@features/projects/ui/project-insert/Step3";
 import Step4 from "@features/projects/ui/project-insert/Step4";
 
 const ProjectInsertPage = (): JSX.Element => {
-  const { page, submit, updateForm } = useProjectInsert();
+  const { page, updateForm } = useProjectInsert();
 
   return (
     <MainContainer>
@@ -33,14 +33,11 @@ const ProjectInsertPage = (): JSX.Element => {
       {page.currentStep === 3 && <Step3 updateForm={updateForm} />}
       {page.currentStep === 4 && <Step4 updateForm={updateForm} />}
 
-      <button onClick={submit}>테스트용 submit</button>
-
       {/* 네비게이션 버튼 */}
       <PageNaviBtn
         currentStep={page.currentStep}
         handlePrev={page.goPrev}
         handleNext={page.goNext}
-        handleSubmit={submit}
       />
 
       {/* 꿀팁 모음집 */}
