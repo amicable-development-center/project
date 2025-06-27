@@ -28,8 +28,8 @@ const ProjectTeamSizeCard = ({
       style={style}
     >
       <FormControl fullWidth>
-        <Select
-          value={value || 0}
+        <Select<string>
+          value={value ? value.toString() : ""}
           onChange={onChange}
           size={large ? "medium" : "small"}
           displayEmpty
@@ -49,14 +49,14 @@ const ProjectTeamSizeCard = ({
             },
           }}
         >
-          <MenuItem value={0} disabled hidden>
+          <MenuItem value="" disabled hidden>
             팀 규모를 선택하세요
           </MenuItem>
-          <MenuItem value={2}>2명 (나 + 1명)</MenuItem>
-          <MenuItem value={3}>3명 (소규모 팀)</MenuItem>
-          <MenuItem value={4}>4명 (적당한 팀)</MenuItem>
-          <MenuItem value={5}>5명 (큰 팀)</MenuItem>
-          <MenuItem value={6}>6명 이상 (대규모)</MenuItem>
+          <MenuItem value="2">2명 (나 + 1명)</MenuItem>
+          <MenuItem value="3">3명 (소규모 팀)</MenuItem>
+          <MenuItem value="4">4명 (적당한 팀)</MenuItem>
+          <MenuItem value="5">5명 (큰 팀)</MenuItem>
+          <MenuItem value="6">6명 이상 (대규모)</MenuItem>
         </Select>
       </FormControl>
     </SimpleFormCard>
