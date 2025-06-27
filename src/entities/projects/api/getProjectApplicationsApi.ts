@@ -155,13 +155,13 @@ export const getProjectApplicantsCount = async (
     where("projectId", "==", projectId)
   );
   const snapshot = await getCountFromServer(q);
-  const count = snapshot.data().count as number;
-  console.log(
-    "[getProjectApplicantsCount] projectId:",
-    projectId,
-    "지원자 수:",
-    count
-  );
+  // const count = snapshot.data().count as number;
+  // console.log(
+  //   "[getProjectApplicantsCount] projectId:",
+  //   projectId,
+  //   "지원자 수:",
+  //   count
+  // );
   return snapshot.data().count as number;
 };
 
