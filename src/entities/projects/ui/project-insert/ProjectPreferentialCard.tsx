@@ -1,5 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Button } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type {
   ChangeEvent,
@@ -27,6 +28,7 @@ const ProjectPreferentialCard = ({
   style,
 }: ProjectPreferentialCardProps): JSX.Element => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [newPreferential, setNewPreferential] = useState("");
 
   const addPreferential = (): void => {
@@ -70,9 +72,11 @@ const ProjectPreferentialCard = ({
             height: 40,
             borderRadius: theme.shape.borderRadius,
             border: `1px solid ${theme.palette.divider}`,
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: isMobile
+              ? theme.typography.body2.fontSize
+              : large
+                ? theme.typography.h5.fontSize
+                : theme.typography.body1.fontSize,
             fontFamily: theme.typography.fontFamily,
             background: theme.palette.background.paper,
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
