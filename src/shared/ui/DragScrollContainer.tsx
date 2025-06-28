@@ -24,7 +24,6 @@ export default DragScrollContainer;
 const Container = styled(Box)(({ theme }) => ({
   overflow: "hidden",
   position: "relative",
-  marginTop: theme.spacing(0.4),
 
   "&::after": {
     content: '""',

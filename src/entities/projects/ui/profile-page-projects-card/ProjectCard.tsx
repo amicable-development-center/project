@@ -23,7 +23,7 @@ import { Link } from "react-router-dom";
 
 import { getProjectApplicantsCount } from "@entities/projects/api/getProjectApplicationsApi";
 
-import { type ProjectListRes } from "@shared/types/project";
+import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
 
@@ -60,6 +60,7 @@ const ProjectCard = ({
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isRecruiting = project.status === RecruitmentStatus.recruiting;
 
   // applicantsCountProp이 없을 때만 훅 실행
   const { data: applicantsCountQuery = 0, isLoading: applicantsLoading } =
@@ -79,7 +80,11 @@ const ProjectCard = ({
       <StyledCardContent>
         <ProjectHeader>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <StatusChip label={project.status} color="primary" size="small" />
+            <StatusChip
+              label={project.status}
+              className={isRecruiting ? "black" : ""}
+              size="small"
+            />
             {isMobile && simple && (
               <Typography variant="body1" color="textPrimary">
                 <TextHighlight>
@@ -98,6 +103,7 @@ const ProjectCard = ({
           <ProjectTitle variant="h5" fontWeight={700}>
             {project.title}
           </ProjectTitle>
+
           {!simple && (
             <>
               <OneLineInfo variant="body1" color="primary" fontWeight={600}>
@@ -135,37 +141,36 @@ const ProjectCard = ({
           )}
         </Stack>
         {!simple && (
-          <DragScrollContainer>
-            {project.techStack.map((stack, index) => (
-              <TechChip key={index} label={stack} size="small" />
-            ))}
-          </DragScrollContainer>
+          <>
+            <DragScrollContainer>
+              {project.techStack.map((stack, index) => (
+                <TechChip key={index} label={stack} size="small" />
+              ))}
+            </DragScrollContainer>
+            <ProjectDetails>
+              <DetailItem>
+                <PeopleAltIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {project.teamSize}명
+                </Typography>
+              </DetailItem>
+              <DetailItem>
+                <AccessTimeIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {project.expectedPeriod}
+                </Typography>
+              </DetailItem>
+              <DetailItem>
+                <LocationPinIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  온라인
+                </Typography>
+              </DetailItem>
+            </ProjectDetails>
+          </>
         )}
 
-        {!simple && (
-          <ProjectDetails>
-            <DetailItem>
-              <PeopleAltIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                {project.teamSize}명
-              </Typography>
-            </DetailItem>
-            <DetailItem>
-              <AccessTimeIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                {project.expectedPeriod}
-              </Typography>
-            </DetailItem>
-            <DetailItem>
-              <LocationPinIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                온라인
-              </Typography>
-            </DetailItem>
-          </ProjectDetails>
-        )}
-
-        {!isMobile || !simple ? <StyledDivider /> : null}
+        {(!isMobile || !simple) && <StyledDivider />}
 
         {(!isMobile || !simple) && (
           <FooterSection>
@@ -247,16 +252,20 @@ const ProjectHeader = styled(Box)(() => ({
   alignItems: "center",
 }));
 
-const StatusChip = styled(Chip)(({ theme }) => ({
-  fontWeight: 600,
-  letterSpacing: "0.025em",
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
+const StatusChip = styled(Chip)`
+  font-weight: 600;
+  letter-spacing: 0.025em;
 
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-}));
+  &.black {
+    color: white;
+    background-color: #1d1d1d;
+  }
+  &.red {
+    margin-left: 0.5rem;
+    color: white;
+    background: linear-gradient(to bottom right, #ff8b5d, #ff2c25);
+  }
+`;
 
 const ContentSection = styled(Box)(({ theme }) => ({
   display: "flex",
