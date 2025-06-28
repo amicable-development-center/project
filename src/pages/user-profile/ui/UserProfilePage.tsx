@@ -1,17 +1,21 @@
 import { Box, Container, Chip as MuiChip } from "@mui/material";
 import { styled as muiStyled } from "@mui/material/styles";
 import type { JSX } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useDeleteProjectsMutation } from "@entities/projects/hooks/useDeleteProjectsMutation";
 import { useGetMyAppliedProjectsWithDetails } from "@entities/projects/queries/useGetProjectApplications";
-import { useGetMyLikedProjectsWithDetails } from "@entities/projects/queries/useGetProjectLike";
+import {
+  useGetMyLikedProjectsWithDetails,
+  useGetMyCreatedProjectsWithDetails,
+} from "@entities/projects/queries/useGetProjectLike";
 import ProjectCollectionContainer from "@entities/projects/ui/project-collection-tab/ProjectCollectionContainer";
 import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
 import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader";
 
 import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
+import { useProjectStore } from "@shared/stores/projectStore";
 import { ProjectCollectionTabType } from "@shared/types/project";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
@@ -50,11 +54,32 @@ const UserProfilePage = (): JSX.Element => {
   const { data: myLikedProjectsData, isLoading: myLikedProjectsLoading } =
     useGetMyLikedProjectsWithDetails();
 
+  // 만든 프로젝트 데이터 가져오기 (userProfile.myProjects 기반)
+  const { data: myCreatedProjectsData, isLoading: myCreatedProjectsLoading } =
+    useGetMyCreatedProjectsWithDetails(userProfile?.myProjects);
+
   const [tab, setTab] = useState<ProjectCollectionTabType>(
     ProjectCollectionTabType.Likes
   );
 
   const deleteProjectsMutation = useDeleteProjectsMutation();
+
+  // projectStore 동기화
+  const { setAppliedProjects, setLikeProjects } = useProjectStore();
+
+  // 지원한 프로젝트 데이터를 store에 동기화
+  useEffect(() => {
+    if (appliedProjectsData) {
+      setAppliedProjects(appliedProjectsData);
+    }
+  }, [appliedProjectsData, setAppliedProjects]);
+
+  // 좋아요한 프로젝트 데이터를 store에 동기화
+  useEffect(() => {
+    if (myLikedProjectsData) {
+      setLikeProjects(myLikedProjectsData);
+    }
+  }, [myLikedProjectsData, setLikeProjects]);
 
   const handleDeleteProjects = async (
     type: ProjectCollectionTabType,
@@ -100,8 +125,12 @@ const UserProfilePage = (): JSX.Element => {
         <ProjectCollectionContainer
           likedProjects={myLikedProjectsData || []}
           appliedProjects={appliedProjectsData || []}
-          createdProjects={[]}
-          loading={myLikedProjectsLoading || appliedProjectsLoading}
+          createdProjects={myCreatedProjectsData || []}
+          loading={
+            myLikedProjectsLoading ||
+            appliedProjectsLoading ||
+            myCreatedProjectsLoading
+          }
           onDeleteProjects={handleDeleteProjects}
           currentTab={tab}
           onTabChange={setTab}

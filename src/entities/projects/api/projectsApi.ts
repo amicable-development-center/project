@@ -122,6 +122,8 @@ export const deleteProjectsEverywhere = async (
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     // 모든 삭제 작업을 병렬로 실행하기 위한 함수들
+
+    // 좋아요 삭제 - 프로젝트 ID로 모든 좋아요 찾아서 삭제
     const deleteLikesForProject = async (
       projectId: string
     ): Promise<void[]> => {

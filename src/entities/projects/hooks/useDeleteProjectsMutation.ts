@@ -32,23 +32,46 @@ export const useDeleteProjectsMutation = (): UseMutationResult<
   const { setAppliedProjects, setLikeProjects } = useProjectStore();
   const { showSuccess, showError } = useSnackbarStore();
 
-  // type별 삭제 로직 분리
-  const deleteLikes = async (userUid: string, ids: string[]): Promise<void> => {
+  // 관심 프로젝트 삭제
+  const deleteLikes = async (
+    userUid: string,
+    ids: string[],
+    myLikedProjectsData?: ProjectListRes[]
+  ): Promise<void> => {
     await deleteUserLikes(userUid, ids);
+
+    // 전역 상태 동기화
     removeLikeProjects(ids);
+    setLikeProjects(
+      myLikedProjectsData?.filter((p: ProjectListRes) => !ids.includes(p.id)) ||
+        []
+    );
+
     showSuccess("관심 프로젝트가 삭제되었습니다.");
   };
 
+  // 지원한 프로젝트 삭제
   const deleteApplied = async (
     userUid: string,
-    ids: string[]
+    ids: string[],
+    appliedProjectsData?: ProjectListRes[]
   ): Promise<void> => {
-    for (const projectId of ids) {
-      await deleteApplication(userUid, projectId);
-    }
+    // applications 컬렉션에서 제거 (병렬 처리)
+    const deletePromises = ids.map((projectId) =>
+      deleteApplication(userUid, projectId)
+    );
+    await Promise.all(deletePromises);
+
+    // 전역 상태 동기화
+    setAppliedProjects(
+      appliedProjectsData?.filter((p: ProjectListRes) => !ids.includes(p.id)) ||
+        []
+    );
+
     showSuccess("지원한 프로젝트가 삭제되었습니다.");
   };
 
+  // 만든 프로젝트 삭제
   const deleteCreated = async (
     userUid: string,
     ids: string[],
@@ -56,84 +79,121 @@ export const useDeleteProjectsMutation = (): UseMutationResult<
     myLikedProjectsData?: ProjectListRes[]
   ): Promise<void> => {
     const res = await deleteProjectsEverywhere(ids, userUid);
-    if (res.success) {
-      setAppliedProjects(
-        appliedProjectsData
-          ? appliedProjectsData.filter((p) => !ids.includes(p.id))
-          : []
-      );
-      setLikeProjects(
-        myLikedProjectsData
-          ? myLikedProjectsData.filter((p) => !ids.includes(p.id))
-          : []
-      );
-      showSuccess("만든 프로젝트가 삭제되었습니다.");
-    } else {
+
+    if (!res.success) {
       showError(res.error || ERROR_MSG);
       throw new Error(res.error || ERROR_MSG);
     }
+
+    // 전역 상태 동기화
+    setAppliedProjects(
+      appliedProjectsData?.filter((p: ProjectListRes) => !ids.includes(p.id)) ||
+        []
+    );
+    setLikeProjects(
+      myLikedProjectsData?.filter((p: ProjectListRes) => !ids.includes(p.id)) ||
+        []
+    );
+    removeLikeProjects(ids);
+
+    showSuccess("만든 프로젝트가 삭제되었습니다.");
   };
 
-  // type별 invalidate 분리
+  // 쿼리 무효화 함수들
+  const invalidateLikeQueries = async (): Promise<void> => {
+    const queries = [
+      [queryKeys.myLikedProjects, "details"],
+      [queryKeys.myLikedProjects, "ids"],
+      [queryKeys.projectLike],
+      [queryKeys.projectLikedUser],
+      [queryKeys.projects], // 홈페이지, 프로젝트 찾기 페이지 동기화
+    ];
+
+    await Promise.all(
+      queries.map((queryKey) => queryClient.invalidateQueries({ queryKey }))
+    );
+  };
+
+  const invalidateAppliedQueries = async (): Promise<void> => {
+    const queries = [
+      [queryKeys.myAppliedProjects, "details"],
+      [queryKeys.myAppliedProjects, "ids"],
+      [queryKeys.projectAppliedUser],
+    ];
+
+    await Promise.all(
+      queries.map((queryKey) => queryClient.invalidateQueries({ queryKey }))
+    );
+  };
+
+  const invalidateCreatedQueries = async (userUid: string): Promise<void> => {
+    const queries = [
+      [queryKeys.myLikedProjects, "details"],
+      [queryKeys.myAppliedProjects, "details"],
+      [queryKeys.projects],
+      ["userProfile", userUid],
+      [queryKeys.projectLike],
+      [queryKeys.projectLikedUser],
+      [queryKeys.projectAppliedUser],
+    ];
+
+    await Promise.all(
+      queries.map((queryKey) => queryClient.invalidateQueries({ queryKey }))
+    );
+  };
+
+  // 타입별 쿼리 무효화
   const invalidateQueries = async (
     type: ProjectCollectionTabType,
     user?: { uid: string } | null
   ): Promise<void> => {
-    if (type === ProjectCollectionTabType.Likes) {
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.myLikedProjects, "details"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.myLikedProjects, "ids"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.projectLike],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.projectLikedUser],
-      });
-    }
-    if (type === ProjectCollectionTabType.Applied) {
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.myAppliedProjects, "details"],
-      });
-    }
-    if (type === ProjectCollectionTabType.Created && user) {
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.myLikedProjects, "details"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.myAppliedProjects, "details"],
-      });
-      await queryClient.invalidateQueries({ queryKey: [queryKeys.projects] });
-      await queryClient.invalidateQueries({
-        queryKey: ["userProfile", user.uid],
-      });
+    switch (type) {
+      case ProjectCollectionTabType.Likes:
+        await invalidateLikeQueries();
+        break;
+      case ProjectCollectionTabType.Applied:
+        await invalidateAppliedQueries();
+        break;
+      case ProjectCollectionTabType.Created:
+        if (user) {
+          await invalidateCreatedQueries(user.uid);
+        }
+        break;
     }
   };
 
-  return useMutation<void, unknown, DeleteProjectsParams>({
-    mutationFn: async ({
-      type,
-      ids,
-      user,
-      appliedProjectsData,
-      myLikedProjectsData,
-    }: DeleteProjectsParams): Promise<void> => {
-      if (!user) throw new Error("로그인이 필요합니다.");
-      if (type === ProjectCollectionTabType.Likes) {
-        await deleteLikes(user.uid, ids);
-      } else if (type === ProjectCollectionTabType.Applied) {
-        await deleteApplied(user.uid, ids);
-      } else if (type === ProjectCollectionTabType.Created) {
+  // 메인 삭제 로직
+  const handleDelete = async ({
+    type,
+    ids,
+    user,
+    appliedProjectsData,
+    myLikedProjectsData,
+  }: DeleteProjectsParams): Promise<void> => {
+    if (!user) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
+    switch (type) {
+      case ProjectCollectionTabType.Likes:
+        await deleteLikes(user.uid, ids, myLikedProjectsData);
+        break;
+      case ProjectCollectionTabType.Applied:
+        await deleteApplied(user.uid, ids, appliedProjectsData);
+        break;
+      case ProjectCollectionTabType.Created:
         await deleteCreated(
           user.uid,
           ids,
           appliedProjectsData,
           myLikedProjectsData
         );
-      }
-    },
+        break;
+    }
+  };
+
+  return useMutation<void, unknown, DeleteProjectsParams>({
+    mutationFn: handleDelete,
     onSuccess: async (_data, variables): Promise<void> => {
       await invalidateQueries(variables.type, variables.user);
     },
