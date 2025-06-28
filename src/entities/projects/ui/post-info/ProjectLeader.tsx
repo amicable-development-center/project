@@ -8,8 +8,10 @@ import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
 const ProjectLeader = ({
   projectOwner,
+  onEmailClick,
 }: {
   projectOwner: User | undefined;
+  onEmailClick?: () => void;
 }): JSX.Element | null => {
   if (!projectOwner) return null;
 
@@ -40,7 +42,7 @@ const ProjectLeader = ({
         {projectOwner.introduceMyself || "아직 등록한 소개가 없어요! 🚀"}
       </Typography>
 
-      <MessageBtn>
+      <MessageBtn onClick={onEmailClick}>
         <MailOutlineIcon />
         <Typography variant="button">연락하기</Typography>
       </MessageBtn>
