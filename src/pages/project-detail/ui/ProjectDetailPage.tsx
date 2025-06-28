@@ -1,5 +1,5 @@
 import { Box, Card, Container, styled } from "@mui/material";
-import { useEffect, type JSX } from "react";
+import { type JSX } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import useEmailForm from "@features/email/hooks/useEmailForm";
@@ -40,12 +40,6 @@ const ProjectDetailPage = (): JSX.Element | null => {
     project: project || null,
     onClose: () => {},
   });
-
-  useEffect(() => {
-    if (project) {
-      console.log(project);
-    }
-  }, [project]);
 
   const projectInfoValues = !project
     ? null

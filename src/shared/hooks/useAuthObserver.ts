@@ -23,7 +23,6 @@ export const useAuthObserver = (): void => {
         try {
           // 토큰이 갱신되면 새로운 토큰을 가져옴
           await user.getIdToken(true);
-          console.log("토큰이 갱신되었습니다.");
         } catch (error) {
           console.error("토큰 갱신 실패:", error);
           showError("인증이 만료되었습니다. 다시 로그인해주세요.");
