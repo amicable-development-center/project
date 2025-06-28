@@ -2,8 +2,8 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
 import type { JSX } from "react";
 
-import useInsertStep1 from "@features/projects/hook/useInsertStep1";
-import type { UpdateAllFormType } from "@features/projects/type/project-update";
+import useInsertStep1 from "@features/projects/hooks/useInsertStep1";
+import type { UpdateAllFormType } from "@features/projects/types/project-update";
 
 import ProjectCategoryCard from "@entities/projects/ui/project-insert/ProjectCategoryCard";
 import ProjectDeadlineCard from "@entities/projects/ui/project-insert/ProjectDeadlineCard";

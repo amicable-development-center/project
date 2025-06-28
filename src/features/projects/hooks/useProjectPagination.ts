@@ -17,7 +17,7 @@ interface ReturnProjectPageNation {
   };
 }
 
-const useProjectPageNation = ({
+const useProjectPagination = ({
   totalCount,
   perPage = 6,
 }: {
@@ -71,4 +71,4 @@ const useProjectPageNation = ({
   };
 };
 
-export default useProjectPageNation;
+export default useProjectPagination;

@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
 
-import type { Step1Type } from "@features/projects/type/project-update";
+import type { Step1Type } from "@features/projects/types/project-update";
 
 import { ProjectCategory } from "@shared/types/project";
 

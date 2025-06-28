@@ -9,7 +9,7 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 
-import { getProjectsByIds } from "@entities/projects/api/projectsAPi";
+import { getProjectsByIds } from "@entities/projects/api/projectsApi";
 
 import { db } from "@shared/firebase/firebase";
 import type { ProjectListRes } from "@shared/types/project";
@@ -112,7 +112,7 @@ export const getMyAppliedProjectsWithDetails = async (
     const projectIds = await getMyAppliedProjectsIds(userId);
     const projects = await getProjectsByIds(projectIds);
     const countMap = await getApplicantsCountMap(projectIds);
-    return projects.map((project) => ({
+    return projects.map((project: ProjectListRes) => ({
       ...project,
       applicantsCount: countMap[project.id] ?? 0,
     }));
@@ -155,13 +155,6 @@ export const getProjectApplicantsCount = async (
     where("projectId", "==", projectId)
   );
   const snapshot = await getCountFromServer(q);
-  // const count = snapshot.data().count as number;
-  // console.log(
-  //   "[getProjectApplicantsCount] projectId:",
-  //   projectId,
-  //   "지원자 수:",
-  //   count
-  // );
   return snapshot.data().count as number;
 };
 

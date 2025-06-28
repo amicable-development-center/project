@@ -3,7 +3,7 @@ import type { JSX } from "react";
 
 import Hero from "@widgets/hero/ui/Hero";
 
-import useGetProjects from "@entities/projects/hook/useGetProjects";
+import useGetProjects from "@entities/projects/hooks/useGetProjects";
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import ProjectsStats from "@entities/projects/ui/projects-stats/ProjectsStats";
 

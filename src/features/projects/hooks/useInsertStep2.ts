@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { Step2Type } from "@features/projects/type/project-update";
+import type { Step2Type } from "@features/projects/types/project-update";
 
 import { ExpectedPeriod } from "@shared/types/schedule";
 
