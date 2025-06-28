@@ -118,7 +118,7 @@ export default useInsertStep1;
 
 const initForm1 = {
   title: "",
-  category: ProjectCategory.webDevelopment,
+  category: "" as ProjectCategory,
   simpleInfo: "",
   closedDate: Timestamp.now(),
   oneLineInfo: "",
