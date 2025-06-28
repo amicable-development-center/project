@@ -1,5 +1,4 @@
 import { TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { memo, type JSX, type ChangeEvent } from "react";
 
 interface MessageFieldProps {
@@ -11,7 +10,7 @@ const MessageFieldComponent = ({
   value,
   onChange,
 }: MessageFieldProps): JSX.Element => (
-  <StyledTextField
+  <TextField
     label="💬 메시지"
     value={value}
     onChange={onChange}
@@ -22,7 +21,7 @@ const MessageFieldComponent = ({
     fullWidth
     variant="outlined"
     required
-    name={"message"}
+    name="message"
     InputLabelProps={{ shrink: true }}
   />
 );
@@ -30,20 +29,3 @@ const MessageFieldComponent = ({
 const MessageField = memo(MessageFieldComponent);
 
 export default MessageField;
-
-const StyledTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    fontSize: "1.4rem",
-    fontFamily: "inherit",
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#222",
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#1976d2",
-      borderWidth: "2px",
-    },
-  },
-  "& .MuiInputLabel-root": {
-    fontSize: "1.4rem",
-  },
-});

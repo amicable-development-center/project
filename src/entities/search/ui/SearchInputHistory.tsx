@@ -34,18 +34,18 @@ interface SearchInputHistoryProps {
 const HistoryDisabledMessage = (): JSX.Element => (
   <DisabledMessage>
     <HistoryToggleOff color="disabled" />
-    <Typography variant="body2" color="text.secondary">
+    <DisabledMessageText variant="body2" color="text.secondary">
       검색 히스토리가 비활성화되어 있습니다
-    </Typography>
+    </DisabledMessageText>
   </DisabledMessage>
 );
 
 const HistoryEmptyMessage = (): JSX.Element => (
   <EmptyMessage>
     <History color="disabled" />
-    <Typography variant="body2" color="text.secondary">
+    <EmptyMessageText variant="body2" color="text.secondary">
       검색 히스토리가 없습니다
-    </Typography>
+    </EmptyMessageText>
   </EmptyMessage>
 );
 
@@ -79,7 +79,7 @@ const HistoryListContent = ({
           <ListItemIcon>
             <History fontSize="small" />
           </ListItemIcon>
-          <ListItemText
+          <StyledListItemText
             primary={historyItem}
             primaryTypographyProps={{
               noWrap: true,
@@ -117,9 +117,9 @@ const SearchHistoryHeader = ({
   <HistoryHeader>
     <HeaderContent>
       <SearchInputHistoryToggle isHistoryEnabled={isHistoryEnabled} />
-      <Typography variant="body2" fontWeight={600}>
+      <HeaderTitle variant="body2" fontWeight={600}>
         검색 히스토리
-      </Typography>
+      </HeaderTitle>
     </HeaderContent>
     <HeaderActions>
       <StyledFormControlLabel
@@ -333,11 +333,40 @@ const ClearAllText = styled(Typography)(({ theme }) => ({
   "&:hover": {
     color: theme.palette.primary.main,
   },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.875rem",
+  },
 }));
 
 const StyledDeleteButton = styled(IconButton)(({ theme }) => ({
   "&:hover": {
     backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const DisabledMessageText = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.3rem",
+  },
+}));
+
+const EmptyMessageText = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.3rem",
+  },
+}));
+
+const StyledListItemText = styled(ListItemText)(({ theme }) => ({
+  "& .MuiListItemText-primary": {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.4rem",
+    },
+  },
+}));
+
+const HeaderTitle = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.3rem",
   },
 }));
 

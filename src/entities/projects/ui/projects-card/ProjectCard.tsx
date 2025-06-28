@@ -1,3 +1,4 @@
+import { Favorite as FavoriteIcon } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -14,7 +15,10 @@ import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useGetProjectApplicationUsers } from "@entities/projects/queries/useGetProjectApplications";
-import { useGetProjectLikedUsers } from "@entities/projects/queries/useGetProjectLike";
+import {
+  useGetProjectLikedUsers,
+  useGetMyLikedProjectsIds,
+} from "@entities/projects/queries/useGetProjectLike";
 
 import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
@@ -39,9 +43,12 @@ const ProjectCard = ({
   const isRecruiting = project.status === RecruitmentStatus.recruiting;
   const { data: likedUsers } = useGetProjectLikedUsers(project.id);
   const { data: appliedUsers } = useGetProjectApplicationUsers(project.id);
+  const { data: myLikedProjectIds } = useGetMyLikedProjectsIds();
 
   const likedUserCnt = likedUsers?.length || 0;
   const appliedUsersCnt = appliedUsers?.length || 0;
+
+  const isLikedByCurrentUser = myLikedProjectIds?.includes(project.id) || false;
 
   return (
     <StyledCard
@@ -68,7 +75,11 @@ const ProjectCard = ({
               gap: 0.5,
             }}
           >
-            <FavoriteBorderIcon fontSize="large" color="error" />
+            {isLikedByCurrentUser ? (
+              <FavoriteIcon fontSize="large" color="error" />
+            ) : (
+              <FavoriteBorderIcon fontSize="large" color="error" />
+            )}
             <Typography variant="body1" color="text.secondary" fontWeight={500}>
               {likedUserCnt}
             </Typography>

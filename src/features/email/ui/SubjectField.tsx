@@ -1,5 +1,4 @@
 import { TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { memo, type JSX, type ChangeEvent } from "react";
 
 interface SubjectFieldProps {
@@ -11,7 +10,7 @@ const SubjectFieldComponent = ({
   value,
   onChange,
 }: SubjectFieldProps): JSX.Element => (
-  <StyledTextField
+  <TextField
     label="✉️ 제목"
     value={value}
     onChange={onChange}
@@ -26,20 +25,3 @@ const SubjectFieldComponent = ({
 const SubjectField = memo(SubjectFieldComponent);
 
 export default SubjectField;
-
-const StyledTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    fontSize: "1.4rem",
-    fontFamily: "inherit",
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#222",
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#1976d2",
-      borderWidth: "2px",
-    },
-  },
-  "& .MuiInputLabel-root": {
-    fontSize: "1.4rem",
-  },
-});

@@ -47,14 +47,10 @@ const EmailModal = ({
     onClose,
   });
 
+  const isFormValid = subject.trim().length > 0 && message.trim().length > 0;
+
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      sx={{ zIndex: 9999 }}
-    >
+    <StyledDialog open={open} onClose={onClose}>
       <DialogTitle>
         <Title>📧 이메일 보내기</Title>
       </DialogTitle>
@@ -71,16 +67,24 @@ const EmailModal = ({
           <CancelButton onClick={handleCancel} disabled={isLoading}>
             취소
           </CancelButton>
-          <SendButton onClick={handleSend} disabled={isLoading}>
+          <SendButton onClick={handleSend} disabled={isLoading || !isFormValid}>
             {isLoading ? "전송 중..." : "전송"}
           </SendButton>
         </ButtonContainer>
       </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
 
 export default EmailModal;
+
+const StyledDialog = styled(Dialog)({
+  zIndex: 9999,
+  "& .MuiDialog-paper": {
+    width: "600px",
+    maxWidth: "90vw",
+  },
+});
 
 const Title = styled(Typography)({
   textAlign: "center",
@@ -130,5 +134,10 @@ const SendButton = styled(Button)({
   "&:hover": {
     backgroundColor: "#1565c0",
     borderColor: "#1565c0",
+  },
+  "&:disabled": {
+    backgroundColor: "#e0e0e0",
+    borderColor: "#e0e0e0",
+    color: "#9e9e9e",
   },
 });

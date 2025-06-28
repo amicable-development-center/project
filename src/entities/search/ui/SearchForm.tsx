@@ -125,6 +125,7 @@ const HeaderSection = styled(Box)(({ theme }) => ({
     flexDirection: "column",
     gap: theme.spacing(3),
     alignItems: "stretch",
+    padding: theme.spacing(2),
   },
 }));
 
@@ -143,6 +144,10 @@ const StatusArea = styled(Box, {
 const SearchSection = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
   backgroundColor: theme.palette.background.paper,
+
+  [theme.breakpoints.down("md")]: {
+    padding: theme.spacing(1, 2),
+  },
 }));
 
 const SearchContainer = styled(Box)(() => ({
@@ -152,6 +157,9 @@ const SearchContainer = styled(Box)(() => ({
 const FiltersSection = styled(Box)(({ theme }) => ({
   padding: `0 ${theme.spacing(4)} ${theme.spacing(3)}`,
   backgroundColor: theme.palette.background.paper,
+  [theme.breakpoints.down("md")]: {
+    padding: theme.spacing(1, 2),
+  },
 }));
 
 const ActionSection = styled(Box)(({ theme }) => ({
