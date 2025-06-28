@@ -1,5 +1,5 @@
 import { Box, Typography, Container, styled, keyframes } from "@mui/material";
-import { type JSX } from "react";
+import { type JSX, useRef } from "react";
 
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import useProjectSearch from "@entities/search/hooks/useProjectSearch";
@@ -9,6 +9,8 @@ import SearchListResultHandler from "@entities/search/ui/SearchListResultHandler
 import type { ProjectListRes } from "@shared/types/project";
 
 const ProjectListPage = (): JSX.Element => {
+  const resultsRef = useRef<HTMLDivElement>(null);
+
   const {
     projects,
     totalCount,
@@ -18,7 +20,7 @@ const ProjectListPage = (): JSX.Element => {
     isError,
     handleSearch,
     handlePageChange,
-  } = useProjectSearch();
+  } = useProjectSearch(resultsRef);
 
   const isEmpty = !isLoading && !isError && projects.length === 0;
 
@@ -28,7 +30,7 @@ const ProjectListPage = (): JSX.Element => {
         <SearchForm onSearch={handleSearch} isLoading={isLoading} />
       </SearchContainer>
 
-      <ResultsContainer>
+      <ResultsContainer ref={resultsRef}>
         <ResultsHeader variant="h4">
           {isLoading ? "검색 중..." : `총 ${totalCount}개의 프로젝트가 있어요`}
         </ResultsHeader>

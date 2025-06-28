@@ -87,9 +87,7 @@ const useProjectInsertForm = (): InsertFormResult => {
     };
 
     // projects에 insert
-    return;
-    insertProject(finalData);
-    // insertProject(TestData(userProfile)); // 테스트 데이터
+    insertProject(finalData); // 삭제
   };
 
   return {

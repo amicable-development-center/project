@@ -17,7 +17,10 @@
     "prepare-commit": "lint-staged",
     "preview": "vite preview",
     "preinstall": "npx only-allow pnpm",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:debug": "vite --debug --force",
+    "dev:profile": "vite --debug hmr",
+    "dev:verbose": "vite --logLevel info"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [

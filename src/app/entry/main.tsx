@@ -9,6 +9,11 @@ import "@app/styles/global.css";
 
 import queryClient from "@shared/react-query/queryClient";
 
+// HMR 성능 모니터 (개발 환경에서만)
+if (import.meta.env.DEV) {
+  import("@shared/libs/utils/measureHmr");
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, type RefObject } from "react";
 
 import {
   useProjectsByPage,
@@ -6,6 +6,7 @@ import {
 } from "@entities/search/queries/useProjectSearchQueries";
 
 import { usePaginationWithState } from "@shared/hooks/usePagination";
+import { scrollToElement } from "@shared/libs/utils/scrollUtils";
 import type { ProjectListRes } from "@shared/types/project";
 import type { ProjectSearchFilterOption } from "@shared/types/search";
 
@@ -26,7 +27,9 @@ interface UseProjectSearchReturn {
   handlePageChange: (page: number) => void;
 }
 
-const useProjectSearch = (): UseProjectSearchReturn => {
+const useProjectSearch = (
+  resultsRef: RefObject<HTMLDivElement | null>
+): UseProjectSearchReturn => {
   const [currentFilter, setCurrentFilter] = useState<ProjectSearchFilterOption>(
     {
       category: "all",
@@ -67,8 +70,15 @@ const useProjectSearch = (): UseProjectSearchReturn => {
   );
 
   const handlePageChange = (page: number): void => {
-    if (page === currentPage || isLoading) return;
+    const isSamePage = page === currentPage;
+
+    if (isSamePage || isLoading) return;
+
     setPage(page);
+
+    if (resultsRef?.current) {
+      scrollToElement(resultsRef.current, "smooth", 80);
+    }
   };
 
   return {

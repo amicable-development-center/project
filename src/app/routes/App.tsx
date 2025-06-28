@@ -10,6 +10,7 @@ import { useAuthObserver } from "@shared/hooks/useAuthObserver";
 import { useLoadingCursor } from "@shared/hooks/useLoadingCursor";
 import GlobalSnackbar from "@shared/ui/GlobalSnackbar";
 import PageTransitionLoader from "@shared/ui/loading-spinner/PageTransitionLoader";
+import ScrollToTop from "@shared/ui/ScrollToTop";
 
 const HomePage = lazy(() => import("@pages/home/ui/HomePage"));
 const NotFoundPage = lazy(() => import("@pages/not-found/ui/NotFoundPage"));
@@ -33,6 +34,7 @@ function AppContent(): JSX.Element {
 
   return (
     <Suspense fallback={<PageTransitionLoader />}>
+      <ScrollToTop />
       <Routes>
         {/* 헤더 없는 레이아웃 (로그인/회원가입 전용) */}
         <Route element={<AuthLayout />}>

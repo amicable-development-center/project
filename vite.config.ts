@@ -50,6 +50,9 @@ export default defineConfig(({ mode }) => ({
   publicDir: "src/app/public",
   server: {
     port: 3000,
+    hmr: {
+      overlay: true,
+    },
   },
   resolve: {
     alias: {

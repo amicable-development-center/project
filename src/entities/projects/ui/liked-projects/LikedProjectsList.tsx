@@ -5,6 +5,7 @@ import LikedProjectsEmpty from "@entities/projects/ui/liked-projects/LikedProjec
 import ProjectCard from "@entities/projects/ui/profile-page-projects-card/ProjectCard";
 
 import { useArrayPagination } from "@shared/hooks/usePagination";
+import { scrollToTopSafe } from "@shared/libs/utils/scrollUtils";
 import type { ProjectListRes } from "@shared/types/project";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 import Pagination from "@shared/ui/pagination/Pagination";
@@ -39,6 +40,12 @@ const LikedProjectsList = ({
     itemsPerPage,
   });
 
+  // 페이지네이션 시 스크롤 처리
+  const handlePageChange = (page: number): void => {
+    setPage(page);
+    scrollToTopSafe();
+  };
+
   if (loading) {
     return (
       <Container>
@@ -71,7 +78,7 @@ const LikedProjectsList = ({
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={setPage}
+          onPageChange={handlePageChange}
         />
       )}
     </Container>
