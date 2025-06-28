@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import { type ProjectItemInsertReq } from "@shared/types/project";
 import { ExpectedPeriod } from "@shared/types/schedule";
 
@@ -23,6 +24,7 @@ interface ApplyFormResult {
 
 const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
+  const { showError } = useSnackbarStore();
 
   const [formStep3, setFormStep3] = useState(isModify ? state : initForm3);
 
@@ -35,11 +37,11 @@ const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
 
   const validateForm = (): boolean => {
     if (!formStep3.description.trim()) {
-      alert("프로젝트 상세 설명을 작성해주세요");
+      showError("프로젝트 상세 설명을 작성해주세요");
       return false;
     }
     if (formStep3.schedules.length === 0) {
-      alert("최소 1개 이상의 프로젝트 일정을 추가해주세요.");
+      showError("최소 1개 이상의 프로젝트 일정을 추가해주세요");
       return false;
     }
 
@@ -48,17 +50,17 @@ const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
       const scheduleNum = i + 1;
 
       if (!schedule.stageName.trim()) {
-        alert(`${scheduleNum}번째 일정의 단계명을 입력해주세요.`);
+        showError(`${scheduleNum}번째 일정의 단계명을 입력해주세요`);
         return false;
       }
 
       if (!schedule.description.trim()) {
-        alert(`${scheduleNum}번째 일정의 설명을 입력해주세요.`);
+        showError(`${scheduleNum}번째 일정의 설명을 입력해주세요`);
         return false;
       }
 
       if (!schedule.period) {
-        alert(`${scheduleNum}번째 일정의 예상 기간을 선택해주세요.`);
+        showError(`${scheduleNum}번째 일정의 예상 기간을 선택해주세요`);
         return false;
       }
     }
