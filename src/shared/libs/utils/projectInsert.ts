@@ -6,7 +6,7 @@ import {
   Workflow,
   type ProjectItemInsertReq,
 } from "@shared/types/project";
-import { ExpectedPeriod } from "@shared/types/schedule";
+import { ExpectedPeriod, NewSchedulePeriod } from "@shared/types/schedule";
 import type { User } from "@shared/types/user";
 
 export const projectOwnerData = (
@@ -23,12 +23,13 @@ export const projectOwnerData = (
     email: user.email,
     experience: user.experience,
     avatar: user.avatar,
+    introduceMyself: user.introduceMyself,
   },
 });
 
 // 테스트용 form 입니다.
 export const TestData = (user: User): ProjectItemInsertReq => ({
-  projectOwnerID: user.id, // 요거 추가!!
+  projectOwnerID: user.id,
   projectOwner: {
     id: user.id,
     name: user.name,
@@ -36,6 +37,7 @@ export const TestData = (user: User): ProjectItemInsertReq => ({
     email: user.email,
     experience: user.experience,
     avatar: user.avatar,
+    introduceMyself: user.introduceMyself,
   },
   applicants: [],
   status: RecruitmentStatus.recruiting,
@@ -81,7 +83,7 @@ export const TestData = (user: User): ProjectItemInsertReq => ({
   schedules: [
     {
       stageName: "기획",
-      period: ExpectedPeriod.oneMonth,
+      period: NewSchedulePeriod.oneWeek,
       description: "기획 단계",
     },
   ],

@@ -43,6 +43,20 @@ const Pagination = ({
     return null;
   }
 
+  const handlePrevPage = (): void => {
+    const newPage = currentPage - 1;
+    if (newPage >= 1) {
+      onPageChange(newPage);
+    }
+  };
+
+  const handleNextPage = (): void => {
+    const newPage = currentPage + 1;
+    if (newPage <= totalPages) {
+      onPageChange(newPage);
+    }
+  };
+
   const handleFastPrev = (): void => {
     const currentBlock = Math.floor((currentPage - 1) / 5);
     const prevBlockLastPage = currentBlock * 5;
@@ -74,7 +88,7 @@ const Pagination = ({
       )}
 
       <NavButton
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={handlePrevPage}
         disabled={!canGoPrev || disabled}
         size={isMobile ? "large" : "medium"}
         title="이전 페이지"
@@ -106,7 +120,7 @@ const Pagination = ({
       </PageNumbersContainer>
 
       <NavButton
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={handleNextPage}
         disabled={!canGoNext || disabled}
         size={isMobile ? "large" : "medium"}
         title="다음 페이지"

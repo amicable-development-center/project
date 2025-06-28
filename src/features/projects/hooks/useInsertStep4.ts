@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import { Workflow, type ProjectItemInsertReq } from "@shared/types/project";
 
 type Step4Type = Pick<
@@ -18,6 +19,7 @@ interface ApplyFormResult {
 
 const useInsertStep4 = ({ state }: { state?: Step4Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
+  const { showError } = useSnackbarStore();
 
   const [formStep4, setFormStep4] = useState(isModify ? state : initForm4);
 
@@ -30,26 +32,26 @@ const useInsertStep4 = ({ state }: { state?: Step4Type }): ApplyFormResult => {
 
   const validateForm = (): boolean => {
     if (!formStep4.workflow) {
-      alert("진행 방식을 선택해주세요.");
+      showError("진행 방식을 선택해주세요");
       return false;
     }
     if (formStep4.requirements.length === 0) {
-      alert("최소 1개 이상의 지원 요구사항을 입력해주세요.");
+      showError("최소 1개 이상의 지원 요구사항을 입력해주세요");
       return false;
     }
     for (let i = 0; i < formStep4.requirements.length; i++) {
       if (!formStep4.requirements[i].trim()) {
-        alert(`${i + 1}번째 지원 요구사항을 입력해주세요.`);
+        showError(`${i + 1}번째 지원 요구사항을 입력해주세요`);
         return false;
       }
     }
     if (formStep4.preferentialTreatment.length === 0) {
-      alert("최소 1개 이상의 우대사항을 입력해주세요.");
+      showError("최소 1개 이상의 우대사항을 입력해주세요");
       return false;
     }
     for (let i = 0; i < formStep4.preferentialTreatment.length; i++) {
       if (!formStep4.preferentialTreatment[i].trim()) {
-        alert(`${i + 1}번째 우대사항을 입력해주세요.`);
+        showError(`${i + 1}번째 우대사항을 입력해주세요`);
         return false;
       }
     }

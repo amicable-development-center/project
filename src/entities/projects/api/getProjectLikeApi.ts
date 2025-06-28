@@ -143,14 +143,11 @@ export const deleteUserLikes = async (
 ): Promise<void> => {
   if (!userId || !projectIds.length) return;
 
-  const q = query(
-    collection(db, "likes"),
-    where("userId", "==", userId),
-    where("projectId", "in", projectIds)
-  );
-  const snapshot = await getDocs(q);
-  const deletePromises = snapshot.docs.map((docSnap) =>
-    deleteDoc(doc(db, "likes", docSnap.id))
-  );
+  // 문서 ID를 직접 생성하여 삭제 (더 효율적)
+  const deletePromises = projectIds.map((projectId) => {
+    const likeId = `${userId}_${projectId}`;
+    return deleteDoc(doc(db, "likes", likeId));
+  });
+
   await Promise.all(deletePromises);
 };

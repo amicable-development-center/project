@@ -7,14 +7,8 @@ import type { UpdateAllFormType } from "@features/projects/types/project-update"
 import ProjectDetailDescriptionCard from "@entities/projects/ui/project-insert/ProjectDetailDescriptionCard";
 import ProjectScheduleManagementCard from "@entities/projects/ui/project-insert/ProjectScheduleManagementCard";
 
-import type { ExpectedPeriod } from "@shared/types/schedule";
+import type { ProjectSchedule } from "@shared/types/schedule";
 import StepWhiteBox from "@shared/ui/project-insert/StepWhiteBox";
-
-interface Schedule {
-  stageName: string;
-  period: ExpectedPeriod; // ExpectedPeriod enum 값
-  description: string;
-}
 
 const Step3 = ({
   updateForm,
@@ -43,7 +37,9 @@ const Step3 = ({
 
       <ProjectScheduleManagementCard
         value={formStep3.schedules}
-        onChange={(value: Schedule[]) => onChangeForm("schedules", value)}
+        onChange={(value: ProjectSchedule[]) =>
+          onChangeForm("schedules", value)
+        }
         large
         style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
       />
