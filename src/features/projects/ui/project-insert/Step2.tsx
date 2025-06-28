@@ -2,8 +2,8 @@ import type { SelectChangeEvent } from "@mui/material";
 import { useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
-import useInsertStep2 from "@features/projects/hook/useInsertStep2";
-import type { UpdateAllFormType } from "@features/projects/type/project-update";
+import useInsertStep2 from "@features/projects/hooks/useInsertStep2";
+import type { UpdateAllFormType } from "@features/projects/types/project-update";
 
 import ProjectExpectedPeriodCard from "@entities/projects/ui/project-insert/ProjectExpectedPeriodCard";
 import ProjectPositionsCard from "@entities/projects/ui/project-insert/ProjectPositionsCard";

@@ -4,7 +4,7 @@ import type { User } from "firebase/auth";
 import { type JSX } from "react";
 import { useParams } from "react-router-dom";
 
-import useApplyFrom from "@features/projects/hook/useApplyFrom";
+import useApplyFrom from "@features/projects/hooks/useApplyFrom";
 import { useCancelProjectApplication } from "@features/projects/queries/useCancelProjectApplication";
 import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjectApplications";
 

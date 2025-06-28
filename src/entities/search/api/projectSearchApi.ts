@@ -1,6 +1,5 @@
 import { getDocs, getCountFromServer } from "firebase/firestore";
 
-import { getApplicantsCountMap } from "@entities/projects/api/getProjectApplicationsApi";
 import { SearchQueryBuilder } from "@entities/search/model/searchQueryBuilder";
 
 import { db } from "@shared/firebase/firebase";
@@ -75,6 +74,40 @@ const applyInMemoryFilters = (
   return filteredProjects;
 };
 
+/**
+ * applications 컬렉션에서 프로젝트 ID별 지원자 개수를 가져옵니다.
+ */
+const getApplicationsCountMap = async (
+  projectIds: string[]
+): Promise<Record<string, number>> => {
+  const { query, collection, where, getCountFromServer } = await import(
+    "firebase/firestore"
+  );
+
+  if (!projectIds.length) return {};
+
+  const results: Record<string, number> = {};
+  await Promise.all(
+    projectIds.map(async (projectId) => {
+      try {
+        const q = query(
+          collection(db, "applications"),
+          where("projectId", "==", projectId)
+        );
+        const snapshot = await getCountFromServer(q);
+        results[projectId] = snapshot.data().count as number;
+      } catch {
+        results[projectId] = 0;
+      }
+    })
+  );
+
+  return results;
+};
+
+/**
+ * likes 컬렉션에서 프로젝트 ID별 좋아요 개수를 가져옵니다.
+ */
 const getLikesCountMap = async (
   projectIds: string[]
 ): Promise<Record<string, number>> => {
@@ -103,6 +136,9 @@ const getLikesCountMap = async (
   return results;
 };
 
+/**
+ * 클라이언트 사이드에서 정렬을 적용합니다.
+ */
 const applyClientSideSorting = async (
   projects: ProjectListRes[],
   sortBy: SortBy | undefined
@@ -114,7 +150,7 @@ const applyClientSideSorting = async (
   const projectIds = projects.map((p) => p.id);
 
   if (sortBy === "applicants") {
-    const applicantsCountMap = await getApplicantsCountMap(projectIds);
+    const applicantsCountMap = await getApplicationsCountMap(projectIds);
     return projects
       .map((project) => ({
         ...project,

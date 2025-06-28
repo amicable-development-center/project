@@ -2,7 +2,7 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 import type { ProjectListRes } from "@shared/types/project";
 
-import { getProjectsByIds } from "../api/projectsAPi";
+import { getProjectsByIds } from "../api/projectsApi";
 
 export function useProjectsByIds(
   ids: string[]

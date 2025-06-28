@@ -8,7 +8,7 @@ import type {
   Step3Type,
   Step4Type,
   UpdateAllFormType,
-} from "@features/projects/type/project-update";
+} from "@features/projects/types/project-update";
 
 import { scrollToTop } from "@shared/libs/utils/pagination";
 import { projectOwnerData } from "@shared/libs/utils/projectInsert";

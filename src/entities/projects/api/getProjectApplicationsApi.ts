@@ -9,7 +9,7 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 
-import { getProjectsByIds } from "@entities/projects/api/projectsAPi";
+import { getProjectsByIds } from "@entities/projects/api/projectsApi";
 
 import { db } from "@shared/firebase/firebase";
 import type { ProjectListRes } from "@shared/types/project";
