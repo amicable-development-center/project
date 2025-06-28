@@ -27,3 +27,16 @@ export interface UseEmailFormReturn {
   handleCancel: () => void;
   resetForm: () => void;
 }
+
+export interface SendEmailRequest {
+  actualSenderEmail: string;
+  receiverEmail: string;
+  projectId: string;
+  projectTitle: string;
+  emailData: EmailData;
+}
+
+export interface SendEmailResponse {
+  success: boolean;
+  message: string;
+}

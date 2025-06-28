@@ -1,6 +1,6 @@
 import { useState, useCallback, type ChangeEvent } from "react";
 
-import { sendEmailApi } from "@features/email/api/emailApi";
+import useSendEmail from "@features/email/queries/useSendEmail";
 import type {
   UseEmailFormProps,
   UseEmailFormReturn,
@@ -13,9 +13,10 @@ const useEmailForm = ({
   onClose,
 }: UseEmailFormProps): UseEmailFormReturn => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+
+  const sendEmailMutation = useSendEmail();
 
   const projectId = project?.id || "";
   const projectTitle = project?.title || "";
@@ -54,10 +55,8 @@ const useEmailForm = ({
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      const result = await sendEmailApi({
+    sendEmailMutation.mutate(
+      {
         actualSenderEmail: senderEmail,
         receiverEmail,
         projectId,
@@ -66,21 +65,16 @@ const useEmailForm = ({
           subject,
           message,
         },
-      });
-
-      if (result.success) {
-        alert(result.message);
-        resetForm();
-        closeModal();
-      } else {
-        alert(result.message);
+      },
+      {
+        onSuccess: (data) => {
+          if (data.success) {
+            resetForm();
+            closeModal();
+          }
+        },
       }
-    } catch (error) {
-      console.error("이메일 전송 중 오류 발생:", error);
-      alert("이메일 전송 중 오류가 발생했습니다.");
-    } finally {
-      setIsLoading(false);
-    }
+    );
   };
 
   const handleCancel = useCallback((): void => {
@@ -90,7 +84,7 @@ const useEmailForm = ({
 
   return {
     isOpen,
-    isLoading,
+    isLoading: sendEmailMutation.isPending,
     subject,
     message,
     openModal,

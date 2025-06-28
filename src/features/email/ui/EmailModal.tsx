@@ -60,16 +60,9 @@ const EmailModal = ({
       </DialogTitle>
       <DialogContent>
         <FormContainer>
-          {/* 보내는 사람 이메일 (읽기 전용) */}
           <EmailField label="📤 보내는 사람" value={senderEmail} />
-
-          {/* 받는 사람 이메일 (읽기 전용) */}
           <EmailField label="📥 받는 사람" value={receiverEmail} />
-
-          {/* 제목 */}
           <SubjectField value={subject} onChange={handleSubjectChange} />
-
-          {/* 메시지 */}
           <MessageField value={message} onChange={handleMessageChange} />
         </FormContainer>
       </DialogContent>
