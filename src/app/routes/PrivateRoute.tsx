@@ -14,7 +14,7 @@ const PrivateRoute = ({
   const location = useLocation();
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner variant="overlay" message="인증 확인 중..." />;
   }
 
   if (!user) {

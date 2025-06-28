@@ -1,4 +1,4 @@
-import { Avatar, Box, styled } from "@mui/material";
+import { Avatar, Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { CSSProperties, JSX } from "react";
 import { useState, useCallback, useMemo, memo } from "react";
 
@@ -18,6 +18,8 @@ const UserProfileAvatar = ({
   avatar,
   flexDirection = "row",
 }: UserProfileAvatarProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [imageError, setImageError] = useState(false);
 
   const handleImageError = useCallback((): void => {
@@ -34,7 +36,7 @@ const UserProfileAvatar = ({
 
   return (
     <UserProfileAvatarContainer>
-      <Avatar {...avatarProps} />
+      <Avatar {...avatarProps} sx={isMobile ? { fontSize: "1.2rem" } : {}} />
       <UserProfileWithNamePosition
         name={name || ""}
         userRole={userRole}
