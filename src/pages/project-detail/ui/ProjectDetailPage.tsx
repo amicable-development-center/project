@@ -103,8 +103,8 @@ const ProjectDetailPage = (): JSX.Element | null => {
         <EmailModal
           open={isOpen}
           onClose={closeModal}
-          senderEmail={"tkyoun0421@naver.com"}
-          receiverEmail={"tkyoun0421@naver.com"}
+          senderEmail={user?.email || ""}
+          receiverEmail={project?.projectOwner.email || ""}
           project={project}
         />
       )}

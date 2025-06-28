@@ -1,6 +1,6 @@
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, styled, Typography, Button } from "@mui/material";
 import type { JSX } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -18,7 +18,10 @@ const ProjectLeader = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthStore();
+
   if (!projectOwner) return null;
+
+  const isOwner = !!(user && projectOwner && user.email === projectOwner.email);
 
   return (
     <>
@@ -48,7 +51,12 @@ const ProjectLeader = ({
       </Typography>
 
       <MessageBtn
+        variant="outlined"
+        disabled={isOwner}
+        startIcon={<MailOutlineIcon />}
         onClick={() => {
+          if (isOwner) return;
+
           if (!user) {
             navigate(
               `/login?redirect=${encodeURIComponent(location.pathname)}`
@@ -57,9 +65,7 @@ const ProjectLeader = ({
           onEmailClick?.();
         }}
       >
-        <MailOutlineIcon />
-        {}
-        <Typography variant="button">연락하기</Typography>
+        연락하기
       </MessageBtn>
     </>
   );
@@ -82,16 +88,10 @@ const PicBox = styled(Box)`
   }
 `;
 
-const MessageBtn = styled(Box)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const MessageBtn = styled(Button)`
   height: 4rem;
-  gap: 5px;
-  border: 1px solid #dddddd;
+  width: 100%;
   border-radius: 4px;
-  transition: background-color 0.3s;
-  cursor: pointer;
 
   &:hover {
     background-color: #f4f4f4;
