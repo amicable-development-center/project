@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
 import type {
@@ -31,6 +31,7 @@ const useProjectInsertForm = (): InsertFormResult => {
   const { mutate: insertProject, isPending } = useProjectInsert();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [shouldSubmit, setShouldSubmit] = useState(false);
 
   const [allForm, setAllForm] = useState<AllFormType>({
     form1: {} as Step1Type,
@@ -38,6 +39,52 @@ const useProjectInsertForm = (): InsertFormResult => {
     form3: {} as Step3Type,
     form4: {} as Step4Type,
   });
+
+  // useEffect로 제출 감지
+  useEffect(() => {
+    const handleSubmit = (): void => {
+      if (!userProfile) {
+        console.log("비로그인");
+        return;
+      }
+
+      if (isPending) {
+        console.log("로딩중");
+        return;
+      }
+
+      const isRealInsert = window.confirm("등록을 완료 하시겠습니까?");
+      if (!isRealInsert) {
+        setShouldSubmit(false);
+        return;
+      }
+
+      const finalData: ProjectItemInsertReq = {
+        ...projectOwnerData(userProfile),
+        ...allForm.form1,
+        ...allForm.form2,
+        ...allForm.form3,
+        ...allForm.form4,
+        status: RecruitmentStatus.recruiting,
+        applicants: [],
+        likedUsers: [],
+      };
+
+      insertProject(finalData);
+    };
+
+    if (shouldSubmit && currentStep === 4) {
+      handleSubmit();
+      setShouldSubmit(false);
+    }
+  }, [
+    allForm,
+    shouldSubmit,
+    currentStep,
+    userProfile,
+    isPending,
+    insertProject,
+  ]);
 
   /** allForm에 알맞은 form에 데이터 넣기 */
   const updateCorrectForm: UpdateAllFormType = (formKey, data): void => {
@@ -51,46 +98,14 @@ const useProjectInsertForm = (): InsertFormResult => {
   };
 
   /** allForm에 알맞은 form에 데이터 넣기 */
-  const handleNext = async (): Promise<void> => {
+  const handleNext = (): void => {
     if (currentStep !== 4) {
       setCurrentStep((prev) => prev + 1);
       scrollToTop();
       return;
     }
-
-    // step4 데이터까지 받기 위해 상태 업데이트 기다린 후 submit
-    setTimeout(async () => {
-      await submit();
-    }, 100);
-  };
-
-  const submit = async (): Promise<void> => {
-    if (!userProfile) {
-      console.log("비로그인");
-      return;
-    }
-
-    if (isPending) {
-      console.log("로딩중");
-      return;
-    }
-
-    const isRealInsert = window.confirm("등록을 완료 하시겠습니까?");
-    if (!isRealInsert) return;
-
-    const finalData: ProjectItemInsertReq = {
-      ...projectOwnerData(userProfile),
-      ...allForm.form1,
-      ...allForm.form2,
-      ...allForm.form3,
-      ...allForm.form4,
-      status: RecruitmentStatus.recruiting,
-      applicants: [], // 추후 삭제
-      likedUsers: [], // 추후 삭제
-    };
-
-    // projects에 insert
-    insertProject(finalData); // 삭제
+    // step4에서는 제출 플래그만 설정
+    setShouldSubmit(true);
   };
 
   return {

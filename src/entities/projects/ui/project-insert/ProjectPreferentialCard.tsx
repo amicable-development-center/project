@@ -7,6 +7,7 @@ import type {
   JSX,
   FocusEvent,
   MouseEvent,
+  KeyboardEvent,
 } from "react";
 import { useState } from "react";
 
@@ -35,6 +36,13 @@ const ProjectPreferentialCard = ({
     }
   };
 
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addPreferential();
+    }
+  };
+
   const removePreferential = (preferentialToRemove: string): void => {
     onChange(value.filter((pref) => pref !== preferentialToRemove));
   };
@@ -55,6 +63,7 @@ const ProjectPreferentialCard = ({
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setNewPreferential(e.target.value)
           }
+          onKeyUp={handleKeyPress}
           placeholder="예: AWS, Docker, 스타트업 경험..."
           style={{
             flex: 1,

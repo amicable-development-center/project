@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import type { Step1Type } from "@features/projects/types/project-update";
 
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import { ProjectCategory } from "@shared/types/project";
 
 interface ApplyFormResult {
@@ -23,6 +24,7 @@ interface ApplyFormResult {
 
 const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
+  const { showError } = useSnackbarStore();
 
   const [form1, setForm1] = useState(isModify ? state : initForm1);
   const [hasUserSelected, setHasUserSelected] = useState(false);
@@ -77,23 +79,23 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
 
   const validateForm = (): boolean => {
     if (!form1.title.trim()) {
-      alert("프로젝트 이름을 입력해주세요");
+      showError("프로젝트 이름을 입력해주세요");
       return false;
     }
     if (!form1.oneLineInfo.trim()) {
-      alert("한 줄 소개를 입력해주세요.");
+      showError("한 줄 소개를 입력해주세요");
       return false;
     }
     if (!form1.simpleInfo.trim()) {
-      alert("프로젝트 간단 설명을 입력해주세요.");
+      showError("프로젝트 간단 설명을 입력해주세요");
       return false;
     }
     if (!hasUserSelected) {
-      alert("프로젝트 분야를 선택해주세요.");
+      showError("프로젝트 분야를 선택해주세요");
       return false;
     }
     if (!form1.closedDate) {
-      alert("모집 마감일을 선택해주세요.");
+      showError("모집 마감일을 선택해주세요");
       return false;
     }
     return true;
@@ -116,7 +118,7 @@ export default useInsertStep1;
 
 const initForm1 = {
   title: "",
-  category: ProjectCategory.webDevelopment,
+  category: "" as ProjectCategory,
   simpleInfo: "",
   closedDate: Timestamp.now(),
   oneLineInfo: "",
