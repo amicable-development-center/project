@@ -2,6 +2,8 @@ import { Box, Card, Container, styled } from "@mui/material";
 import { type JSX } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import useEmailForm from "@features/email/hooks/useEmailForm";
+import EmailModal from "@features/email/ui/EmailModal";
 import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
 import { ProjectDone, ProjectDones } from "@features/projects/ui/ProjectDelete";
 import ProjectLike from "@features/projects/ui/ProjectLike";
@@ -31,6 +33,13 @@ const ProjectDetailPage = (): JSX.Element | null => {
     isLoading,
     isError,
   } = useProjectsItem({ id: id || null });
+
+  const { isOpen, openModal, closeModal } = useEmailForm({
+    senderEmail: user?.email || "",
+    receiverEmail: project?.projectOwner.email || "",
+    project: project || null,
+    onClose: () => {},
+  });
 
   const projectInfoValues = !project
     ? null
@@ -90,6 +99,15 @@ const ProjectDetailPage = (): JSX.Element | null => {
   }
   return (
     <MainContainer>
+      {project && (
+        <EmailModal
+          open={isOpen}
+          onClose={closeModal}
+          senderEmail={user?.email || ""}
+          receiverEmail={project?.projectOwner.email || ""}
+          project={project}
+        />
+      )}
       <DetailHeader title={project?.title || ""} />
 
       <CardContainer>
@@ -117,7 +135,10 @@ const ProjectDetailPage = (): JSX.Element | null => {
 
         <Box flex={1.5}>
           <CardBox>
-            <ProjectLeader projectOwner={project?.projectOwner} />
+            <ProjectLeader
+              projectOwner={project?.projectOwner}
+              onEmailClick={openModal}
+            />
           </CardBox>
           <CardBox>
             <ProjectApply />

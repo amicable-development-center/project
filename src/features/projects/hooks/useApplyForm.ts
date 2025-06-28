@@ -6,6 +6,7 @@ import { useCreateProjectApplications } from "@features/projects/queries/useCrea
 
 import { useGetProjectApplicationStatus } from "@entities/projects/queries/useGetProjectApplications";
 
+import { useAuthStore } from "@shared/stores/authStore";
 import { useSnackbarStore } from "@shared/stores/snackbarStore";
 
 interface ApplyFormResult {
@@ -27,6 +28,7 @@ interface ApplyFormResult {
 
 const useApplyForm = (): ApplyFormResult => {
   const { id: projectId } = useParams();
+  const { user } = useAuthStore();
   const { showError } = useSnackbarStore();
 
   const { data: isApplied = false, isLoading: dataLoading } =
@@ -41,6 +43,10 @@ const useApplyForm = (): ApplyFormResult => {
 
   const openForm = (): void => {
     if (dataLoading) return;
+    if (!user) {
+      showError("로그인을 해주세요");
+      return;
+    }
     setIsFormOpen(true);
   };
   const closeForm = (): void => setIsFormOpen(false);

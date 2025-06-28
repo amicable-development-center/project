@@ -55,8 +55,6 @@ const Header = (): JSX.Element => {
     { label: "프로젝트 등록", onClick: () => navigate("/project/insert") },
   ];
 
-  console.log("Header user:", user);
-
   return (
     <HeaderContainer>
       <HeaderContent>

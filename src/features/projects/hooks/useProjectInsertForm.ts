@@ -44,12 +44,10 @@ const useProjectInsertForm = (): InsertFormResult => {
   useEffect(() => {
     const handleSubmit = (): void => {
       if (!userProfile) {
-        console.log("비로그인");
         return;
       }
 
       if (isPending) {
-        console.log("로딩중");
         return;
       }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, type RefObject } from "react";
+import { useState, useCallback, useEffect, type RefObject } from "react";
 
 import {
   useProjectsByPage,
@@ -40,6 +40,8 @@ const useProjectSearch = (
     }
   );
 
+  const [shouldScrollAfterLoad, setShouldScrollAfterLoad] = useState(false);
+
   const {
     data: totalCount = 0,
     isLoading: isCountLoading,
@@ -61,6 +63,17 @@ const useProjectSearch = (
   const isLoading = isProjectsLoading || isCountLoading;
   const isError = isProjectsError || isCountError;
 
+  useEffect(() => {
+    if (!isLoading && shouldScrollAfterLoad && resultsRef?.current) {
+      setTimeout(() => {
+        if (resultsRef?.current) {
+          scrollToElement(resultsRef.current, "smooth", 80);
+        }
+      }, 200);
+      setShouldScrollAfterLoad(false);
+    }
+  }, [isLoading, shouldScrollAfterLoad, resultsRef]);
+
   const handleSearch = useCallback(
     (filter: ProjectSearchFilterOption): void => {
       setCurrentFilter(filter);
@@ -70,14 +83,13 @@ const useProjectSearch = (
   );
 
   const handlePageChange = (page: number): void => {
-    const isSamePage = page === currentPage;
-
-    if (isSamePage || isLoading) return;
-
-    setPage(page);
-
     if (resultsRef?.current) {
       scrollToElement(resultsRef.current, "smooth", 80);
+    }
+
+    if (page !== currentPage) {
+      setPage(page);
+      setShouldScrollAfterLoad(true);
     }
   };
 

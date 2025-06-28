@@ -1,17 +1,27 @@
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, styled, Typography, Button } from "@mui/material";
 import type { JSX } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import { useAuthStore } from "@shared/stores/authStore";
 import type { User } from "@shared/types/user";
 import TitleWithIcon from "@shared/ui/project-detail/TitleWithIcon";
 
 const ProjectLeader = ({
   projectOwner,
+  onEmailClick,
 }: {
   projectOwner: User | undefined;
+  onEmailClick?: () => void;
 }): JSX.Element | null => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuthStore();
+
   if (!projectOwner) return null;
+
+  const isOwner = !!(user && projectOwner && user.email === projectOwner.email);
 
   return (
     <>
@@ -40,9 +50,22 @@ const ProjectLeader = ({
         {projectOwner.introduceMyself || "아직 등록한 소개가 없어요! 🚀"}
       </Typography>
 
-      <MessageBtn>
-        <MailOutlineIcon />
-        <Typography variant="button">연락하기</Typography>
+      <MessageBtn
+        variant="outlined"
+        disabled={isOwner}
+        startIcon={<MailOutlineIcon />}
+        onClick={() => {
+          if (isOwner) return;
+
+          if (!user) {
+            navigate(
+              `/login?redirect=${encodeURIComponent(location.pathname)}`
+            );
+          }
+          onEmailClick?.();
+        }}
+      >
+        연락하기
       </MessageBtn>
     </>
   );
@@ -65,16 +88,10 @@ const PicBox = styled(Box)`
   }
 `;
 
-const MessageBtn = styled(Box)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const MessageBtn = styled(Button)`
   height: 4rem;
-  gap: 5px;
-  border: 1px solid #dddddd;
+  width: 100%;
   border-radius: 4px;
-  transition: background-color 0.3s;
-  cursor: pointer;
 
   &:hover {
     background-color: #f4f4f4;
