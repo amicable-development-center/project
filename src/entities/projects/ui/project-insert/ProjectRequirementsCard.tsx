@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, IconButton, TextField, Button } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { ChangeEvent, CSSProperties, JSX } from "react";
 
@@ -20,6 +21,7 @@ const ProjectRequirementsCard = ({
   style,
 }: ProjectRequirementsCardProps): JSX.Element => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const displayValue = value;
 
@@ -72,9 +74,11 @@ const ProjectRequirementsCard = ({
               sx={{
                 "& .MuiOutlinedInput-root": {
                   height: 40,
-                  fontSize: large
-                    ? theme.typography.h5.fontSize
-                    : theme.typography.body1.fontSize,
+                  fontSize: isMobile
+                    ? theme.typography.body2.fontSize
+                    : large
+                      ? theme.typography.h5.fontSize
+                      : theme.typography.body1.fontSize,
                   fontFamily: theme.typography.fontFamily,
                   background: "none",
                   border: "none",

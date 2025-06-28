@@ -1,5 +1,6 @@
-import { FormControl, Select, MenuItem } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
+import { FormControl, Select, MenuItem } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { CSSProperties, JSX } from "react";
 
@@ -43,6 +44,7 @@ export default function ProjectWorkflowCard({
   style,
 }: ProjectWorkflowCardProps): JSX.Element {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleChange = (event: SelectChangeEvent<Workflow>): void => {
     onChange(event.target.value as Workflow);
@@ -62,9 +64,11 @@ export default function ProjectWorkflowCard({
           size={large ? "medium" : "small"}
           displayEmpty
           sx={{
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: isMobile
+              ? theme.typography.body2.fontSize
+              : large
+                ? theme.typography.h5.fontSize
+                : theme.typography.body1.fontSize,
             fontFamily: theme.typography.fontFamily,
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
 
