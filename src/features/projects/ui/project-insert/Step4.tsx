@@ -1,8 +1,8 @@
 import { useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
-import useInsertStep4 from "@features/projects/hook/useInsertStep4";
-import type { UpdateAllFormType } from "@features/projects/type/project-update";
+import useInsertStep4 from "@features/projects/hooks/useInsertStep4";
+import type { UpdateAllFormType } from "@features/projects/types/project-update";
 
 import ProjectPreferentialCard from "@entities/projects/ui/project-insert/ProjectPreferentialCard";
 import ProjectRequirementsCard from "@entities/projects/ui/project-insert/ProjectRequirementsCard";
