@@ -59,6 +59,7 @@ const ProjectDetailPage = (): JSX.Element | null => {
 
   const projectLikeValues = {
     status: (project?.status as RecruitmentStatus) || "모집중",
+    id: project?.id || "",
   };
 
   const descriptionlValues = {
@@ -113,7 +114,10 @@ const ProjectDetailPage = (): JSX.Element | null => {
       <CardContainer>
         <Box flex={3}>
           <CardBox>
-            <ProjectLike values={projectLikeValues} />
+            <ProjectLike
+              values={projectLikeValues}
+              projectId={project?.id || ""}
+            />
             <ProjectInfo values={projectInfoValues} />
           </CardBox>
           <CardBox>

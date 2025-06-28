@@ -4,7 +4,43 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Card, CardContent, Stack, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
+import { useCountUp } from "@shared/hooks/useCountUp";
 import FadeInUpOnView from "@shared/ui/animations/FadeInUpOnView";
+
+interface StatCardProps {
+  stat: {
+    id: string;
+    title: string;
+    value: number;
+    icon: JSX.Element;
+    color: string;
+  };
+  delay: number;
+}
+
+const StatCard = ({ stat, delay }: StatCardProps): JSX.Element => {
+  const { count } = useCountUp({
+    end: stat.value,
+    duration: 1500,
+    delay: delay * 1000,
+  });
+
+  return (
+    <FadeInUpOnView delay={delay * 0.5}>
+      <ProjectStatsCard>
+        <CardContent>
+          <ProjectStatsStack>
+            <ProjectStatsIcon color={stat.color}>{stat.icon}</ProjectStatsIcon>
+            <ProjectStatsCount variant="subtitle2">
+              {`${count}+`}
+            </ProjectStatsCount>
+            <ProjectStatsTitle variant="body1">{stat.title}</ProjectStatsTitle>
+          </ProjectStatsStack>
+        </CardContent>
+      </ProjectStatsCard>
+    </FadeInUpOnView>
+  );
+};
 
 const ProjectsStats = (): JSX.Element => {
   const mock = [
@@ -18,7 +54,7 @@ const ProjectsStats = (): JSX.Element => {
     {
       id: "b",
       title: "활성 사용자",
-      value: 120,
+      value: 360,
       icon: <PeopleAltIcon />,
       color: "#16a34a",
     },
@@ -33,27 +69,9 @@ const ProjectsStats = (): JSX.Element => {
 
   return (
     <ProjectStatsContainer>
-      {mock.map((stat, index) => {
-        return (
-          <FadeInUpOnView key={stat.id} delay={index * 0.5}>
-            <ProjectStatsCard>
-              <CardContent>
-                <ProjectStatsStack>
-                  <ProjectStatsIcon color={stat.color}>
-                    {stat.icon}
-                  </ProjectStatsIcon>
-                  <ProjectStatsCount variant="subtitle2">
-                    {`${stat.value}+`}
-                  </ProjectStatsCount>
-                  <ProjectStatsTitle variant="body1">
-                    {stat.title}
-                  </ProjectStatsTitle>
-                </ProjectStatsStack>
-              </CardContent>
-            </ProjectStatsCard>
-          </FadeInUpOnView>
-        );
-      })}
+      {mock.map((stat, index) => (
+        <StatCard key={stat.id} stat={stat} delay={index} />
+      ))}
     </ProjectStatsContainer>
   );
 };
@@ -118,7 +136,7 @@ const ProjectStatsCount = styled(Typography)(({ theme }) => ({
   fontWeight: "bold",
 
   [theme.breakpoints.up("sm")]: {
-    fontSize: "2.4rem",
+    fontSize: "3.2rem",
   },
 }));
 

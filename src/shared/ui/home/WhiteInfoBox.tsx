@@ -30,7 +30,9 @@ const WhiteInfoBox = ({
   return (
     <FadeInUpOnView delay={idx * 0.5}>
       <ItemCard>
-        <CardContent>
+        <CardContent
+          sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+        >
           <ProjectStatsStack>
             <ProjectStatsIcon color={color}>
               <Icon />
@@ -47,6 +49,9 @@ const WhiteInfoBox = ({
 export default WhiteInfoBox;
 
 const ItemCard = styled(Card)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   &:hover {
     transform: translateY(-1rem);
@@ -56,6 +61,8 @@ const ItemCard = styled(Card)`
 const ProjectStatsStack = styled(Stack)`
   text-align: center;
   gap: 0.8rem;
+  height: 100%;
+  justify-content: center;
 `;
 
 const ProjectStatsIcon = styled("div")<ProjectStatsIconProps>(

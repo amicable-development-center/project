@@ -57,7 +57,14 @@ const ProjectCard = ({
     >
       <StyledCardContent>
         <ProjectHeader>
-          <Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 0.5,
+            }}
+          >
             <StatusChip
               label={project.status}
               className={isRecruiting ? "black" : ""}
