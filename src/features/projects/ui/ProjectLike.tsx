@@ -7,6 +7,7 @@ import {
   getStatusClassname,
   shareProjectUrl,
 } from "@shared/libs/utils/projectDetail";
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import type { ProjectListRes } from "@shared/types/project";
 import {
   FavoriteBorderIcon,
@@ -22,6 +23,13 @@ interface ProjectLikeProps {
 
 const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
   const { isLiked, toggleLike } = useOptimisticProjectLike();
+  const { showError, showSuccess } = useSnackbarStore();
+
+  const sharelink = (): void => {
+    shareProjectUrl()
+      .then(() => showSuccess("UPL이 복사되었습니다."))
+      .catch(() => showError("복사 실패"));
+  };
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -37,7 +45,7 @@ const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
             <FavoriteBorderIcon />
           )}
         </HeadIconBox>
-        <HeadIconBox onClick={shareProjectUrl}>
+        <HeadIconBox onClick={sharelink}>
           <ShareIcon />
         </HeadIconBox>
       </Box>
