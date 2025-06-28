@@ -1,4 +1,5 @@
 import { TextField } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { ChangeEvent, CSSProperties, JSX } from "react";
 
@@ -18,6 +19,7 @@ const ProjectDetailDescriptionCard = ({
   style,
 }: ProjectDetailDescriptionCardProps): JSX.Element => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
     onChange(e.target.value);
@@ -52,9 +54,11 @@ AI 기술을 활용하여 개인별 학습 패턴을 분석하고, 최적화된 
         variant="outlined"
         sx={{
           "& .MuiOutlinedInput-root": {
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: isMobile
+              ? theme.typography.body2.fontSize
+              : large
+                ? theme.typography.h5.fontSize
+                : theme.typography.body1.fontSize,
             fontFamily: "monospace",
             lineHeight: 1.6,
             padding: 0,

@@ -51,9 +51,15 @@ const ProjectSimpleDescCard = ({
             },
           },
           "& .MuiOutlinedInput-input": {
-            padding: large ? 5 : 5,
-            fontSize: 16,
-            color: "#222",
+            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            "&::placeholder": {
+              fontSize: {
+                xs: "14px",
+                sm: "15px",
+                md: "16px",
+              },
+              color: "#999",
+            },
           },
         }}
         required
