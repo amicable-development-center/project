@@ -8,9 +8,9 @@ import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
 
 interface ProjectRequirementsCardProps {
   value: string[];
-  onChange: (value: string[]) => void;
   large?: boolean;
   style?: CSSProperties;
+  onChange: (value: string[]) => void;
 }
 
 const ProjectRequirementsCard = ({
@@ -21,7 +21,7 @@ const ProjectRequirementsCard = ({
 }: ProjectRequirementsCardProps): JSX.Element => {
   const theme = useTheme();
 
-  const displayValue = value.length === 0 ? [""] : value;
+  const displayValue = value;
 
   const handleInputChange = (index: number, newValue: string): void => {
     const newArr = [...displayValue];
@@ -94,6 +94,7 @@ const ProjectRequirementsCard = ({
                 },
               }}
             />
+
             <IconButton
               onClick={() => removeInput(index)}
               color="error"

@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 
 import { type ProjectItemInsertReq } from "@shared/types/project";
 import { ExpectedPeriod } from "@shared/types/schedule";
@@ -13,88 +13,52 @@ interface Schedule {
 type Step3Type = Pick<ProjectItemInsertReq, "description" | "schedules">;
 
 interface ApplyFormResult {
-  form3: Step3Type;
-  setting: {
-    // 내부 Input 셋팅용
-    scheduleItem: <K extends keyof Schedule>(
-      index: number,
-      field: K,
-      value: Schedule[K]
-    ) => void;
-  };
-  update: {
-    // form 업데이트용
-    description: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-    newSchedule: () => void;
-    removeSchedule: (idx: number) => void;
-  };
+  formStep3: Step3Type;
+  onChangeForm: (
+    field: keyof Step3Type,
+    value: Step3Type[keyof Step3Type]
+  ) => void;
+  validateForm: () => boolean;
 }
 
 const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
 
-  const [form3, setForm3] = useState(isModify ? state : initForm3);
+  const [formStep3, setFormStep3] = useState(isModify ? state : initForm3);
 
-  // 프로젝트 설명
-  const updateDescription = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    setForm3((prev) => ({
-      ...prev,
-      description: e.target.value,
-    }));
-  };
-
-  // 일정 수정
-  const updateScheduleField = <K extends keyof Schedule>(
-    index: number,
-    field: K,
-    value: Schedule[K]
+  const handleChangeStep3 = (
+    field: keyof Step3Type,
+    value: Step3Type[keyof Step3Type]
   ): void => {
-    setForm3((prev) => ({
-      ...prev,
-      schedules: prev.schedules.map((schedule, i) =>
-        i === index ? { ...schedule, [field]: value } : schedule
-      ),
-    }));
+    setFormStep3((prev) => ({ ...prev, [field]: value }));
   };
 
-  // 새 일정 추가
-  const insertNewSchedule = (): void => {
-    setForm3((prev) => ({
-      ...prev,
-      schedules: [...prev.schedules, initSchedule],
-    }));
-  };
-
-  // 일정 삭제
-  const removeSchedule = (idx: number): void => {
-    setForm3((prev) => ({
-      ...prev,
-      schedules: prev.schedules.filter((_, i) => i !== idx),
-    }));
+  const validateForm = (): boolean => {
+    //여기에 검사식을 넣어주세요.
+    // 아래는 예시 입니다.
+    if (!formStep3.description.trim()) {
+      alert("프로젝트 상세 설명을 적어주세욧요.");
+      return false;
+    }
+    return true;
   };
 
   return {
-    form3,
-    setting: {
-      scheduleItem: updateScheduleField,
-    },
-    update: {
-      description: updateDescription,
-      newSchedule: insertNewSchedule,
-      removeSchedule: removeSchedule,
-    },
+    formStep3,
+    onChangeForm: handleChangeStep3,
+    validateForm,
   };
 };
 
 export default useInsertStep3;
 
-const initForm3: Step3Type = {
-  description: "",
-  schedules: [],
-};
-
 const initSchedule: Schedule = {
   stageName: "",
   period: ExpectedPeriod.oneMonth,
   description: "",
+};
+
+const initForm3: Step3Type = {
+  description: "",
+  schedules: [initSchedule],
 };

@@ -1,27 +1,37 @@
-import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
-import type { Step2Type } from "@features/projects/hook/useProjectInsertForm";
+import useInsertStep2 from "@features/projects/hook/useInsertStep2";
+import type { UpdateAllFormType } from "@features/projects/type/project-update";
 
 import ProjectExpectedPeriodCard from "@entities/projects/ui/project-insert/ProjectExpectedPeriodCard";
 import ProjectPositionsCard from "@entities/projects/ui/project-insert/ProjectPositionsCard";
 import ProjectTeamSizeCard from "@entities/projects/ui/project-insert/ProjectTeamSizeCard";
 import ProjectTechStackCard from "@entities/projects/ui/project-insert/ProjectTechStackCard";
 
-interface Step2Props {
-  form: Step2Type;
-  onChangeForm: (field: keyof Step2Type, value: any) => void;
-}
+import StepWhiteBox from "@shared/ui/project-insert/StepWhiteBox";
 
-const Step2 = ({ form, onChangeForm }: Step2Props): JSX.Element => {
+const Step2 = ({
+  updateForm,
+}: {
+  updateForm: UpdateAllFormType;
+}): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
+  const { formStep2, onChangeForm, validateForm } = useInsertStep2({});
+
+  const settingSetForm = (): void => {
+    if (validateForm()) {
+      updateForm("form2", formStep2);
+    }
+  };
+
   return (
-    <StepBox>
+    <StepWhiteBox stepNum={2} onClick={settingSetForm}>
       <ProjectTeamSizeCard
-        value={form.teamSize}
+        value={formStep2.teamSize}
         onChange={(e: SelectChangeEvent) =>
           onChangeForm("teamSize", Number(e.target.value))
         }
@@ -29,7 +39,7 @@ const Step2 = ({ form, onChangeForm }: Step2Props): JSX.Element => {
         style={{ gridColumn: "span 1" }}
       />
       <ProjectExpectedPeriodCard
-        value={form.expectedPeriod}
+        value={formStep2.expectedPeriod}
         onChange={(e: SelectChangeEvent) =>
           onChangeForm("expectedPeriod", e.target.value)
         }
@@ -37,31 +47,19 @@ const Step2 = ({ form, onChangeForm }: Step2Props): JSX.Element => {
         style={{ gridColumn: "span 1" }}
       />
       <ProjectTechStackCard
-        value={form.techStack}
+        value={formStep2.techStack}
         onChange={(value) => onChangeForm("techStack", value)}
         large
         style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
       />
       <ProjectPositionsCard
-        value={form.positions}
+        value={formStep2.positions}
         onChange={(value) => onChangeForm("positions", value)}
         large
         style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
       />
-    </StepBox>
+    </StepWhiteBox>
   );
 };
 
 export default Step2;
-
-export const StepBox = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "1fr",
-  gap: theme.spacing(2),
-  marginBottom: 0,
-
-  [theme.breakpoints.up("md")]: {
-    gridTemplateColumns: "1fr 1fr",
-    gap: theme.spacing(3),
-  },
-}));

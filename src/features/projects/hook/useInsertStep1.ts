@@ -1,20 +1,14 @@
 import type { SelectChangeEvent } from "@mui/material";
 import { Timestamp } from "firebase/firestore";
-import { useState } from "react";
 import type { ChangeEvent } from "react";
+import { useState } from "react";
 
-import {
-  ProjectCategory,
-  type ProjectItemInsertReq,
-} from "@shared/types/project";
+import type { Step1Type } from "@features/projects/type/project-update";
 
-type Setp1Type = Pick<
-  ProjectItemInsertReq,
-  "title" | "oneLineInfo" | "category" | "closedDate" | "simpleInfo"
->;
+import { ProjectCategory } from "@shared/types/project";
 
 interface ApplyFormResult {
-  form1: Setp1Type;
+  form1: Step1Type;
   update: {
     title: (e: ChangeEvent<HTMLInputElement>) => void;
     oneLineInfo: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -24,9 +18,10 @@ interface ApplyFormResult {
     category: (event: SelectChangeEvent) => void;
     closedDate: (e: ChangeEvent<HTMLInputElement>) => void;
   };
+  validateForm: () => boolean;
 }
 
-const useInsertStep1 = ({ state }: { state?: Setp1Type }): ApplyFormResult => {
+const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
 
   const [form1, setForm1] = useState(isModify ? state : initForm1);
@@ -69,6 +64,16 @@ const useInsertStep1 = ({ state }: { state?: Setp1Type }): ApplyFormResult => {
     }));
   };
 
+  const validateForm = (): boolean => {
+    //여기에 검사식을 넣어주세요.
+    // 아래는 예시 입니다.
+    if (!form1.title.trim()) {
+      alert("프로젝트 이름을 적어주세욧요.");
+      return false;
+    }
+    return true;
+  };
+
   return {
     form1,
     update: {
@@ -78,6 +83,7 @@ const useInsertStep1 = ({ state }: { state?: Setp1Type }): ApplyFormResult => {
       category: updateCategory,
       closedDate: updateClosedDate,
     },
+    validateForm,
   };
 };
 

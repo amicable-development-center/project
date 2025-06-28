@@ -1,6 +1,6 @@
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 
-import { type ProjectItemInsertReq, Workflow } from "@shared/types/project";
+import { Workflow, type ProjectItemInsertReq } from "@shared/types/project";
 
 type Step4Type = Pick<
   ProjectItemInsertReq,
@@ -8,107 +8,40 @@ type Step4Type = Pick<
 >;
 
 interface ApplyFormResult {
-  form4: Step4Type;
-  setting: {
-    // 내부 Input 셋팅용
-    requirementItem: (e: ChangeEvent<HTMLInputElement>) => void;
-    preferentialItem: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  update: {
-    // form 업데이트용
-    workflow: (e: ChangeEvent<HTMLInputElement>) => void;
-    requirements: () => void;
-    removeRequirement: (idx: number) => void;
-    preferentialTreatment: () => void;
-    removePreferentialTreatment: (idx: number) => void;
-  };
+  formStep4: Step4Type;
+  onChangeForm: (
+    field: keyof Step4Type,
+    value: Step4Type[keyof Step4Type]
+  ) => void;
+  validateForm: () => boolean;
 }
 
 const useInsertStep4 = ({ state }: { state?: Step4Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
 
-  const [form4, setForm4] = useState(isModify ? state : initForm4);
-  const [requirementItem, setRequirementItem] = useState("");
-  const [preferentialItem, setPreferentialItem] = useState("");
+  const [formStep4, setFormStep4] = useState(isModify ? state : initForm4);
 
-  // 진행 방식
-  const updateWorkflow = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value as keyof typeof Workflow;
+  const handleChangeStep4 = (
+    field: keyof Step4Type,
+    value: Step4Type[keyof Step4Type]
+  ): void => {
+    setFormStep4((prev) => ({ ...prev, [field]: value }));
+  };
 
-    if (value in Workflow) {
-      setForm4((prev) => ({
-        ...prev,
-        workflow: Workflow[value],
-      }));
+  const validateForm = (): boolean => {
+    //여기에 검사식을 넣어주세요.
+    // 아래는 예시 입니다.
+    if (formStep4.requirements[0] === "") {
+      alert("지원 요구사항을 적어주세욧요.");
+      return false;
     }
-  };
-
-  // 지원 요건 input box 용
-  const settingRequirementItem = (e: ChangeEvent<HTMLInputElement>): void => {
-    setRequirementItem(e.target.value);
-  };
-
-  // 지원 요건 + 버튼 시 list에 추가
-  const updateRequirements = (): void => {
-    if (requirementItem.trim()) {
-      setForm4((prev) => ({
-        ...prev,
-        requirements: [...prev.requirements, requirementItem.trim()],
-      }));
-      setRequirementItem(""); // 입력 필드 초기화
-    }
-  };
-
-  // 지원 요건 삭제
-  const removeRequirement = (idx: number): void => {
-    setForm4((prev) => ({
-      ...prev,
-      requirements: prev.requirements.filter((_, i) => i !== idx),
-    }));
-  };
-
-  // 우대 사항 input box 용
-  const settingPreferentialItem = (e: ChangeEvent<HTMLInputElement>): void => {
-    setPreferentialItem(e.target.value);
-  };
-
-  // 우대 사항 + 버튼 시 list에 추가
-  const updatePreferentialTreatment = (): void => {
-    if (preferentialItem.trim()) {
-      setForm4((prev) => ({
-        ...prev,
-        preferentialTreatment: [
-          ...prev.preferentialTreatment,
-          preferentialItem.trim(),
-        ],
-      }));
-      setPreferentialItem(""); // 입력 필드 초기화
-    }
-  };
-
-  // 우대 사항 삭제
-  const removePreferentialTreatment = (idx: number): void => {
-    setForm4((prev) => ({
-      ...prev,
-      preferentialTreatment: prev.preferentialTreatment.filter(
-        (_, i) => i !== idx
-      ),
-    }));
+    return true;
   };
 
   return {
-    form4,
-    setting: {
-      requirementItem: settingRequirementItem,
-      preferentialItem: settingPreferentialItem,
-    },
-    update: {
-      workflow: updateWorkflow,
-      requirements: updateRequirements,
-      removeRequirement: removeRequirement,
-      preferentialTreatment: updatePreferentialTreatment,
-      removePreferentialTreatment: removePreferentialTreatment,
-    },
+    formStep4,
+    onChangeForm: handleChangeStep4,
+    validateForm,
   };
 };
 
@@ -116,6 +49,6 @@ export default useInsertStep4;
 
 const initForm4: Step4Type = {
   workflow: Workflow.online,
-  requirements: [],
+  requirements: [""],
   preferentialTreatment: [],
 };
