@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 
 import useApplyFrom from "@features/projects/hook/useApplyFrom";
 import { useCancelProjectApplication } from "@features/projects/queries/useCancelProjectApplication";
-import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjcetApplications";
+import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjectApplications";
 
 import { useGetProjectApplicationStatus } from "@entities/projects/queries/useGetProjectApplications";
 
@@ -40,6 +40,7 @@ const ProjectApplyForm = (): JSX.Element => {
       {
         onSuccess: () => {
           alert("지원이 완료되었습니다! 🎉");
+
           openForm.close();
         },
         onError: (error) => {

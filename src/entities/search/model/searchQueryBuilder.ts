@@ -113,10 +113,11 @@ export class SearchQueryBuilder implements FilterBuilder {
           builtQuery = query(builtQuery, orderBy("closedDate", "asc"));
           break;
         case "applicants":
-          builtQuery = query(builtQuery, orderBy("applicants", "desc"));
-          break;
         case "popularity":
-          builtQuery = query(builtQuery, orderBy("likedUsers", "desc"));
+          builtQuery = query(builtQuery, orderBy("createdAt", "desc"));
+          break;
+        default:
+          builtQuery = query(builtQuery, orderBy("createdAt", "desc"));
           break;
       }
     }
