@@ -1,80 +1,26 @@
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Box, styled, Typography } from "@mui/material";
-import type { User } from "firebase/auth";
 import { type JSX } from "react";
-import { useParams } from "react-router-dom";
 
-import useApplyFrom from "@features/projects/hooks/useApplyFrom";
-import { useCancelProjectApplication } from "@features/projects/queries/useCancelProjectApplication";
-import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjectApplications";
-
-import { useGetProjectApplicationStatus } from "@entities/projects/queries/useGetProjectApplications";
-
-import { useAuthStore } from "@shared/stores/authStore";
+import useApplyFrom from "@features/projects/hooks/useApplyForm";
 
 const ProjectApplyForm = (): JSX.Element => {
-  const { id: projectId } = useParams();
-  const user = useAuthStore((state) => state.user);
-
-  const { openForm, message } = useApplyFrom(projectId || "");
-  const { data: isApplied } = useGetProjectApplicationStatus();
-
-  const { mutate: createProjectApplication, isPending: createPending } =
-    useCreateProjectApplications();
-
-  const { mutate: cancelProjectApplication, isPending: cancelPending } =
-    useCancelProjectApplication();
-
-  const handleApplySubmit = (): void => {
-    if (!projectId || !message.value.trim()) {
-      alert("메시지를 입력해주세요.");
-      return;
-    }
-
-    createProjectApplication(
-      {
-        userId: user?.uid as User["uid"],
-        projectId,
-        message: message.value.trim(),
-      },
-      {
-        onSuccess: () => {
-          alert("지원이 완료되었습니다! 🎉");
-
-          openForm.close();
-        },
-        onError: (error) => {
-          alert(`지원 실패: ${error.message}`);
-        },
-      }
-    );
-  };
-
-  const handleCancelSubmit = (): void => {
-    if (!projectId) return;
-
-    if (confirm("정말로 지원을 취소하시겠습니까?")) {
-      cancelProjectApplication(projectId, {
-        onSuccess: () => {
-          alert("지원이 취소되었습니다.");
-        },
-        onError: (error) => {
-          alert(`지원 취소 실패: ${error.message}`);
-        },
-      });
-    }
-  };
+  const {
+    openForm,
+    message,
+    submit,
+    cancle,
+    isApplied,
+    isCancling,
+    isPending,
+  } = useApplyFrom();
 
   // 지원된 상태
   if (isApplied) {
     return (
-      <MessageBtn
-        className="cancel"
-        onClick={handleCancelSubmit}
-        disabled={cancelPending}
-      >
+      <MessageBtn className="cancel" onClick={cancle} disabled={isPending}>
         <Typography variant="body2" color="secondary">
-          {cancelPending ? "취소 중..." : "지원 취소"}
+          {isCancling ? "취소 중..." : "지원 취소"}
         </Typography>
       </MessageBtn>
     );
@@ -86,7 +32,7 @@ const ProjectApplyForm = (): JSX.Element => {
       <MessageBtn
         className="apply"
         onClick={openForm.open}
-        disabled={createPending}
+        disabled={isPending}
       >
         <RocketLaunchIcon />
         <Typography>지원하기 🚀</Typography>
@@ -108,15 +54,15 @@ const ProjectApplyForm = (): JSX.Element => {
       />
 
       <Box display="flex" gap={1}>
-        <MessageBtn onClick={openForm.close} disabled={createPending}>
+        <MessageBtn onClick={openForm.close} disabled={isPending}>
           <Typography>취소</Typography>
         </MessageBtn>
         <MessageBtn
           className="apply"
-          onClick={handleApplySubmit}
-          disabled={createPending || !message.value.trim()}
+          onClick={submit}
+          disabled={isPending || !message.value.trim()}
         >
-          <Typography>{createPending ? "지원 중..." : "지원하기"}</Typography>
+          <Typography>{isPending ? "지원 중..." : "지원하기"}</Typography>
         </MessageBtn>
       </Box>
     </>
