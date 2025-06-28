@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useProjectInsert from "@features/projects/queries/useProjectInsert";
 import type {
@@ -31,6 +31,7 @@ const useProjectInsertForm = (): InsertFormResult => {
   const { mutate: insertProject, isPending } = useProjectInsert();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [shouldSubmit, setShouldSubmit] = useState(false);
 
   const [allForm, setAllForm] = useState<AllFormType>({
     form1: {} as Step1Type,
@@ -38,6 +39,14 @@ const useProjectInsertForm = (): InsertFormResult => {
     form3: {} as Step3Type,
     form4: {} as Step4Type,
   });
+
+  // useEffect로 제출 감지
+  useEffect(() => {
+    if (shouldSubmit && currentStep === 4) {
+      submit();
+      setShouldSubmit(false);
+    }
+  }, [allForm, shouldSubmit, currentStep]);
 
   /** allForm에 알맞은 form에 데이터 넣기 */
   const updateCorrectForm: UpdateAllFormType = (formKey, data): void => {
@@ -58,10 +67,8 @@ const useProjectInsertForm = (): InsertFormResult => {
       return;
     }
 
-    // step4 데이터까지 받기 위해 상태 업데이트 기다린 후 submit
-    setTimeout(async () => {
-      await submit();
-    }, 100);
+    // step4에서는 제출 플래그만 설정
+    setShouldSubmit(true);
   };
 
   const submit = async (): Promise<void> => {
@@ -76,7 +83,10 @@ const useProjectInsertForm = (): InsertFormResult => {
     }
 
     const isRealInsert = window.confirm("등록을 완료 하시겠습니까?");
-    if (!isRealInsert) return;
+    if (!isRealInsert) {
+      setShouldSubmit(false);
+      return;
+    }
 
     const finalData: ProjectItemInsertReq = {
       ...projectOwnerData(userProfile),
