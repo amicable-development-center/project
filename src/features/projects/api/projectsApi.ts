@@ -6,6 +6,10 @@ import {
   doc,
   serverTimestamp,
   updateDoc,
+  getDocs,
+  where,
+  deleteDoc,
+  query,
 } from "firebase/firestore";
 
 import type { ApiResMessage } from "@entities/projects/types/firebase";
@@ -183,5 +187,63 @@ export const removeProjectsFromUser = async (
   } catch (err) {
     console.error(err);
     return { success: false, error: "파이어베이스 업데이트 실패" };
+  }
+};
+
+/** 여러 프로젝트를 완전히 삭제 (likes, applications, projects, users 컬렉션 모두) */
+export const deleteProjectsEverywhere = async (
+  projectIds: string[],
+  userId: string
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    // 모든 삭제 작업을 병렬로 실행하기 위한 함수들
+    const deleteLikesForProject = async (
+      projectId: string
+    ): Promise<void[]> => {
+      const likesSnap = await getDocs(
+        query(collection(db, "likes"), where("projectId", "==", projectId))
+      );
+      return Promise.all(likesSnap.docs.map((doc) => deleteDoc(doc.ref)));
+    };
+
+    const deleteApplicationsForProject = async (
+      projectId: string
+    ): Promise<void[]> => {
+      const appsSnap = await getDocs(
+        query(
+          collection(db, "applications"),
+          where("projectId", "==", projectId)
+        )
+      );
+      return Promise.all(appsSnap.docs.map((doc) => deleteDoc(doc.ref)));
+    };
+
+    const deleteProject = async (projectId: string): Promise<void> => {
+      return deleteDoc(doc(db, "projects", projectId));
+    };
+
+    // 모든 작업을 병렬로 실행
+    await Promise.all([
+      // 1. likes 컬렉션에서 모든 프로젝트의 likes 삭제 (병렬)
+      ...projectIds.map(deleteLikesForProject),
+
+      // 2. applications 컬렉션에서 모든 프로젝트의 applications 삭제 (병렬)
+      ...projectIds.map(deleteApplicationsForProject),
+
+      // 3. projects 컬렉션에서 모든 프로젝트 삭제 (병렬)
+      ...projectIds.map(deleteProject),
+
+      // 4. users 컬렉션에서 myProjects, likeProjects, appliedProjects에서 제거
+      updateDoc(doc(db, "users", userId), {
+        myProjects: arrayRemove(...projectIds),
+        likeProjects: arrayRemove(...projectIds),
+        appliedProjects: arrayRemove(...projectIds),
+      }),
+    ]);
+
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { success: false, error: "프로젝트 완전 삭제 실패" };
   }
 };

@@ -1,5 +1,12 @@
 import type { User } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
 import { db } from "@shared/firebase/firebase";
 import type { ProjectListRes } from "@shared/types/project";
@@ -127,4 +134,23 @@ export const getMyLikedProjectsWithDetails = async (
     console.error("내가 좋아요한 프로젝트 조회 에러:", error);
     throw new Error("내가 좋아요한 프로젝트 정보를 가져오는데 실패했습니다.");
   }
+};
+
+// 여러 프로젝트의 좋아요(Like) 삭제
+export const deleteUserLikes = async (
+  userId: string,
+  projectIds: string[]
+): Promise<void> => {
+  if (!userId || !projectIds.length) return;
+
+  const q = query(
+    collection(db, "likes"),
+    where("userId", "==", userId),
+    where("projectId", "in", projectIds)
+  );
+  const snapshot = await getDocs(q);
+  const deletePromises = snapshot.docs.map((docSnap) =>
+    deleteDoc(doc(db, "likes", docSnap.id))
+  );
+  await Promise.all(deletePromises);
 };

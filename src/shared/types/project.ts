@@ -90,3 +90,9 @@ export interface UseOptimisticProjectApplyProps {
   isLoading: boolean;
   toggleApplications: () => void;
 }
+
+export enum ProjectCollectionTabType {
+  Likes = "likes",
+  Applied = "applied",
+  Created = "created",
+}

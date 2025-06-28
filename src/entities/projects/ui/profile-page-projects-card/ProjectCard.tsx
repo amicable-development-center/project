@@ -15,18 +15,17 @@ import {
   useTheme,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
+import { useQuery } from "@tanstack/react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 
+import { getProjectApplicantsCount } from "@entities/projects/api/getProjectApplicationsApi";
+
 import { type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
-import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
-
-// 여러곳에서 사용될 것 같아서 shared로 빼놓음 (현재 경로 @shared/ui/ProjectCard.tsx)
-// 기존 entities/projects/ui/projects-card/ProjectCard.tsx 는 사용하시는 분들 오류가 있을 것 같아 파일 삭제하지 않음
-// 해당 경로로 import 하고 계신분들은 확인하시고 경로수정 확인 바래요!
 
 interface ProjectCardProps {
   project: ProjectListRes;
@@ -35,6 +34,19 @@ interface ProjectCardProps {
   editMode?: boolean;
   selected?: boolean;
   onSelect?: () => void;
+  applicantsCount?: number;
+}
+
+// 지원자 수 fetch 훅
+function useProjectApplicantsCount(
+  projectId: string,
+  enabled: boolean = true
+): UseQueryResult<number> {
+  return useQuery({
+    queryKey: ["projectApplicantsCount", projectId],
+    queryFn: () => getProjectApplicantsCount(projectId),
+    enabled,
+  });
 }
 
 const ProjectCard = ({
@@ -44,15 +56,39 @@ const ProjectCard = ({
   editMode = false,
   selected = false,
   onSelect,
+  applicantsCount: applicantsCountProp,
 }: ProjectCardProps): JSX.Element => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // applicantsCountProp이 없을 때만 훅 실행
+  const { data: applicantsCountQuery = 0, isLoading: applicantsLoading } =
+    useProjectApplicantsCount(
+      project.id,
+      typeof applicantsCountProp !== "number"
+    );
+
+  // 프롭이 있으면 우선 사용, 없으면 쿼리 fallback
+  const applicantsCount =
+    typeof applicantsCountProp === "number"
+      ? applicantsCountProp
+      : applicantsCountQuery;
 
   return (
     <StyledCard sx={{ ...(simple && { minHeight: 260 }), ...sx }}>
       <StyledCardContent>
         <ProjectHeader>
-          <StatusChip label={project.status} color="primary" size="small" />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <StatusChip label={project.status} color="primary" size="small" />
+            {isMobile && simple && (
+              <Typography variant="body1" color="textPrimary">
+                <TextHighlight>
+                  {applicantsLoading ? "-" : applicantsCount}{" "}
+                </TextHighlight>
+                명 지원
+              </Typography>
+            )}
+          </Box>
           {simple && editMode && (
             <Checkbox checked={selected} onChange={onSelect} sx={{ ml: 1 }} />
           )}
@@ -73,20 +109,29 @@ const ProjectCard = ({
             </>
           )}
         </ContentSection>
-        <Stack flexDirection={"row"} gap={"0.8rem"} alignItems={"flex-start"}>
-          {isMobile ? (
-            <UserProfileAvatar
-              name={project.projectOwner?.name}
-              userRole={project.projectOwner?.userRole}
-              avatar={project.projectOwner?.avatar}
-              flexDirection="row"
-            />
-          ) : (
-            <UserProfileWithNamePosition
-              name={project.projectOwner.name}
-              userRole={project.projectOwner.userRole}
-              flexDirection="row"
-            />
+        <Stack
+          flexDirection={"row"}
+          gap={"0.8rem"}
+          alignItems={isMobile && simple ? "center" : "flex-start"}
+          justifyContent="space-between"
+        >
+          <UserProfileAvatar
+            name={project.projectOwner?.name}
+            userRole={project.projectOwner?.userRole}
+            avatar={project.projectOwner?.avatar}
+            flexDirection="row"
+          />
+          {isMobile && simple && (
+            <StyledLink to={`/project/${project.id}`}>
+              <ActionButton
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{ fontSize: "1.1rem" }}
+              >
+                자세히 보기
+              </ActionButton>
+            </StyledLink>
           )}
         </Stack>
         {!simple && (
@@ -120,18 +165,23 @@ const ProjectCard = ({
           </ProjectDetails>
         )}
 
-        <StyledDivider />
+        {!isMobile || !simple ? <StyledDivider /> : null}
 
-        <FooterSection>
-          <Typography variant="body1" color="textPrimary">
-            <TextHighlight>명</TextHighlight> 지원
-          </Typography>
-          <StyledLink to={`/project/${project.id}`}>
-            <ActionButton variant="contained" color="primary" size="medium">
-              자세히 보기
-            </ActionButton>
-          </StyledLink>
-        </FooterSection>
+        {(!isMobile || !simple) && (
+          <FooterSection>
+            <Typography variant="body1" color="textPrimary">
+              <TextHighlight>
+                {applicantsLoading ? "-" : applicantsCount}{" "}
+              </TextHighlight>
+              명 지원
+            </Typography>
+            <StyledLink to={`/project/${project.id}`}>
+              <ActionButton variant="contained" color="primary" size="medium">
+                자세히 보기
+              </ActionButton>
+            </StyledLink>
+          </FooterSection>
+        )}
       </StyledCardContent>
     </StyledCard>
   );
@@ -156,6 +206,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
     borderColor: theme.palette.primary.light,
   },
 
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    maxWidth: "100%",
+    minHeight: "auto",
+  },
+
   [theme.breakpoints.up("sm")]: {
     flex: 1,
     "&:hover": {
@@ -174,6 +230,11 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(1),
+
+  [theme.breakpoints.down("sm")]: {
+    gap: theme.spacing(0.5),
+    padding: theme.spacing(1.5),
+  },
 
   [theme.breakpoints.up("sm")]: {
     gap: theme.spacing(2),
@@ -207,6 +268,11 @@ const ProjectTitle = styled(Typography)(({ theme }) => ({
   lineHeight: 1.3,
   letterSpacing: "-0.015em",
   color: theme.palette.text.primary,
+
+  [theme.breakpoints.down("sm")]: {
+    marginTop: theme.spacing(1),
+    fontSize: "1.8rem",
+  },
 }));
 
 const OneLineInfo = styled(Typography)(() => ({

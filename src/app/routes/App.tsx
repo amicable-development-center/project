@@ -8,6 +8,7 @@ import PrivateRoute from "@app/routes/PrivateRoute";
 
 import { useAuthObserver } from "@shared/hooks/useAuthObserver";
 import { useLoadingCursor } from "@shared/hooks/useLoadingCursor";
+import GlobalSnackbar from "@shared/ui/GlobalSnackbar";
 import PageTransitionLoader from "@shared/ui/loading-spinner/PageTransitionLoader";
 
 const HomePage = lazy(() => import("@pages/home/ui/HomePage"));
@@ -76,6 +77,7 @@ function App(): JSX.Element {
   return (
     <BrowserRouter basename="/">
       <AppContent />
+      <GlobalSnackbar />
     </BrowserRouter>
   );
 }
