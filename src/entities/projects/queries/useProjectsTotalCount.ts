@@ -1,6 +1,6 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
-import { getProjectsTotalCount } from "../api/projectsApi";
+import { getProjectsTotalCount } from "@entities/projects/api/projectsApi";
 
 const useProjectsTotalCount = (): UseQueryResult<number, Error> => {
   return useQuery({

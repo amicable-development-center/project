@@ -9,10 +9,10 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 
+import { getProjectsByIds } from "@entities/projects/api/projectsApi";
+
 import { db } from "@shared/firebase/firebase";
 import type { ProjectListRes } from "@shared/types/project";
-
-import { getProjectsByIds } from "./projectsApi";
 
 /**
  * 유저 프로젝트 지원 상태 조회
