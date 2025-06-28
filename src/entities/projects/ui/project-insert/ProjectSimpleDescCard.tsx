@@ -1,7 +1,5 @@
-import { TextField } from "@mui/material";
+import { TextField, useTheme } from "@mui/material";
 import type { ChangeEvent, CSSProperties, JSX } from "react";
-
-import theme from "@app/styles/theme";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
 
@@ -18,6 +16,8 @@ const ProjectSimpleDescCard = ({
   large,
   style,
 }: ProjectSimpleDescCardProps): JSX.Element => {
+  const theme = useTheme();
+
   return (
     <SimpleFormCard
       title="프로젝트 간단 소개"
