@@ -15,8 +15,10 @@ import {
 import type { SelectChangeEvent } from "@mui/material";
 import type { CSSProperties, JSX, ChangeEvent } from "react";
 
-import type { ProjectSchedule } from "@shared/types/schedule";
-import { ExpectedPeriod } from "@shared/types/schedule";
+import {
+  NewSchedulePeriod,
+  type ProjectSchedule,
+} from "@shared/types/schedule";
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
 
 interface ProjectScheduleManagementCardProps {
@@ -27,17 +29,19 @@ interface ProjectScheduleManagementCardProps {
 }
 
 const PERIOD_OPTIONS = [
-  { value: ExpectedPeriod.oneMonth, label: "1개월" },
-  { value: ExpectedPeriod.twoMonths, label: "2개월" },
-  { value: ExpectedPeriod.threeMonths, label: "3개월" },
-  { value: ExpectedPeriod.fourMonths, label: "4개월" },
-  { value: ExpectedPeriod.sixMonths, label: "6개월" },
-  { value: ExpectedPeriod.moreThanSixMonths, label: "6개월 이상" },
+  { value: NewSchedulePeriod.oneWeek, label: "1주" },
+  { value: NewSchedulePeriod.twoWeeks, label: "2주" },
+  { value: NewSchedulePeriod.threeWeeks, label: "3주" },
+  { value: NewSchedulePeriod.fourWeeks, label: "4주" },
+  { value: NewSchedulePeriod.twoMonths, label: "2개월" },
+  { value: NewSchedulePeriod.threeMonths, label: "3개월" },
+  { value: NewSchedulePeriod.lessThanSixMonths, label: "6개월 미만" },
+  { value: NewSchedulePeriod.moreThanSixMonths, label: "6개월 이상" },
 ];
 
 const INIT_SCHEDULE: ProjectSchedule = {
   stageName: "",
-  period: ExpectedPeriod.oneMonth,
+  period: NewSchedulePeriod.oneWeek,
   description: "",
 };
 
@@ -70,7 +74,7 @@ const ProjectScheduleManagementCard = ({
   const updateSchedule = (
     index: number,
     field: keyof ProjectSchedule,
-    newValue: string | ExpectedPeriod
+    newValue: string | NewSchedulePeriod
   ): void => {
     const currentSchedules = value.length === 0 ? [INIT_SCHEDULE] : value;
     const newSchedules = [...currentSchedules];
@@ -129,13 +133,13 @@ const ProjectScheduleManagementCard = ({
               {/* 기간 선택 */}
               <FormControl size="small" fullWidth>
                 <InputLabel>기간</InputLabel>
-                <Select<ExpectedPeriod>
+                <Select<NewSchedulePeriod>
                   value={schedule.period}
-                  onChange={(e: SelectChangeEvent<ExpectedPeriod>) =>
+                  onChange={(e: SelectChangeEvent<NewSchedulePeriod>) =>
                     updateSchedule(
                       index,
                       "period",
-                      e.target.value as ExpectedPeriod
+                      e.target.value as NewSchedulePeriod
                     )
                   }
                   label="기간"

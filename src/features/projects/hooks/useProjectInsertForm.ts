@@ -70,8 +70,6 @@ const useProjectInsertForm = (): InsertFormResult => {
         likedUsers: [],
       };
 
-      console.log("최종 제출 데이터:", finalData);
-      return;
       insertProject(finalData);
     };
 

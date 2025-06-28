@@ -2,14 +2,10 @@ import { useState } from "react";
 
 import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import { type ProjectItemInsertReq } from "@shared/types/project";
-import { ExpectedPeriod } from "@shared/types/schedule";
-
-// Schedule 타입 정의 (원본 코드 참고)
-interface Schedule {
-  stageName: string;
-  period: ExpectedPeriod;
-  description: string;
-}
+import {
+  NewSchedulePeriod,
+  type ProjectSchedule,
+} from "@shared/types/schedule";
 
 type Step3Type = Pick<ProjectItemInsertReq, "description" | "schedules">;
 
@@ -76,9 +72,9 @@ const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
 
 export default useInsertStep3;
 
-const initSchedule: Schedule = {
+const initSchedule: ProjectSchedule = {
   stageName: "",
-  period: ExpectedPeriod.oneMonth,
+  period: NewSchedulePeriod.oneWeek,
   description: "",
 };
 

@@ -6,7 +6,7 @@ import {
   Workflow,
   type ProjectItemInsertReq,
 } from "@shared/types/project";
-import { ExpectedPeriod } from "@shared/types/schedule";
+import { ExpectedPeriod, NewSchedulePeriod } from "@shared/types/schedule";
 import type { User } from "@shared/types/user";
 
 export const projectOwnerData = (
@@ -83,7 +83,7 @@ export const TestData = (user: User): ProjectItemInsertReq => ({
   schedules: [
     {
       stageName: "기획",
-      period: ExpectedPeriod.oneMonth,
+      period: NewSchedulePeriod.oneWeek,
       description: "기획 단계",
     },
   ],
