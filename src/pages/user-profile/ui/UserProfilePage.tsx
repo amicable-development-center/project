@@ -8,7 +8,7 @@ import { deleteProjectsEverywhere } from "@features/projects/api/projectsApi";
 
 import { deleteApplication } from "@entities/projects/api/getProjectApplicationsApi";
 import { deleteUserLikes } from "@entities/projects/api/getProjectLikeApi";
-import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
+import { useProjectsByIds } from "@entities/projects/hooks/useProjectsByIds";
 import { useGetMyAppliedProjectsWithDetails } from "@entities/projects/queries/useGetProjectApplications";
 import { useGetMyLikedProjectsWithDetails } from "@entities/projects/queries/useGetProjectLike";
 import ProjectCollectionContainer from "@entities/projects/ui/project-collection-tab/ProjectCollectionContainer";

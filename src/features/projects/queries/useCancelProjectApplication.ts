@@ -7,6 +7,7 @@ import {
 import queryKeys from "@shared/react-query/queryKey";
 import { useApplicationsStore } from "@shared/stores/applicationsStore";
 import { useAuthStore } from "@shared/stores/authStore";
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 
 import { cancelProjectApplications } from "../api/createProjectApplicationsApi";
 
@@ -21,6 +22,7 @@ export const useCancelProjectApplication = (): UseMutationResult<
 > => {
   const { user } = useAuthStore();
   const { removeAppliedProject } = useApplicationsStore();
+  const { showError, showSuccess } = useSnackbarStore();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -29,6 +31,8 @@ export const useCancelProjectApplication = (): UseMutationResult<
     },
     onSuccess: (_, projectId) => {
       removeAppliedProject(projectId);
+      showSuccess("지원이 취소되었습니다.");
+
       queryClient.invalidateQueries({
         queryKey: [queryKeys.myAppliedProjects],
       });
@@ -41,6 +45,7 @@ export const useCancelProjectApplication = (): UseMutationResult<
     },
     onError: (error) => {
       console.error("지원 취소 실패:", error);
+      showError(`지원 취소 실패: ${error.message}`);
     },
   });
 };

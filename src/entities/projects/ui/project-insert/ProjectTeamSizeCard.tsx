@@ -34,9 +34,11 @@ const ProjectTeamSizeCard = ({
           size={large ? "medium" : "small"}
           displayEmpty
           sx={{
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: {
+              xs: large ? "14px" : "14px",
+              sm: large ? "15px" : "15px",
+              md: large ? "16px" : "16px",
+            },
             fontFamily: theme.typography.fontFamily,
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
 

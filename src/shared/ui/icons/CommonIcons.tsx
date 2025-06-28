@@ -33,3 +33,5 @@ export { default as MoreHorizIcon } from "@mui/icons-material/MoreHoriz";
 
 // 커피 모양
 export { default as FreeBreakfastOutlinedIcon } from "@mui/icons-material/FreeBreakfastOutlined";
+// 깃허브
+export { default as GitHubIcon } from "@mui/icons-material/GitHub";

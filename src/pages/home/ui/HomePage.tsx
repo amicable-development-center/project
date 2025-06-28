@@ -4,7 +4,7 @@ import type { JSX } from "react";
 import Hero from "@widgets/hero/ui/Hero";
 import HowToStartTitle from "@widgets/hero/ui/HowToStartTitle";
 
-import useGetProjects from "@entities/projects/hook/useGetProjects";
+import useGetProjects from "@entities/projects/hooks/useGetProjects";
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
 import HowToStart from "@entities/projects/ui/projects-stats/HowToStart";
 import LetsGo from "@entities/projects/ui/projects-stats/LetsGoBox";

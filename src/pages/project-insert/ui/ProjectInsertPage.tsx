@@ -9,7 +9,7 @@ import HoneyTipBox from "@pages/project-insert/ui/HoneyTipBox";
 import StepBox from "@pages/project-insert/ui/StepBox";
 import TopTitle from "@pages/project-insert/ui/TopTitle";
 
-import useProjectInsert from "@features/projects/hook/useProjectInsertForm";
+import useProjectInsert from "@features/projects/hooks/useProjectInsertForm";
 import Step1 from "@features/projects/ui/project-insert/Step1";
 import Step2 from "@features/projects/ui/project-insert/Step2";
 import Step3 from "@features/projects/ui/project-insert/Step3";

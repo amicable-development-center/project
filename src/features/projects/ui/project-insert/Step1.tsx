@@ -1,8 +1,9 @@
 import { useMediaQuery, useTheme } from "@mui/material";
+import { Timestamp } from "firebase/firestore";
 import type { JSX } from "react";
 
-import useInsertStep1 from "@features/projects/hook/useInsertStep1";
-import type { UpdateAllFormType } from "@features/projects/type/project-update";
+import useInsertStep1 from "@features/projects/hooks/useInsertStep1";
+import type { UpdateAllFormType } from "@features/projects/types/project-update";
 
 import ProjectCategoryCard from "@entities/projects/ui/project-insert/ProjectCategoryCard";
 import ProjectDeadlineCard from "@entities/projects/ui/project-insert/ProjectDeadlineCard";
@@ -10,8 +11,13 @@ import ProjectOneLineCard from "@entities/projects/ui/project-insert/ProjectOneL
 import ProjectSimpleDescCard from "@entities/projects/ui/project-insert/ProjectSimpleDescCard";
 import ProjectTitleCard from "@entities/projects/ui/project-insert/ProjectTitleCard";
 
-import { formatDate } from "@shared/libs/utils/projectDetail";
 import StepWhiteBox from "@shared/ui/project-insert/StepWhiteBox";
+
+// 모집 마감일 형식 변환
+const timestampToInputDate = (timestamp: Timestamp | null): string => {
+  if (!timestamp) return "";
+  return timestamp.toDate().toISOString().split("T")[0];
+};
 
 const Step1 = ({
   updateForm,
@@ -50,7 +56,7 @@ const Step1 = ({
         style={{ gridColumn: "span 1" }}
       />
       <ProjectDeadlineCard
-        value={formatDate(form1.closedDate)}
+        value={timestampToInputDate(form1.closedDate)}
         onChange={update.closedDate}
         large
         style={{ gridColumn: "span 1" }}

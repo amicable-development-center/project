@@ -8,7 +8,7 @@ import type {
   Step3Type,
   Step4Type,
   UpdateAllFormType,
-} from "@features/projects/type/project-update";
+} from "@features/projects/types/project-update";
 
 import { scrollToTop } from "@shared/libs/utils/pagination";
 import { projectOwnerData } from "@shared/libs/utils/projectInsert";
@@ -58,7 +58,10 @@ const useProjectInsertForm = (): InsertFormResult => {
       return;
     }
 
-    await submit();
+    // step4 데이터까지 받기 위해 상태 업데이트 기다린 후 submit
+    setTimeout(async () => {
+      await submit();
+    }, 100);
   };
 
   const submit = async (): Promise<void> => {

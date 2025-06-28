@@ -1,56 +1,165 @@
-import { Box, styled, Avatar, Button, alpha } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import {
+  Box,
+  styled,
+  Avatar,
+  Button,
+  alpha,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import type { JSX } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import LoginButton from "@features/auth/ui/LoginButton";
 import LogoutButton from "@features/auth/ui/LogoutButton";
 
+import { auth } from "@shared/firebase/firebase";
 import { useAuthStore } from "@shared/stores/authStore";
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import LogoBox from "@shared/ui/LogoBox";
 
 const Header = (): JSX.Element => {
   const user = useAuthStore((state) => state.user);
+  const isLoggedIn = useAuthStore((state) => !!state.user);
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { showWarning } = useSnackbarStore();
 
   const isActive = (path: string): boolean => location.pathname === path;
+
+  // Drawer 메뉴 항목
+  const drawerMenu = [
+    {
+      label: "마이페이지",
+      onClick: () => {
+        if (!user) {
+          showWarning("로그인 후 이용해 주세요");
+        } else {
+          navigate("/profile");
+        }
+      },
+    },
+    { label: "프로젝트 찾기", onClick: () => navigate("/project") },
+    { label: "프로젝트 등록", onClick: () => navigate("/project/insert") },
+  ];
+
+  console.log("Header user:", user);
 
   return (
     <HeaderContainer>
       <HeaderContent>
-        <LeftSection>
-          <LogoBox size="large" />
-        </LeftSection>
-
-        <CenterSection>
-          <NavButton
-            onClick={() => navigate("/project")}
-            $isActive={isActive("/project")}
-          >
-            프로젝트 찾기
-          </NavButton>
-          <NavButton
-            onClick={() => navigate("/project/insert")}
-            $isActive={isActive("/project/insert")}
-          >
-            프로젝트 등록
-          </NavButton>
-        </CenterSection>
-
-        <RightSection>
-          {user ? (
-            <UserSection>
-              <StyledAvatar
-                src={user.photoURL || ""}
-                alt={user.displayName || "profile"}
-                onClick={() => navigate("/profile")}
-              />
-              <LogoutButton />
-            </UserSection>
-          ) : (
-            <LoginButton />
-          )}
-        </RightSection>
+        {/* 모바일 헤더 */}
+        {isMobile ? (
+          <>
+            <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
+              <LogoBox size="medium" />
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {!isLoggedIn && <LoginButton />}
+              <IconButton
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                onClick={() => setDrawerOpen(true)}
+                sx={{ ml: 1, mr: 1, p: 1.5 }}
+              >
+                <MenuIcon sx={{ fontSize: 32 }} />
+              </IconButton>
+            </Box>
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+              sx={{ zIndex: 13000 }}
+              PaperProps={{ sx: { top: 0, height: "100%" } }}
+            >
+              <Box sx={{ width: 220, pt: 2 }} role="presentation">
+                <List>
+                  {drawerMenu.map((item) => (
+                    <ListItem key={item.label} disablePadding>
+                      <ListItemButton
+                        onClick={() => {
+                          item.onClick();
+                          setDrawerOpen(false);
+                        }}
+                        selected={isActive(
+                          item.label === "마이페이지"
+                            ? "/profile"
+                            : item.label === "프로젝트 찾기"
+                              ? "/project"
+                              : "/project/insert"
+                        )}
+                      >
+                        <ListItemText primary={item.label} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                  {user && (
+                    <>
+                      <Divider sx={{ my: 1 }} />
+                      <ListItem disablePadding>
+                        <ListItemButton
+                          onClick={async () => {
+                            await auth.signOut();
+                            setDrawerOpen(false);
+                            navigate("/");
+                          }}
+                        >
+                          <ListItemText primary="로그아웃" />
+                        </ListItemButton>
+                      </ListItem>
+                    </>
+                  )}
+                </List>
+              </Box>
+            </Drawer>
+          </>
+        ) : (
+          // 데스크탑 헤더 기존 구조 유지
+          <>
+            <LogoBox size="large" />
+            <CenterSection>
+              <NavButton
+                onClick={() => navigate("/project")}
+                $isActive={isActive("/project")}
+              >
+                프로젝트 찾기
+              </NavButton>
+              <NavButton
+                onClick={() => navigate("/project/insert")}
+                $isActive={isActive("/project/insert")}
+              >
+                프로젝트 등록
+              </NavButton>
+            </CenterSection>
+            <RightSection>
+              {user ? (
+                <UserSection>
+                  <StyledAvatar
+                    src={user.photoURL || ""}
+                    alt={user.displayName || "profile"}
+                    onClick={() => navigate("/profile")}
+                  />
+                  <LogoutButton />
+                </UserSection>
+              ) : (
+                <LoginButton />
+              )}
+            </RightSection>
+          </>
+        )}
       </HeaderContent>
     </HeaderContainer>
   );
@@ -87,24 +196,17 @@ const HeaderContent = styled(Box)(() => ({
   margin: "0 auto",
 }));
 
-const LeftSection = styled(Box)(() => ({
-  display: "flex",
-  alignItems: "center",
-  flex: "0 0 auto",
-}));
-
 const CenterSection = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   gap: "2rem",
-  flex: "1 1 auto",
   justifyContent: "center",
 }));
 
 const RightSection = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
-  flex: "0 0 auto",
+  paddingRight: 16,
 }));
 
 const NavButton = styled(Button, {
