@@ -13,7 +13,9 @@ const ProjectDescription = ({
   return (
     <>
       <TitleWithIcon Icon={AdjustIcon} title="프로젝트 상세" />
-      <Box marginY={2}>{description}</Box>
+      <Box marginY={2} whiteSpace="pre-wrap">
+        {description}
+      </Box>
     </>
   );
 };
