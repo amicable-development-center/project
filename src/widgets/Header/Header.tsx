@@ -129,9 +129,7 @@ const Header = (): JSX.Element => {
         ) : (
           // 데스크탑 헤더 기존 구조 유지
           <>
-            <LeftSection>
-              <LogoBox size="large" />
-            </LeftSection>
+            <LogoBox size="large" />
             <CenterSection>
               <NavButton
                 onClick={() => navigate("/project")}
@@ -198,24 +196,17 @@ const HeaderContent = styled(Box)(() => ({
   margin: "0 auto",
 }));
 
-const LeftSection = styled(Box)(() => ({
-  display: "flex",
-  alignItems: "center",
-  flex: "0 0 auto",
-}));
-
 const CenterSection = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   gap: "2rem",
-  flex: "1 1 auto",
   justifyContent: "center",
 }));
 
 const RightSection = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
-  flex: "0 0 auto",
+  paddingRight: 16,
 }));
 
 const NavButton = styled(Button, {
