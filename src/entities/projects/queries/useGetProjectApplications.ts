@@ -71,10 +71,10 @@ export const useGetMyAppliedProjectsIds = (): UseQueryResult<
 
 /**
  * 현재 사용자가 지원한 프로젝트 상세 정보 조회 훅
- * @returns UseQueryResult<ProjectListRes[], Error> - 지원한 프로젝트 상세 정보 배열
+ * @returns UseQueryResult<(ProjectListRes & { applicantsCount: number })[], Error> - 지원한 프로젝트 상세 정보 배열
  */
 export const useGetMyAppliedProjectsWithDetails = (): UseQueryResult<
-  ProjectListRes[],
+  (ProjectListRes & { applicantsCount: number })[],
   Error
 > => {
   const user = useAuthStore((state) => state.user);

@@ -6,6 +6,7 @@ interface LikeStore {
   setLikedProjectIds: (projectIds: string[]) => void;
   addLikedProject: (projectId: string) => void;
   removeLikedProject: (projectId: string) => void;
+  removeLikeProjects: (projectIds: string[]) => void;
   isProjectLiked: (projectId: string) => boolean;
 }
 
@@ -34,6 +35,17 @@ export const useLikeStore = create<LikeStore>((set, get) => ({
   removeLikedProject: (projectId) =>
     set((state) => {
       const newIds = state.likedProjectIds.filter((id) => id !== projectId);
+      return {
+        likedProjectIds: newIds,
+        likedProjectsCount: newIds.length,
+      };
+    }),
+
+  removeLikeProjects: (projectIds: string[]) =>
+    set((state) => {
+      const newIds = state.likedProjectIds.filter(
+        (id) => !projectIds.includes(id)
+      );
       return {
         likedProjectIds: newIds,
         likedProjectsCount: newIds.length,

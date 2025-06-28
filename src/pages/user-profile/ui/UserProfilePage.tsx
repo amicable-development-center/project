@@ -1,26 +1,47 @@
 import { Box, Container, Chip as MuiChip } from "@mui/material";
 import { styled as muiStyled } from "@mui/material/styles";
+import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useState, useEffect, useCallback } from "react";
 
+import { deleteProjectsEverywhere } from "@features/projects/api/projectsApi";
+
+import { deleteApplication } from "@entities/projects/api/getProjectApplicationsApi";
+import { deleteUserLikes } from "@entities/projects/api/getProjectLikeApi";
 import { useProjectsByIds } from "@entities/projects/hook/useProjectsByIds";
+import { useGetMyAppliedProjectsWithDetails } from "@entities/projects/queries/useGetProjectApplications";
 import { useGetMyLikedProjectsWithDetails } from "@entities/projects/queries/useGetProjectLike";
 import ProjectCollectionContainer from "@entities/projects/ui/project-collection-tab/ProjectCollectionContainer";
 import UserProfileCard from "@entities/user/ui/user-profile/UserProfileCard";
 import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader";
 
 import { useUserProfile } from "@shared/queries/useUserProfile";
+import queryKeys from "@shared/react-query/queryKey";
 import { useAuthStore } from "@shared/stores/authStore";
 import { useLikeStore } from "@shared/stores/likeStore";
 import { useProjectStore } from "@shared/stores/projectStore";
+import { ProjectCollectionTabType } from "@shared/types/project";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
 import UserNotFound from "./UserNotFound";
 
 // 탭 이름 상수 배열 (UserProfileCard용으로 유지)
 const PROFILE_TABS = [
-  { label: "관심있는 프로젝트", color: "primary" },
-  { label: "지원한 프로젝트", color: "secondary" },
+  {
+    label: "관심있는 프로젝트",
+    color: "primary",
+    type: ProjectCollectionTabType.Likes,
+  },
+  {
+    label: "지원한 프로젝트",
+    color: "secondary",
+    type: ProjectCollectionTabType.Applied,
+  },
+  {
+    label: "만든 프로젝트",
+    color: "success",
+    type: ProjectCollectionTabType.Created,
+  },
 ];
 
 const UserProfilePage = (): JSX.Element => {
@@ -32,14 +53,18 @@ const UserProfilePage = (): JSX.Element => {
 
   // zustand store 사용
   const { setLikeProjects, setAppliedProjects } = useProjectStore();
-  const { setLikedProjectIds } = useLikeStore();
+  const { setLikedProjectIds, removeLikeProjects } = useLikeStore();
+  const queryClient = useQueryClient();
 
-  // 관심있는/지원한 프로젝트 id 배열
-  const appliedIds = userProfile?.appliedProjects ?? [];
+  // 만든 프로젝트 id 배열
+  const createdIds = userProfile?.myProjects ?? [];
 
-  // 프로젝트 데이터 가져오기
+  // 지원한 프로젝트 데이터 가져오기 (applications 컬렉션 기반)
   const { data: appliedProjectsData, isLoading: appliedProjectsLoading } =
-    useProjectsByIds(appliedIds);
+    useGetMyAppliedProjectsWithDetails();
+  // 만든 프로젝트는 기존대로 id 배열로 fetch
+  const { data: createdProjectsData, isLoading: createdProjectsLoading } =
+    useProjectsByIds(createdIds);
 
   const { data: myLikedProjectsData, isLoading: myLikedProjectsLoading } =
     useGetMyLikedProjectsWithDetails();
@@ -56,22 +81,70 @@ const UserProfilePage = (): JSX.Element => {
     if (appliedProjectsData) setAppliedProjects(appliedProjectsData);
   }, [appliedProjectsData, setAppliedProjects]);
 
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState<ProjectCollectionTabType>(
+    ProjectCollectionTabType.Likes
+  );
 
   // 프로젝트 삭제 핸들러
   const handleDeleteProjects = useCallback(
-    async (type: "liked" | "applied" | "created", ids: string[]) => {
-      // TODO: 실제 삭제 API 호출
-      console.log(`Deleting ${type} projects:`, ids);
-
-      // 임시로 store에서 제거
-      if (type === "liked") {
-        // removeLikeProjects 호출 또는 API 후 refetch
-      } else if (type === "applied") {
-        // removeAppliedProjects 호출 또는 API 후 refetch
+    async (type: ProjectCollectionTabType, ids: string[]) => {
+      if (type === ProjectCollectionTabType.Likes && user) {
+        await deleteUserLikes(user.uid, ids);
+        removeLikeProjects(ids);
+        await queryClient.invalidateQueries({
+          queryKey: [queryKeys.myLikedProjects, "details"],
+        });
+      }
+      if (type === ProjectCollectionTabType.Applied && user) {
+        for (const projectId of ids) {
+          await deleteApplication(user.uid, projectId);
+        }
+        await queryClient.invalidateQueries({
+          queryKey: [queryKeys.myAppliedProjects, "details"],
+        });
+      }
+      if (type === ProjectCollectionTabType.Created && user) {
+        // 만든 프로젝트 완전 삭제
+        const res = await deleteProjectsEverywhere(ids, user.uid);
+        if (res.success) {
+          // zustand store 동기화
+          setAppliedProjects(
+            appliedProjectsData
+              ? appliedProjectsData.filter((p) => !ids.includes(p.id))
+              : []
+          );
+          setLikeProjects(
+            myLikedProjectsData
+              ? myLikedProjectsData.filter((p) => !ids.includes(p.id))
+              : []
+          );
+          // 쿼리 invalidate
+          await queryClient.invalidateQueries({
+            queryKey: [queryKeys.myLikedProjects, "details"],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [queryKeys.myAppliedProjects, "details"],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [queryKeys.projects],
+          });
+          await queryClient.invalidateQueries({
+            queryKey: ["userProfile", user.uid],
+          });
+        } else {
+          alert(res.error || "프로젝트 삭제에 실패했습니다.");
+        }
       }
     },
-    []
+    [
+      user,
+      removeLikeProjects,
+      queryClient,
+      setAppliedProjects,
+      setLikeProjects,
+      appliedProjectsData,
+      myLikedProjectsData,
+    ]
   );
 
   // 사용자 프로필이 로딩 중이거나 없으면 early return
@@ -104,10 +177,16 @@ const UserProfilePage = (): JSX.Element => {
         {/* 오른쪽 메인: 프로젝트 컬렉션 탭 */}
         <ProjectCollectionContainer
           likedProjects={myLikedProjectsData || []}
-          appliedProjects={appliedProjectsData || []} // TODO: 지원한 프로젝트 데이터 추가
-          createdProjects={[]} // TODO: 만든 프로젝트 데이터 추가
-          loading={myLikedProjectsLoading || appliedProjectsLoading}
+          appliedProjects={appliedProjectsData || []}
+          createdProjects={createdProjectsData || []}
+          loading={
+            myLikedProjectsLoading ||
+            appliedProjectsLoading ||
+            createdProjectsLoading
+          }
           onDeleteProjects={handleDeleteProjects}
+          currentTab={tab}
+          onTabChange={setTab}
         />
       </Box>
     </MainContainer>
