@@ -26,24 +26,10 @@ export const ProjectDones = ({
     }
   };
 
-  const handleModify = (): void => {
-    // Navigate '/project/insert로 이동'
-    // state로 폼 넘김
-    // 이푸 state 존재 여부에 따라 등록, 수정 나눌 예정
-    // form을 나눈다면 여기서 나눠서 보낼 수 있도록 ...
-    alert("아직없어염..");
-  };
-
   return (
-    <Box display={"flex"} gap={1}>
-      <MessageBtn className="white" onClick={handleModify}>
-        <Typography>수정하기</Typography>
-      </MessageBtn>
-
-      <MessageBtn className="red" onClick={handleIsDone}>
-        <Typography>모집 마감 하기</Typography>
-      </MessageBtn>
-    </Box>
+    <MessageBtn className="red" onClick={handleIsDone}>
+      <Typography>모집 마감 하기</Typography>
+    </MessageBtn>
   );
 };
 
