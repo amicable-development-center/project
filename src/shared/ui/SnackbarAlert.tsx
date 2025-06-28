@@ -29,6 +29,7 @@ const SnackbarAlert = ({
     onClose={onClose}
     anchorOrigin={anchorOrigin}
     sx={{
+      zIndex: 9000,
       marginTop: { xs: "6.4rem", md: "8rem" },
     }}
   >
