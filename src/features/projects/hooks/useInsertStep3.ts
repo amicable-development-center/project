@@ -34,11 +34,33 @@ const useInsertStep3 = ({ state }: { state?: Step3Type }): ApplyFormResult => {
   };
 
   const validateForm = (): boolean => {
-    //여기에 검사식을 넣어주세요.
-    // 아래는 예시 입니다.
     if (!formStep3.description.trim()) {
-      alert("프로젝트 상세 설명을 적어주세욧요.");
+      alert("프로젝트 상세 설명을 작성해주세요");
       return false;
+    }
+    if (formStep3.schedules.length === 0) {
+      alert("최소 1개 이상의 프로젝트 일정을 추가해주세요.");
+      return false;
+    }
+
+    for (let i = 0; i < formStep3.schedules.length; i++) {
+      const schedule = formStep3.schedules[i];
+      const scheduleNum = i + 1;
+
+      if (!schedule.stageName.trim()) {
+        alert(`${scheduleNum}번째 일정의 단계명을 입력해주세요.`);
+        return false;
+      }
+
+      if (!schedule.description.trim()) {
+        alert(`${scheduleNum}번째 일정의 설명을 입력해주세요.`);
+        return false;
+      }
+
+      if (!schedule.period) {
+        alert(`${scheduleNum}번째 일정의 예상 기간을 선택해주세요.`);
+        return false;
+      }
     }
     return true;
   };

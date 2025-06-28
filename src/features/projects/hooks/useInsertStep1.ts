@@ -25,6 +25,7 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   const isModify = !!state; // 추후에 수정을 위해서
 
   const [form1, setForm1] = useState(isModify ? state : initForm1);
+  const [hasUserSelected, setHasUserSelected] = useState(false);
 
   const updateTitle = (e: ChangeEvent<HTMLInputElement>): void => {
     setForm1((prev) => ({
@@ -50,6 +51,7 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   };
 
   const updateCategory = (event: SelectChangeEvent): void => {
+    setHasUserSelected(true);
     setForm1((prev) => ({
       ...prev,
       category: event.target.value as ProjectCategory,
@@ -57,6 +59,15 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   };
 
   const updateClosedDate = (e: ChangeEvent<HTMLInputElement>): void => {
+    if (!e.target.value) {
+      // 빈 값일 때 상태를 null로 설정 (날짜 삭제)
+      setForm1((prev) => ({
+        ...prev,
+        closedDate: null as any,
+      }));
+      return;
+    }
+
     const formateTimeStamp = Timestamp.fromDate(new Date(e.target.value));
     setForm1((prev) => ({
       ...prev,
@@ -65,10 +76,24 @@ const useInsertStep1 = ({ state }: { state?: Step1Type }): ApplyFormResult => {
   };
 
   const validateForm = (): boolean => {
-    //여기에 검사식을 넣어주세요.
-    // 아래는 예시 입니다.
     if (!form1.title.trim()) {
-      alert("프로젝트 이름을 적어주세욧요.");
+      alert("프로젝트 이름을 입력해주세요");
+      return false;
+    }
+    if (!form1.oneLineInfo.trim()) {
+      alert("한 줄 소개를 입력해주세요.");
+      return false;
+    }
+    if (!form1.simpleInfo.trim()) {
+      alert("프로젝트 간단 설명을 입력해주세요.");
+      return false;
+    }
+    if (!hasUserSelected) {
+      alert("프로젝트 분야를 선택해주세요.");
+      return false;
+    }
+    if (!form1.closedDate) {
+      alert("모집 마감일을 선택해주세요.");
       return false;
     }
     return true;

@@ -58,6 +58,14 @@ const ProjectOneLineCard = ({
           },
           "& .MuiOutlinedInput-input": {
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            "&::placeholder": {
+              fontSize: {
+                xs: "14px",
+                sm: "15px",
+                md: "16px",
+              },
+              color: "#999",
+            },
           },
         }}
         required

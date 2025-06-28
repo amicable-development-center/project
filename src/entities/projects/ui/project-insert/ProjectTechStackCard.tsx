@@ -1,14 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import type {
-  ChangeEvent,
-  CSSProperties,
-  JSX,
-  KeyboardEvent,
-  FocusEvent,
-  MouseEvent,
-} from "react";
+import type { ChangeEvent, CSSProperties, JSX, KeyboardEvent } from "react";
 import { useState } from "react";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
@@ -57,7 +50,8 @@ const ProjectTechStackCard = ({
     >
       {/* 입력 + 추가 버튼 */}
       <Box display="flex" gap={1} mb={2}>
-        <input
+        <Box
+          component="input"
           type="text"
           value={newTech}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -65,39 +59,40 @@ const ProjectTechStackCard = ({
           }
           onKeyUp={handleKeyPress}
           placeholder="React, Python, Figma... 뭐든 좋아요!"
-          style={{
+          sx={{
             flex: 1,
             height: 40,
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: "8px",
             border: `1px solid ${theme.palette.divider}`,
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: {
+              xs: "14px",
+              sm: "15px",
+              md: "16px",
+            },
             fontFamily: theme.typography.fontFamily,
             background: theme.palette.background.paper,
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
             boxSizing: "border-box",
             outline: "none",
             transition: "border-color 0.2s ease-in-out",
-          }}
-          onFocus={(e) => {
-            // 포커스 시: 파란색 테두리 + 두껍게
-            e.target.style.borderColor = theme.palette.primary.main;
-            e.target.style.borderWidth = "2px";
-          }}
-          onBlur={(e: FocusEvent<HTMLInputElement>) => {
-            e.currentTarget.style.borderColor = theme.palette.divider;
-            e.currentTarget.style.borderWidth = "1px";
-          }}
-          onMouseEnter={(e: MouseEvent<HTMLInputElement>) => {
-            if (e.currentTarget !== document.activeElement) {
-              e.currentTarget.style.borderColor = "#000000";
-            }
-          }}
-          onMouseLeave={(e: MouseEvent<HTMLInputElement>) => {
-            if (e.currentTarget !== document.activeElement) {
-              e.currentTarget.style.borderColor = theme.palette.divider;
-            }
+
+            "&::placeholder": {
+              fontSize: {
+                xs: "14px", // 모바일
+                sm: "15px", // 태블릿
+                md: "16px", // 데스크톱
+              },
+              color: "#999",
+            },
+
+            "&:focus": {
+              borderColor: theme.palette.primary.main,
+              borderWidth: "2px",
+            },
+
+            "&:hover:not(:focus)": {
+              borderColor: "#000000",
+            },
           }}
         />
         <Button
@@ -129,7 +124,11 @@ const ProjectTechStackCard = ({
                 py: 1,
                 backgroundColor: theme.palette.grey[100],
                 borderRadius: 2,
-                fontSize: "1.5rem",
+                fontSize: {
+                  xs: "14px",
+                  sm: "15px",
+                  md: "16px",
+                },
                 color: theme.palette.text.primary,
               }}
             >
@@ -145,7 +144,11 @@ const ProjectTechStackCard = ({
                   color: theme.palette.text.primary,
                   backgroundColor: "transparent",
                   cursor: "pointer",
-                  fontSize: "18px",
+                  fontSize: {
+                    xs: "16px",
+                    sm: "17px",
+                    md: "18px",
+                  },
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

@@ -45,7 +45,6 @@ const ProjectTitleCard = ({
             fontFamily: theme.typography.fontFamily,
             background: "none",
             border: "none",
-
             // 호버 시 테두리 검정색
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.text.primary,
@@ -58,6 +57,14 @@ const ProjectTitleCard = ({
           },
           "& .MuiOutlinedInput-input": {
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            "&::placeholder": {
+              fontSize: {
+                xs: "14px",
+                sm: "15px",
+                md: "16px",
+              },
+              color: "#999",
+            },
           },
         }}
         required

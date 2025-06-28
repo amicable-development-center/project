@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, useTheme } from "@mui/material";
 import type { ChangeEvent, CSSProperties, JSX } from "react";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
@@ -16,6 +16,8 @@ const ProjectSimpleDescCard = ({
   large,
   style,
 }: ProjectSimpleDescCardProps): JSX.Element => {
+  const theme = useTheme();
+
   return (
     <SimpleFormCard
       title="프로젝트 간단 소개"
@@ -34,23 +36,21 @@ const ProjectSimpleDescCard = ({
         fullWidth
         variant="outlined"
         size="small"
-        InputProps={{
-          sx: {
+        sx={{
+          "& .MuiOutlinedInput-root": {
             fontSize: 16,
             fontFamily: "inherit",
             background: "none",
-            border: "none",
+
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#222",
+              borderColor: theme.palette.text.primary,
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#1976d2",
+              borderColor: theme.palette.primary.main,
               borderWidth: "2px",
             },
           },
-        }}
-        inputProps={{
-          style: {
+          "& .MuiOutlinedInput-input": {
             padding: large ? 5 : 5,
             fontSize: 16,
             color: "#222",

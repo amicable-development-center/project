@@ -29,12 +29,31 @@ const useInsertStep4 = ({ state }: { state?: Step4Type }): ApplyFormResult => {
   };
 
   const validateForm = (): boolean => {
-    //여기에 검사식을 넣어주세요.
-    // 아래는 예시 입니다.
-    if (formStep4.requirements[0] === "") {
-      alert("지원 요구사항을 적어주세욧요.");
+    if (!formStep4.workflow) {
+      alert("진행 방식을 선택해주세요.");
       return false;
     }
+    if (formStep4.requirements.length === 0) {
+      alert("최소 1개 이상의 지원 요구사항을 입력해주세요.");
+      return false;
+    }
+    for (let i = 0; i < formStep4.requirements.length; i++) {
+      if (!formStep4.requirements[i].trim()) {
+        alert(`${i + 1}번째 지원 요구사항을 입력해주세요.`);
+        return false;
+      }
+    }
+    if (formStep4.preferentialTreatment.length === 0) {
+      alert("최소 1개 이상의 우대사항을 입력해주세요.");
+      return false;
+    }
+    for (let i = 0; i < formStep4.preferentialTreatment.length; i++) {
+      if (!formStep4.preferentialTreatment[i].trim()) {
+        alert(`${i + 1}번째 우대사항을 입력해주세요.`);
+        return false;
+      }
+    }
+
     return true;
   };
 

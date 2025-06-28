@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material/styles";
+import { Box, useTheme } from "@mui/material";
 import type { CSSProperties, JSX, ReactNode } from "react";
 
 interface SimpleFormCardProps {
@@ -22,70 +22,96 @@ const SimpleFormCard = ({
 }: SimpleFormCardProps): JSX.Element => {
   const theme = useTheme();
 
-  const cardStyles = {
-    container: {
-      background: theme.palette.background.paper,
-      borderRadius: theme.shape.borderRadius,
-      border: `1px solid ${theme.palette.divider}`,
-      padding: large ? theme.spacing(3) : theme.spacing(2),
-      minHeight: large ? 220 : 180,
-      display: "flex",
-      flexDirection: "column" as const,
-      justifyContent: "center",
-      width: "100%",
-      overflow: "visible",
-      fontFamily: theme.typography.fontFamily,
-      transition: "all 0.2s ease-in-out",
-      ...style,
-    } as CSSProperties,
-
-    title: {
-      fontWeight: theme.typography.h3.fontWeight,
-      fontSize: large
-        ? theme.typography.h3.fontSize
-        : theme.typography.h4.fontSize,
-      marginBottom: 14,
-      color: theme.palette.text.primary,
-      display: "flex",
-      alignItems: "center",
-    } as CSSProperties,
-
-    description: {
-      color: "#6f6f72",
-      fontSize: large
-        ? theme.typography.h5.fontSize
-        : theme.typography.body1.fontSize,
-      marginBottom: 18,
-      lineHeight: 1.5,
-    } as CSSProperties,
-
-    helpText: {
-      color: "#bbb",
-      fontSize: large ? theme.typography.body1.fontSize : "1.2rem",
-      marginTop: 8,
-    } as CSSProperties,
-
-    // children을 위한 컨테이너 스타일
-    content: {
-      marginBottom: helpText ? 8 : 0,
-    } as CSSProperties,
-  };
-
   return (
-    <div style={cardStyles.container}>
-      <div style={cardStyles.title}>
-        <span role="img" aria-label={title}>
-          {icon}
-        </span>
+    <Box
+      sx={{
+        background: theme.palette.background.paper,
+        borderRadius: "8px",
+        border: `1px solid ${theme.palette.divider}`,
+        padding: {
+          xs: large ? theme.spacing(2) : theme.spacing(1.5),
+          sm: large ? theme.spacing(2.5) : theme.spacing(2),
+          md: large ? theme.spacing(3) : theme.spacing(2),
+        },
+        minHeight: {
+          xs: large ? 180 : 140,
+          md: large ? 220 : 180,
+        },
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        width: "100%",
+        overflow: "visible",
+        fontFamily: theme.typography.fontFamily,
+        transition: "all 0.2s ease-in-out",
+        ...style,
+      }}
+    >
+      {/* Title */}
+      <Box
+        sx={{
+          fontWeight: theme.typography.h3.fontWeight,
+          fontSize: {
+            xs: "1.8rem",
+            sm: "1.9rem",
+            md: theme.typography.h3.fontSize,
+          },
+          marginBottom: "14px",
+          color: theme.palette.text.primary,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        {icon && (
+          <span role="img" aria-label={title}>
+            {icon}
+          </span>
+        )}
         {title}
-      </div>
+      </Box>
 
-      <div style={cardStyles.description}>{description}</div>
+      {/* Description */}
+      <Box
+        sx={{
+          color: "#6f6f72",
+          fontSize: {
+            xs: "1.4rem",
+            sm: "1.5rem",
+            md: "1.6rem",
+          },
+          marginBottom: "18px",
+          lineHeight: 1.5,
+        }}
+      >
+        {description}
+      </Box>
 
-      <div style={cardStyles.content}>{children}</div>
+      {/* Content */}
+      <Box
+        sx={{
+          marginBottom: helpText ? "8px" : 0,
+        }}
+      >
+        {children}
+      </Box>
 
-      {helpText && <div style={cardStyles.helpText}>{helpText}</div>}
-    </div>
+      {/* Help Text */}
+      {helpText && (
+        <Box
+          sx={{
+            color: "#bbb",
+            fontSize: {
+              xs: "1.3rem",
+              sm: "1.4rem",
+              md: "1.5rem",
+            },
+            marginTop: "8px",
+          }}
+        >
+          {helpText}
+        </Box>
+      )}
+    </Box>
   );
 };
 
