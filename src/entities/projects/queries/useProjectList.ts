@@ -1,7 +1,7 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import type { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
-import { getProjectList } from "@entities/projects/api/projectsAPi";
+import { getProjectList } from "@entities/projects/api/projectsApi";
 
 import type { ProjectListRes } from "@shared/types/project";
 

@@ -1,6 +1,6 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
-import { getProjectItem } from "@entities/projects/api/projectsAPi";
+import { getProjectItem } from "@entities/projects/api/projectsApi";
 
 import type { ProjectListRes } from "@shared/types/project";
 

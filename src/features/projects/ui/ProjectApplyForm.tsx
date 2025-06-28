@@ -2,7 +2,7 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Box, styled, Typography } from "@mui/material";
 import { type JSX } from "react";
 
-import useApplyFrom from "@features/projects/hook/useApplyFrom";
+import useApplyFrom from "@features/projects/hooks/useApplyFrom";
 
 const ProjectApplyForm = (): JSX.Element => {
   const {

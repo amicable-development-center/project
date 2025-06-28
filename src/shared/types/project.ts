@@ -56,6 +56,9 @@ export interface Positions {
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
   createdAt: Timestamp; // 게시글 등록일자
+  // 실제 컬렉션 개수를 기반으로 한 카운트 필드들
+  applicationsCount?: number; // applications 컬렉션 개수
+  likesCount?: number; // likes 컬렉션 개수
 }
 
 export enum RecruitmentStatus {
