@@ -2,6 +2,7 @@ import React, { type JSX } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { useAuthStore } from "@shared/stores/authStore";
+import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
 const PrivateRoute = ({
   children,
@@ -13,7 +14,7 @@ const PrivateRoute = ({
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner variant="overlay" message="인증 확인 중..." />;
   }
 
   if (!user) {
