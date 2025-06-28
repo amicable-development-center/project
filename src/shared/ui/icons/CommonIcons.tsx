@@ -30,3 +30,5 @@ export { default as HistoryToggleOffIcon } from "@mui/icons-material/HistoryTogg
 export { default as ChevronLeftIcon } from "@mui/icons-material/ChevronLeft";
 export { default as ChevronRightIcon } from "@mui/icons-material/ChevronRight";
 export { default as MoreHorizIcon } from "@mui/icons-material/MoreHoriz";
+
+export { default as GitHubIcon } from "@mui/icons-material/GitHub";
