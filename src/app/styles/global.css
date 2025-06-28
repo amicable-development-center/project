@@ -52,10 +52,19 @@ body {
     "Droid Sans",
     "Helvetica Neue",
     sans-serif;
+  background-color: #f8fafc;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: inherit;
+}
+
+body.page-loading {
+  cursor: wait;
+}
+
+body.page-loading * {
+  cursor: wait !important;
 }

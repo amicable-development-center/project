@@ -1,23 +1,27 @@
-import type { JSX } from "@emotion/react/jsx-runtime";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import ShareIcon from "@mui/icons-material/Share";
 import { Box, styled } from "@mui/material";
-import { useParams } from "react-router-dom";
+import type { JSX } from "react";
 
-import useLike from "@features/projects/hook/useLike";
+import { useOptimisticProjectLike } from "@features/projects/hooks/useOptimisticProjectLike";
 
-import { getStatusClassname } from "@shared/libs/utils/projectDetail";
+import {
+  getStatusClassname,
+  shareProjectUrl,
+} from "@shared/libs/utils/projectDetail";
 import type { ProjectListRes } from "@shared/types/project";
+import {
+  FavoriteBorderIcon,
+  FavoriteOutlinedIcon,
+  ShareIcon,
+} from "@shared/ui/icons/CommonIcons";
 
-type ProjectLikeType = Pick<ProjectListRes, "status" | "likedUsers">;
+type ProjectLikeType = Pick<ProjectListRes, "status">;
 
-const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
-  const { id } = useParams();
-  const { like, unlike, isLike } = useLike({
-    projectID: id || "",
-    likedUsers: values.likedUsers,
-  });
+interface ProjectLikeProps {
+  values: ProjectLikeType;
+}
+
+const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
+  const { isLiked, toggleLike } = useOptimisticProjectLike();
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -26,20 +30,21 @@ const ProjectLike = ({ values }: { values: ProjectLikeType }): JSX.Element => {
       </StatusBox>
 
       <Box display="flex">
-        <HeadIconBox>
-          {isLike ? (
-            <FavoriteOutlinedIcon color="error" onClick={unlike} />
+        <HeadIconBox onClick={toggleLike}>
+          {isLiked ? (
+            <FavoriteOutlinedIcon color="error" />
           ) : (
-            <FavoriteBorderIcon onClick={like} />
+            <FavoriteBorderIcon />
           )}
         </HeadIconBox>
-        <HeadIconBox>
+        <HeadIconBox onClick={shareProjectUrl}>
           <ShareIcon />
         </HeadIconBox>
       </Box>
     </Box>
   );
 };
+
 export default ProjectLike;
 
 const HeadIconBox = styled(Box)`
@@ -65,13 +70,14 @@ const StatusBox = styled("div")`
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.025em;
-  color: white;
-  border-radius: 50px;
+  border-radius: 4px;
 
   &.ing {
+    color: white;
     background-color: black;
   }
   &.done {
-    background-color: ${({ theme }) => theme.palette.primary.main};
+    color: #303030;
+    background-color: #f0f0f0;
   }
 `;

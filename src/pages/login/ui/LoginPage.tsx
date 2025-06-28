@@ -5,13 +5,12 @@ import BackToHome from "@widgets/BackToHome/BackToHome";
 
 import { LoginForm } from "@features/auth/ui/LoginForm";
 
+import LogoBox from "@shared/ui/LogoBox";
+
 const LoginPage = (): JSX.Element => {
-  console.log("API_KEY: ", import.meta.env.VITE_API_KEY);
   return (
     <PageWrapper>
-      <Typography variant="h3" fontWeight={700} mb={1} color="#4F46E5B">
-        ⚡ 프로젝트 잼
-      </Typography>
+      <LogoBox size="large" showText={true} />
       <Typography variant="body1" mb={6} color="textSecondary">
         함께 만들어가는 사이드 프로젝트
       </Typography>

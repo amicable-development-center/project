@@ -1,11 +1,12 @@
-import { Stack, Typography } from "@mui/material";
-import type { CSSProperties, JSX } from "react";
+import { Box, Stack, useMediaQuery, useTheme } from "@mui/material";
+import type { JSX } from "react";
 
 import type { User } from "@shared/types/user";
 
-interface UserProfileWithNamePositionProps
-  extends Pick<User, "name" | "userRole"> {
-  flexDirection?: CSSProperties["flexDirection"];
+interface UserProfileWithNamePositionProps {
+  name?: string;
+  userRole: User["userRole"];
+  flexDirection?: "row" | "column";
 }
 
 const UserProfileWithNamePosition = ({
@@ -13,10 +14,25 @@ const UserProfileWithNamePosition = ({
   userRole,
   flexDirection = "column",
 }: UserProfileWithNamePositionProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <Stack flexDirection={flexDirection} gap={"0.4rem"} alignItems={"center"}>
-      <Typography variant="h6">{name}</Typography>
-      <Typography variant="body1">{userRole}</Typography>
+    <Stack
+      gap={"0.4rem"}
+      alignItems={"flex-start"}
+      sx={
+        flexDirection === "column"
+          ? { direction: "column" }
+          : { direction: "row" }
+      }
+    >
+      <Box fontWeight={600} fontSize={isMobile ? "1.4rem" : 16}>
+        {name || "이름 없음"}
+      </Box>
+      <Box fontSize={isMobile ? "1.2rem" : 14} color={"#858585"}>
+        {userRole}
+      </Box>
     </Stack>
   );
 };

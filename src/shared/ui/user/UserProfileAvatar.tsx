@@ -1,12 +1,15 @@
-import { Avatar, Box, styled } from "@mui/material";
-import type { CSSProperties, JSX } from "react";
+import { Avatar, Box, styled, useMediaQuery, useTheme } from "@mui/material";
+import type { JSX } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import type { User } from "@shared/types/user";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
-interface UserProfileAvatarProps
-  extends Pick<User, "name" | "userRole" | "avatar"> {
-  flexDirection?: CSSProperties["flexDirection"];
+interface UserProfileAvatarProps {
+  name?: string;
+  userRole: User["userRole"];
+  avatar?: User["avatar"];
+  flexDirection?: "row" | "column";
 }
 
 const UserProfileAvatar = ({
@@ -15,11 +18,27 @@ const UserProfileAvatar = ({
   avatar,
   flexDirection = "row",
 }: UserProfileAvatarProps): JSX.Element => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = useCallback((): void => {
+    setImageError(true);
+  }, []);
+
+  const avatarProps = useMemo(() => {
+    const fallbackText =
+      name && name.length > 0 ? name.charAt(0).toUpperCase() : "?";
+    return imageError || !avatar
+      ? { children: fallbackText }
+      : { src: avatar, onError: handleImageError };
+  }, [imageError, avatar, name, handleImageError]);
+
   return (
     <UserProfileAvatarContainer>
-      <Avatar src={avatar} />
+      <Avatar {...avatarProps} sx={isMobile ? { fontSize: "1.2rem" } : {}} />
       <UserProfileWithNamePosition
-        name={name}
+        name={name || ""}
         userRole={userRole}
         flexDirection={flexDirection}
       />
@@ -27,7 +46,7 @@ const UserProfileAvatar = ({
   );
 };
 
-export default UserProfileAvatar;
+export default memo(UserProfileAvatar);
 
 const UserProfileAvatarContainer = styled(Box)(() => ({
   display: "flex",

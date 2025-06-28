@@ -3,7 +3,7 @@ import { type JSX } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import ProjectApplyForm from "@features/projects/ui/ProjectApplyForm";
-import ProjectDelete from "@features/projects/ui/ProjectDelete";
+import { ProjectDone, ProjectDones } from "@features/projects/ui/ProjectDelete";
 import ProjectLike from "@features/projects/ui/ProjectLike";
 
 import useProjectsItem from "@entities/projects/queries/useProjectsItem";
@@ -20,6 +20,7 @@ import TechStack from "@entities/projects/ui/projects-detail/TechStack";
 
 import { useAuthStore } from "@shared/stores/authStore";
 import type { RecruitmentStatus } from "@shared/types/project";
+import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
 
 const ProjectDetailPage = (): JSX.Element | null => {
   const { id } = useParams();
@@ -30,11 +31,6 @@ const ProjectDetailPage = (): JSX.Element | null => {
     isLoading,
     isError,
   } = useProjectsItem({ id: id || null });
-
-  const projectLikeValues = {
-    status: (project?.status as RecruitmentStatus) || "모집중",
-    likedUsers: project?.likedUsers || [],
-  };
 
   const projectInfoValues = !project
     ? null
@@ -50,6 +46,10 @@ const ProjectDetailPage = (): JSX.Element | null => {
 
   const techStackValues = {
     techStack: project?.techStack || [],
+  };
+
+  const projectLikeValues = {
+    status: (project?.status as RecruitmentStatus) || "모집중",
   };
 
   const descriptionlValues = {
@@ -78,7 +78,11 @@ const ProjectDetailPage = (): JSX.Element | null => {
       };
 
   if (isLoading) {
-    return <div>로딩중</div>;
+    return (
+      <Box display={"flex"} justifyContent={"center"} height={"100vh"}>
+        <LoadingSpinner />
+      </Box>
+    );
   }
   if (!project || isError) {
     Navigate("/error");
@@ -116,11 +120,14 @@ const ProjectDetailPage = (): JSX.Element | null => {
             <ProjectLeader projectOwner={project?.projectOwner} />
           </CardBox>
           <CardBox>
-            <ProjectApply applicants={project.applicants.length} />
-            {user?.uid === project.projectOwner.id ? (
-              <ProjectDelete projectOwnerID={project?.projectOwner.id} />
+            <ProjectApply />
+
+            {project.status === "모집완료" ? (
+              <ProjectDone />
+            ) : user?.uid === project.projectOwner.id ? (
+              <ProjectDones projectOwnerID={project?.projectOwner.id} />
             ) : (
-              <ProjectApplyForm applicants={project?.applicants || []} />
+              <ProjectApplyForm />
             )}
           </CardBox>
           <CardBox>

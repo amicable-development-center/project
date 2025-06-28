@@ -1,40 +1,46 @@
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Box, styled, Typography } from "@mui/material";
-import type { JSX } from "react";
-import { useParams } from "react-router-dom";
+import { type JSX } from "react";
 
-import useApplyFrom from "@features/projects/hook/useApplyFrom";
+import useApplyFrom from "@features/projects/hooks/useApplyForm";
 
-import { useAuthStore } from "@shared/stores/authStore";
+const ProjectApplyForm = (): JSX.Element => {
+  const {
+    openForm,
+    message,
+    submit,
+    cancle,
+    isApplied,
+    isCancling,
+    isPending,
+  } = useApplyFrom();
 
-const ProjectApplyForm = ({
-  applicants,
-}: {
-  applicants: string[];
-}): JSX.Element => {
-  const { id } = useParams();
-  const user = useAuthStore((state) => state.user);
-  const { openForm, message, submit } = useApplyFrom(id || "");
-
-  if (user && applicants.includes(user?.uid || "")) {
+  // 지원된 상태
+  if (isApplied) {
     return (
-      <MessageBtn className="done">
-        <Typography>지원완료</Typography>
+      <MessageBtn className="cancel" onClick={cancle} disabled={isPending}>
+        <Typography variant="body2" color="secondary">
+          {isCancling ? "취소 중..." : "지원 취소"}
+        </Typography>
       </MessageBtn>
     );
   }
 
-  /* 지원하기 폼 닫혀있을 때 */
+  // 지원 폼이 닫힌 상태
   if (!openForm.isOpen) {
     return (
-      <MessageBtn className="apply" onClick={openForm.open}>
+      <MessageBtn
+        className="apply"
+        onClick={openForm.open}
+        disabled={isPending}
+      >
         <RocketLaunchIcon />
         <Typography>지원하기 🚀</Typography>
       </MessageBtn>
     );
   }
 
-  /* 지원하기 폼 열려 있을 때 */
+  // 지원 폼이 열린 상태
   return (
     <>
       <Typography variant="body2" fontWeight={500}>
@@ -47,12 +53,16 @@ const ProjectApplyForm = ({
         placeholder="자기소개와 프로젝트에 기여할 수 있는 부분을 작성해주세요! 열정적인 메세지를 기다리고 있어요 🔥"
       />
 
-      <Box display={"flex"} gap={1}>
-        <MessageBtn onClick={openForm.close}>
+      <Box display="flex" gap={1}>
+        <MessageBtn onClick={openForm.close} disabled={isPending}>
           <Typography>취소</Typography>
         </MessageBtn>
-        <MessageBtn className="apply" onClick={submit}>
-          <Typography>지원하기</Typography>
+        <MessageBtn
+          className="apply"
+          onClick={submit}
+          disabled={isPending || !message.value.trim()}
+        >
+          <Typography>{isPending ? "지원 중..." : "지원하기"}</Typography>
         </MessageBtn>
       </Box>
     </>
@@ -78,7 +88,7 @@ const ApplyTextarea = styled("textarea")`
   }
 `;
 
-const MessageBtn = styled(Box)`
+const MessageBtn = styled(Box)<{ disabled?: boolean }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -88,10 +98,12 @@ const MessageBtn = styled(Box)`
   border-radius: 4px;
   border: 1px solid #dddddd;
   transition: background-color 0.3s;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 
   &:hover {
-    background-color: #f4f4f4;
+    background-color: ${({ disabled }) =>
+      disabled ? "transparent" : "#f4f4f4"};
   }
 
   &.apply {
@@ -99,13 +111,10 @@ const MessageBtn = styled(Box)`
     border: 0;
     color: white;
     &:hover {
-      background: linear-gradient(to bottom right, #474dc0, #7324bd);
+      background: ${({ disabled }) =>
+        disabled
+          ? "linear-gradient(to bottom right, #666df2, #9134ea)"
+          : "linear-gradient(to bottom right, #474dc0, #7324bd)"};
     }
-  }
-
-  &.done {
-    cursor: default;
-    color: #858585;
-    background-color: #f0f0f0;
   }
 `;

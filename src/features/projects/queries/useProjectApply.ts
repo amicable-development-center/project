@@ -16,7 +16,7 @@ const useProjectApply = (): UseMutationResult<ApiResMessage, Error, string> => {
       if (!user) {
         throw new Error("로그인을 해주세요.");
       }
-      return updateApplyOrLike(user.uid, projectID, "apply");
+      return updateApplyOrLike(user.uid, projectID);
     },
     onSuccess: (data) => {
       // 지원 완료 후 프로필로 이동

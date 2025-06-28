@@ -1,9 +1,11 @@
+import type { User as FirebaseUser } from "firebase/auth";
 import type { Timestamp } from "firebase/firestore";
 
 import type { ExpectedPeriod, ProjectSchedule } from "@shared/types/schedule";
 import type { User, UserRole } from "@shared/types/user";
 
 export interface ProjectItemInsertReq {
+  projectOwnerID: string; // 작성자
   projectOwner: User; // 프로젝트 오너 유저 정보
   status: RecruitmentStatus;
   category: ProjectCategory; // 프로젝트 분야
@@ -20,8 +22,8 @@ export interface ProjectItemInsertReq {
   schedules: ProjectSchedule[]; // 프로젝트 일정
   requirements: string[]; // 지원 요구사항
   preferentialTreatment: string[]; //  우대사항
-  applicants: string[]; // 지원자들
-  likedUsers: string[]; // 좋아요 누른 사람들
+  applicants: string[]; // 지원자들 -- 추후에 삭제 바람
+  likedUsers: string[]; // 좋아요 누른 사람들 -- 추후에 삭제 바람
 }
 
 export enum ProjectCategory {
@@ -54,9 +56,46 @@ export interface Positions {
 export interface ProjectListRes extends ProjectItemInsertReq {
   id: string; // firebase 문서 id
   createdAt: Timestamp; // 게시글 등록일자
+  // 실제 컬렉션 개수를 기반으로 한 카운트 필드들
+  applicationsCount?: number; // applications 컬렉션 개수
+  likesCount?: number; // likes 컬렉션 개수
 }
 
 export enum RecruitmentStatus {
   recruiting = "모집중",
   completed = "모집완료",
+}
+
+export interface ProjectApplication {
+  projectId: string;
+  userId: string;
+  message: string;
+  createdAt: Timestamp;
+  status: "pending" | "accepted" | "rejected";
+}
+
+export interface CreateProjectApplicationRequest {
+  userId: FirebaseUser["uid"];
+  projectId: string;
+  message: string;
+  status: "pending" | "accepted" | "rejected";
+  createdAt: Timestamp;
+}
+
+export interface CreateProjectApplicationInput {
+  userId: FirebaseUser["uid"];
+  projectId: string;
+  message: string;
+}
+
+export interface UseOptimisticProjectApplyProps {
+  isApplied: boolean;
+  isLoading: boolean;
+  toggleApplications: () => void;
+}
+
+export enum ProjectCollectionTabType {
+  Likes = "likes",
+  Applied = "applied",
+  Created = "created",
 }

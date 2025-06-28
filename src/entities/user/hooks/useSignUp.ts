@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
-import { saveUser } from "@entities/user/api/userApi";
-
+import { saveUser } from "@shared/api/userApi";
 import { useAuthStore } from "@shared/stores/authStore";
+import { useSnackbarStore } from "@shared/stores/snackbarStore";
 import type { UserInput } from "@shared/types/user";
 
 export const useSignUp = (): {
@@ -10,6 +10,7 @@ export const useSignUp = (): {
 } => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const showSuccess = useSnackbarStore((s) => s.showSuccess);
 
   const signUp = async (userInput: UserInput): Promise<void> => {
     if (!user) return;
@@ -33,7 +34,10 @@ export const useSignUp = (): {
       introduceMyself: finalIntroduceMyself,
     });
 
-    navigate("/");
+    showSuccess("회원가입을 축하드립니다!");
+    setTimeout(() => {
+      navigate("/");
+    }, 800);
   };
 
   return { signUp };

@@ -4,53 +4,57 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { Card, CardContent, Stack, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
+import FadeInUpOnView from "@shared/ui/animations/FadeInUpOnView";
+
 const ProjectsStats = (): JSX.Element => {
   const mock = [
     {
       id: "a",
       title: "진행중인 프로젝트",
       value: 110,
-      icon: <RocketLaunchIcon sx={{ fontSize: "4.8rem" }} />,
+      icon: <RocketLaunchIcon />,
       color: "#2563eb",
     },
     {
       id: "b",
       title: "활성 사용자",
       value: 120,
-      icon: <PeopleAltIcon sx={{ fontSize: "4.8rem" }} />,
+      icon: <PeopleAltIcon />,
       color: "#16a34a",
     },
     {
       id: "c",
       title: "완성된 프로젝트",
       value: 130,
-      icon: <EmojiEventsIcon sx={{ fontSize: "4.8rem" }} />,
+      icon: <EmojiEventsIcon />,
       color: "#eab308",
     },
   ];
 
   return (
-    <>
-      {mock.map((stat) => {
+    <ProjectStatsContainer>
+      {mock.map((stat, index) => {
         return (
-          <ProjectStatsCard key={stat.id}>
-            <CardContent>
-              <ProjectStatsStack>
-                <ProjectStatsIcon color={stat.color}>
-                  {stat.icon}
-                </ProjectStatsIcon>
-                <ProjectStatsCount variant="subtitle2">
-                  {`${stat.value}+`}
-                </ProjectStatsCount>
-                <ProjectStatsTitle variant="body1">
-                  {stat.title}
-                </ProjectStatsTitle>
-              </ProjectStatsStack>
-            </CardContent>
-          </ProjectStatsCard>
+          <FadeInUpOnView key={stat.id} delay={index * 0.5}>
+            <ProjectStatsCard>
+              <CardContent>
+                <ProjectStatsStack>
+                  <ProjectStatsIcon color={stat.color}>
+                    {stat.icon}
+                  </ProjectStatsIcon>
+                  <ProjectStatsCount variant="subtitle2">
+                    {`${stat.value}+`}
+                  </ProjectStatsCount>
+                  <ProjectStatsTitle variant="body1">
+                    {stat.title}
+                  </ProjectStatsTitle>
+                </ProjectStatsStack>
+              </CardContent>
+            </ProjectStatsCard>
+          </FadeInUpOnView>
         );
       })}
-    </>
+    </ProjectStatsContainer>
   );
 };
 
@@ -60,19 +64,47 @@ interface ProjectStatsIconProps {
   color: string;
 }
 
-const ProjectStatsCard = styled(Card)(() => ({
-  flex: 1,
+const ProjectStatsContainer = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr 1fr",
+  gap: "3.2rem",
+  alignItems: "stretch",
+  width: "100%",
+  [theme.breakpoints.down("sm")]: {
+    gridTemplateColumns: "1fr",
+    gap: "2rem",
+  },
 }));
 
-const ProjectStatsIcon = styled("span")<ProjectStatsIconProps>(({ color }) => ({
-  color: color,
+const ProjectStatsCard = styled(Card)(() => ({
   display: "flex",
-  alignItems: "center",
   justifyContent: "center",
-  borderRadius: "12px",
-  padding: "1.6rem",
-  backgroundColor: `${color}10`,
+  flex: 1,
+  width: "100%",
 }));
+
+const ProjectStatsIcon = styled("span")<ProjectStatsIconProps>(
+  ({ theme, color }) => ({
+    color: color,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "12px",
+    padding: "1.2rem",
+    backgroundColor: `${color}10`,
+
+    "& svg": {
+      fontSize: "3.2rem",
+    },
+
+    [theme.breakpoints.up("sm")]: {
+      padding: "1.6rem",
+      "& svg": {
+        fontSize: "4.8rem",
+      },
+    },
+  })
+);
 
 const ProjectStatsStack = styled(Stack)(() => ({
   display: "flex",
@@ -81,11 +113,19 @@ const ProjectStatsStack = styled(Stack)(() => ({
   gap: "0.8rem",
 }));
 
-const ProjectStatsCount = styled(Typography)(() => ({
-  fontSize: "2.4rem",
+const ProjectStatsCount = styled(Typography)(({ theme }) => ({
+  fontSize: "2rem",
   fontWeight: "bold",
+
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "2.4rem",
+  },
 }));
 
-const ProjectStatsTitle = styled(Typography)(() => ({
-  fontSize: "1.6rem",
+const ProjectStatsTitle = styled(Typography)(({ theme }) => ({
+  fontSize: "1.4rem",
+
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "1.6rem",
+  },
 }));
