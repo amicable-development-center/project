@@ -43,7 +43,7 @@ const ProjectPreferentialCard = ({
     <SimpleFormCard
       title="우대사항"
       description="있으면 좋은 기술이나 경험이 있나요?"
-      helpText="우대사항은 선택사항입니다. 있으면 더 좋은 조건들을 적어주세요"
+      helpText="있으면 더 좋은 조건들을 적어주세요 (최소 1개 이상)"
       large={large}
       style={style}
     >
