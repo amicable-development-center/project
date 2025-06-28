@@ -1,7 +1,7 @@
 import { Box, styled } from "@mui/material";
 import type { JSX } from "react";
 
-import { useOptimisticProjectLike } from "@features/projects/hook/useOptimisticProjectLike";
+import { useOptimisticProjectLike } from "@features/projects/hooks/useOptimisticProjectLike";
 
 import {
   getStatusClassname,

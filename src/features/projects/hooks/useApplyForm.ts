@@ -2,7 +2,7 @@ import { useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
 
 import { useCancelProjectApplication } from "@features/projects/queries/useCancelProjectApplication";
-import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjcetApplications";
+import { useCreateProjectApplications } from "@features/projects/queries/useCreateProjectApplications";
 
 import { useGetProjectApplicationStatus } from "@entities/projects/queries/useGetProjectApplications";
 
@@ -25,7 +25,7 @@ interface ApplyFormResult {
   isApplied: boolean;
 }
 
-const useApplyFrom = (): ApplyFormResult => {
+const useApplyForm = (): ApplyFormResult => {
   const { id: projectId } = useParams();
   const { showError } = useSnackbarStore();
 
@@ -87,4 +87,4 @@ const useApplyFrom = (): ApplyFormResult => {
   };
 };
 
-export default useApplyFrom;
+export default useApplyForm;
