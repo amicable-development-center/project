@@ -3,6 +3,8 @@ import type { SxProps, Theme } from "@mui/material";
 import type { JSX } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Logo from "./icons/logo.svg";
+
 interface LogoBoxProps {
   size?: "small" | "medium" | "large";
   onClick?: () => void;
@@ -40,7 +42,7 @@ const LogoBox = ({
       $disableHover={disableHover}
       sx={sx}
     >
-      <LogoImage src="/public/logo.svg" alt="프로젝트 잼" $size={size} />
+      <LogoImage src={Logo} alt="프로젝트 잼" $size={size} />
       {showText && <LogoText $size={size}>{text}</LogoText>}
     </StyledLogoBox>
   );
