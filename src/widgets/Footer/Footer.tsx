@@ -152,7 +152,6 @@ const FooterContent = styled(Box)(({ theme }) => ({
 }));
 
 const LogoSection = styled(Box)(({ theme }) => ({
-  border: "1px solid red",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
