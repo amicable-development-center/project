@@ -1,12 +1,14 @@
-import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 import type { JSX } from "react";
 
-import type { Step3Type } from "@features/projects/hook/useProjectInsertForm";
+import useInsertStep3 from "@features/projects/hook/useInsertStep3";
+import type { UpdateAllFormType } from "@features/projects/type/project-update";
 
 import ProjectDetailDescriptionCard from "@entities/projects/ui/project-insert/ProjectDetailDescriptionCard";
 import ProjectScheduleManagementCard from "@entities/projects/ui/project-insert/ProjectScheduleManagementCard";
 
 import type { ExpectedPeriod } from "@shared/types/schedule";
+import StepWhiteBox from "@shared/ui/project-insert/StepWhiteBox";
 
 interface Schedule {
   stageName: string;
@@ -14,47 +16,39 @@ interface Schedule {
   description: string;
 }
 
-interface Step3Props {
-  form: Step3Type;
-  onChangeForm: (
-    field: keyof Step3Type,
-    value: Step3Type[keyof Step3Type]
-  ) => void;
-}
-
-const Step3 = ({ form, onChangeForm }: Step3Props): JSX.Element => {
+const Step3 = ({
+  updateForm,
+}: {
+  updateForm: UpdateAllFormType;
+}): JSX.Element => {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down("md"));
 
+  const { formStep3, onChangeForm, validateForm } = useInsertStep3({});
+
+  const settingSetForm = (): void => {
+    if (validateForm()) {
+      updateForm("form3", formStep3);
+    }
+  };
+
   return (
-    <StepBox>
+    <StepWhiteBox stepNum={3} onClick={settingSetForm}>
       <ProjectDetailDescriptionCard
-        value={form.description}
+        value={formStep3.description}
         onChange={(value: string) => onChangeForm("description", value)}
         large
         style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
       />
 
       <ProjectScheduleManagementCard
-        value={form.schedules}
+        value={formStep3.schedules}
         onChange={(value: Schedule[]) => onChangeForm("schedules", value)}
         large
         style={{ gridColumn: isMdDown ? "span 1" : "1 / -1" }}
       />
-    </StepBox>
+    </StepWhiteBox>
   );
 };
 
 export default Step3;
-
-export const StepBox = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "1fr",
-  gap: theme.spacing(2),
-  marginBottom: 0,
-
-  [theme.breakpoints.up("md")]: {
-    gridTemplateColumns: "1fr 1fr",
-    gap: theme.spacing(3),
-  },
-}));

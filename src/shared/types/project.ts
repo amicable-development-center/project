@@ -22,8 +22,8 @@ export interface ProjectItemInsertReq {
   schedules: ProjectSchedule[]; // 프로젝트 일정
   requirements: string[]; // 지원 요구사항
   preferentialTreatment: string[]; //  우대사항
-  applicants: string[]; // 지원자들
-  likedUsers: string[]; // 좋아요 누른 사람들
+  applicants: string[]; // 지원자들 -- 추후에 삭제 바람
+  likedUsers: string[]; // 좋아요 누른 사람들 -- 추후에 삭제 바람
 }
 
 export enum ProjectCategory {
