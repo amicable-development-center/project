@@ -1,7 +1,7 @@
 import { Box, styled } from "@mui/material";
 import type { JSX } from "react";
 
-import { useOptimisticProjectLike } from "@features/projects/queries/useCreateProjectLike";
+import { useOptimisticProjectLike } from "@features/projects/hook/useOptimisticProjectLike";
 
 import {
   getStatusClassname,
@@ -21,12 +21,7 @@ interface ProjectLikeProps {
 }
 
 const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
-  const { isLiked, isLoading, toggleLike } = useOptimisticProjectLike();
-
-  const handleLikeClick = (): void => {
-    if (isLoading) return;
-    toggleLike();
-  };
+  const { isLiked, toggleLike } = useOptimisticProjectLike();
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -35,7 +30,7 @@ const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
       </StatusBox>
 
       <Box display="flex">
-        <HeadIconBox onClick={handleLikeClick}>
+        <HeadIconBox onClick={toggleLike}>
           {isLiked ? (
             <FavoriteOutlinedIcon color="error" />
           ) : (
