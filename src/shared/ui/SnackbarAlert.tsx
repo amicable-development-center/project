@@ -28,6 +28,9 @@ const SnackbarAlert = ({
     autoHideDuration={duration}
     onClose={onClose}
     anchorOrigin={anchorOrigin}
+    sx={{
+      marginTop: { xs: "6.4rem", md: "8rem" },
+    }}
   >
     <Alert severity={severity} sx={{ width: "100%" }}>
       {message}

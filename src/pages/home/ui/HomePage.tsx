@@ -2,9 +2,12 @@ import { Box, Container, styled } from "@mui/material";
 import type { JSX } from "react";
 
 import Hero from "@widgets/hero/ui/Hero";
+import HowToStartTitle from "@widgets/hero/ui/HowToStartTitle";
 
 import useGetProjects from "@entities/projects/hooks/useGetProjects";
 import ProjectCard from "@entities/projects/ui/projects-card/ProjectCard";
+import HowToStart from "@entities/projects/ui/projects-stats/HowToStart";
+import LetsGo from "@entities/projects/ui/projects-stats/LetsGoBox";
 import ProjectsStats from "@entities/projects/ui/projects-stats/ProjectsStats";
 
 import FadeInUpOnView from "@shared/ui/animations/FadeInUpOnView";
@@ -31,6 +34,15 @@ const HomePage = (): JSX.Element => {
           ))}
         </ProjectCardContainer>
       </ProjectSectionContainer>
+
+      <HeroContainer>
+        <HowToStartTitle />
+        <HowToStart />
+      </HeroContainer>
+
+      <ProjectStatsContainer>
+        <LetsGo />
+      </ProjectStatsContainer>
     </MainContainer>
   );
 };

@@ -1,12 +1,12 @@
-import { Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
-import type { CSSProperties, JSX } from "react";
+import { Box, Stack, useMediaQuery, useTheme } from "@mui/material";
+import type { JSX } from "react";
 
 import type { User } from "@shared/types/user";
 
 interface UserProfileWithNamePositionProps {
   name?: string;
   userRole: User["userRole"];
-  flexDirection?: CSSProperties["flexDirection"];
+  flexDirection?: "row" | "column";
 }
 
 const UserProfileWithNamePosition = ({
@@ -18,13 +18,21 @@ const UserProfileWithNamePosition = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Stack flexDirection={flexDirection} gap={"0.4rem"} alignItems={"flex-end"}>
-      <Typography variant="h6" sx={isMobile ? { fontSize: "1.4rem" } : {}}>
+    <Stack
+      gap={"0.4rem"}
+      alignItems={"flex-start"}
+      sx={
+        flexDirection === "column"
+          ? { direction: "column" }
+          : { direction: "row" }
+      }
+    >
+      <Box fontWeight={600} fontSize={isMobile ? "1.4rem" : 16}>
         {name || "이름 없음"}
-      </Typography>
-      <Typography variant="body1" sx={isMobile ? { fontSize: "1.2rem" } : {}}>
+      </Box>
+      <Box fontSize={isMobile ? "1.2rem" : 14} color={"#858585"}>
         {userRole}
-      </Typography>
+      </Box>
     </Stack>
   );
 };
