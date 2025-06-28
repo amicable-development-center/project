@@ -14,7 +14,8 @@ import ProjectTitleCard from "@entities/projects/ui/project-insert/ProjectTitleC
 import StepWhiteBox from "@shared/ui/project-insert/StepWhiteBox";
 
 // 모집 마감일 형식 변환
-const timestampToInputDate = (timestamp: Timestamp): string => {
+const timestampToInputDate = (timestamp: Timestamp | null): string => {
+  if (!timestamp) return "";
   return timestamp.toDate().toISOString().split("T")[0];
 };
 
