@@ -83,13 +83,11 @@ const useProjectSearch = (
   );
 
   const handlePageChange = (page: number): void => {
-    // 즉시 스크롤 실행
     if (resultsRef?.current) {
       scrollToElement(resultsRef.current, "smooth", 80);
     }
 
-    // 페이지 설정
-    if (page !== currentPage && page >= 1 && page <= totalPages) {
+    if (page !== currentPage) {
       setPage(page);
       setShouldScrollAfterLoad(true);
     }
