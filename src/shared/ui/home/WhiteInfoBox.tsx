@@ -47,11 +47,8 @@ const WhiteInfoBox = ({
 export default WhiteInfoBox;
 
 const ItemCard = styled(Card)`
-  border: 1px solid transparent;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
   &:hover {
-    border: 1px solid ${({ theme }) => theme.palette.primary.main};
     transform: translateY(-1rem);
   }
 `;

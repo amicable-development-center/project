@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -7,13 +8,10 @@ import {
   Stack,
   styled,
   Typography,
-  Box,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import type { JSX } from "react";
 import { memo } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useGetProjectApplicationUsers } from "@entities/projects/queries/useGetProjectApplications";
 import { useGetProjectLikedUsers } from "@entities/projects/queries/useGetProjectLike";
@@ -22,12 +20,11 @@ import { RecruitmentStatus, type ProjectListRes } from "@shared/types/project";
 import DragScrollContainer from "@shared/ui/DragScrollContainer";
 import {
   AccessTimeIcon,
+  FavoriteBorderIcon,
   LocationPinIcon,
   PeopleAltIcon,
-  FavoriteBorderIcon,
 } from "@shared/ui/icons/CommonIcons";
 import UserProfileAvatar from "@shared/ui/user/UserProfileAvatar";
-import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
 
 interface ProjectCardProps {
   project: ProjectListRes;
@@ -38,21 +35,31 @@ const ProjectCard = ({
   project,
   simple = false,
 }: ProjectCardProps): JSX.Element => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
+  const Navigate = useNavigate();
   const isRecruiting = project.status === RecruitmentStatus.recruiting;
   const { data: likedUsers } = useGetProjectLikedUsers(project.id);
   const { data: appliedUsers } = useGetProjectApplicationUsers(project.id);
 
+  const likedUserCnt = likedUsers?.length || 0;
+  const appliedUsersCnt = appliedUsers?.length || 0;
+
   return (
-    <StyledCard simple={simple}>
+    <StyledCard
+      simple={simple}
+      onClick={() => Navigate(`/project/${project.id}`)}
+    >
       <StyledCardContent>
         <ProjectHeader>
-          <StatusChip
-            label={project.status}
-            color={isRecruiting ? "primary" : "default"}
-            size="small"
-          />
+          <Box>
+            <StatusChip
+              label={project.status}
+              className={isRecruiting ? "black" : ""}
+              size="small"
+            />
+            {likedUserCnt + appliedUsersCnt > 3 && (
+              <StatusChip label={"🔥HOT"} className="red" size="small" />
+            )}
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -63,7 +70,7 @@ const ProjectCard = ({
           >
             <FavoriteBorderIcon fontSize="large" color="error" />
             <Typography variant="body1" color="text.secondary" fontWeight={500}>
-              {likedUsers?.length || 0}
+              {likedUserCnt}
             </Typography>
           </Box>
         </ProjectHeader>
@@ -72,9 +79,10 @@ const ProjectCard = ({
           <ProjectTitle variant="h5" fontWeight={700}>
             {project.title}
           </ProjectTitle>
+
           {!simple && (
             <>
-              <OneLineInfo variant="body1" color="primary" fontWeight={600}>
+              <OneLineInfo variant="body2" color="primary" fontWeight={600}>
                 {project.oneLineInfo}
               </OneLineInfo>
               <SimpleInfo variant="body2" color="text.secondary">
@@ -83,64 +91,56 @@ const ProjectCard = ({
             </>
           )}
         </ContentSection>
+
         <UserProfileContainer>
-          {isMobile ? (
-            <UserProfileAvatar
-              name={project.projectOwner.name}
-              userRole={project.projectOwner.userRole}
-              avatar={project.projectOwner.avatar}
-              flexDirection="row"
-            />
-          ) : (
-            <UserProfileWithNamePosition
-              name={project.projectOwner.name}
-              userRole={project.projectOwner.userRole}
-              flexDirection="row"
-            />
-          )}
+          <UserProfileAvatar
+            name={project.projectOwner.name}
+            userRole={project.projectOwner.userRole}
+            avatar={project.projectOwner.avatar}
+            flexDirection="row"
+          />
         </UserProfileContainer>
-        {!simple && (
-          <DragScrollContainer>
-            {project.techStack.map((stack, index) => (
-              <TechChip key={index} label={stack} size="small" />
-            ))}
-          </DragScrollContainer>
-        )}
 
         {!simple && (
-          <ProjectDetails>
-            <DetailItem>
-              <PeopleAltIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                {project.teamSize}명
-              </Typography>
-            </DetailItem>
-            <DetailItem>
-              <AccessTimeIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                {project.expectedPeriod}
-              </Typography>
-            </DetailItem>
-            <DetailItem>
-              <LocationPinIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                온라인
-              </Typography>
-            </DetailItem>
-          </ProjectDetails>
+          <>
+            <DragScrollContainer>
+              {project.techStack.map((stack, index) => (
+                <TechChip key={index} label={stack} size="small" />
+              ))}
+            </DragScrollContainer>
+
+            <ProjectDetails>
+              <DetailItem>
+                <PeopleAltIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {project.teamSize}명
+                </Typography>
+              </DetailItem>
+              <DetailItem>
+                <AccessTimeIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {project.expectedPeriod}
+                </Typography>
+              </DetailItem>
+              <DetailItem>
+                <LocationPinIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  온라인
+                </Typography>
+              </DetailItem>
+            </ProjectDetails>
+          </>
         )}
 
         <StyledDivider />
 
         <FooterSection>
           <Typography variant="body1" color="textPrimary">
-            <TextHighlight>{appliedUsers?.length || 0}명</TextHighlight> 지원
+            <TextHighlight>{appliedUsersCnt}명</TextHighlight> 지원
           </Typography>
-          <StyledLink to={`/project/${project.id}`}>
-            <ActionButton variant="contained" color="primary" size="medium">
-              자세히 보기
-            </ActionButton>
-          </StyledLink>
+          <ActionButton variant="contained" color="primary" size="medium">
+            자세히 보기
+          </ActionButton>
         </FooterSection>
       </StyledCardContent>
     </StyledCard>
@@ -168,7 +168,7 @@ const StyledCard = styled(Card, {
     transform: "translateY(-0.4rem)",
     boxShadow:
       "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-    borderColor: theme.palette.primary.light,
+    borderColor: "#1d1d1d",
   },
 }));
 
@@ -189,11 +189,20 @@ const ProjectHeader = styled(Box)(() => ({
   alignItems: "center",
 }));
 
-const StatusChip = styled(Chip)(() => ({
-  fontWeight: 600,
-  letterSpacing: "0.025em",
-  backgroundColor: "#1d1d1d",
-}));
+const StatusChip = styled(Chip)`
+  font-weight: 600;
+  letter-spacing: 0.025em;
+
+  &.black {
+    color: white;
+    background-color: #1d1d1d;
+  }
+  &.red {
+    margin-left: 0.5rem;
+    color: white;
+    background: linear-gradient(to bottom right, #ff8b5d, #ff2c25);
+  }
+`;
 
 const ContentSection = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -236,7 +245,7 @@ const TechChip = styled(Chip)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   border: `1px solid ${theme.palette.divider}`,
   fontWeight: 500,
-  fontSize: "1.1rem",
+  fontSize: "1rem",
   flexShrink: 0,
   whiteSpace: "nowrap",
 
@@ -249,7 +258,6 @@ const ProjectDetails = styled(Stack)(({ theme }) => ({
   flexDirection: "row",
   flexWrap: "wrap",
   gap: theme.spacing(1.6),
-  marginTop: theme.spacing(0.8),
 
   [theme.breakpoints.up("sm")]: {
     gap: theme.spacing(2),
@@ -263,7 +271,7 @@ const DetailItem = styled(Stack)(({ theme }) => ({
 }));
 
 const StyledDivider = styled(Divider)(({ theme }) => ({
-  margin: `${theme.spacing(0.8)} 0`,
+  margin: `5px 0`,
   backgroundColor: theme.palette.divider,
 }));
 
@@ -273,11 +281,6 @@ const FooterSection = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   marginTop: "auto",
   gap: theme.spacing(1.2),
-}));
-
-const StyledLink = styled(Link)(() => ({
-  textDecoration: "none",
-  flexShrink: 0,
 }));
 
 const ActionButton = styled(Button)(({ theme }) => ({

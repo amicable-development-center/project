@@ -1,6 +1,6 @@
 import { Avatar, Box, styled, useMediaQuery, useTheme } from "@mui/material";
-import type { CSSProperties, JSX } from "react";
-import { useState, useCallback, useMemo, memo } from "react";
+import type { JSX } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import type { User } from "@shared/types/user";
 import UserProfileWithNamePosition from "@shared/ui/user/UserProfileWithNamePosition";
@@ -9,7 +9,7 @@ interface UserProfileAvatarProps {
   name?: string;
   userRole: User["userRole"];
   avatar?: User["avatar"];
-  flexDirection?: CSSProperties["flexDirection"];
+  flexDirection?: "row" | "column";
 }
 
 const UserProfileAvatar = ({
