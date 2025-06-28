@@ -7,6 +7,7 @@ import {
   getProjectLikedUsers,
   getProjectLikeStatus,
 } from "@entities/projects/api/getProjectLikeApi";
+import { getProjectsByIds } from "@entities/projects/api/projectsApi";
 
 import queryKeys from "@shared/react-query/queryKey";
 import { useAuthStore } from "@shared/stores/authStore";
@@ -60,5 +61,15 @@ export const useGetMyLikedProjectsWithDetails = (): UseQueryResult<
     queryKey: [queryKeys.myLikedProjects, "details"],
     queryFn: () => getMyLikedProjectsWithDetails(user?.uid),
     enabled: !!user,
+  });
+};
+
+export const useGetMyCreatedProjectsWithDetails = (
+  myProjectsIds?: string[]
+): UseQueryResult<ProjectListRes[], Error> => {
+  return useQuery({
+    queryKey: [queryKeys.myCreatedProjects, "details", myProjectsIds],
+    queryFn: () => getProjectsByIds(myProjectsIds || []),
+    enabled: !!myProjectsIds && myProjectsIds.length > 0,
   });
 };
