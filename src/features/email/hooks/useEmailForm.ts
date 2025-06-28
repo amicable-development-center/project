@@ -50,10 +50,8 @@ const useEmailForm = ({
   }, []);
 
   const handleSend = async (): Promise<void> => {
-    if (!subject.trim() || !message.trim()) {
-      alert("제목과 메시지를 입력해주세요.");
-      return;
-    }
+    const isEmpty = !subject.trim() || !message.trim();
+    if (isEmpty) return;
 
     sendEmailMutation.mutate(
       {
