@@ -192,6 +192,7 @@ const ProjectHeader = styled(Box)(() => ({
 const StatusChip = styled(Chip)(() => ({
   fontWeight: 600,
   letterSpacing: "0.025em",
+  backgroundColor: "#1d1d1d",
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({
