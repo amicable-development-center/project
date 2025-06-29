@@ -118,11 +118,11 @@ const LogoText = styled("span")<{ $size: "small" | "medium" | "large" }>(
 
     [theme.breakpoints.down("md")]: {
       fontSize:
-        $size === "small" ? "1rem" : $size === "medium" ? "1.3rem" : "1.5rem",
+        $size === "small" ? "1.4rem" : $size === "medium" ? "1.6rem" : "1.8rem",
     },
     [theme.breakpoints.down("sm")]: {
       fontSize:
-        $size === "small" ? "0.9rem" : $size === "medium" ? "1.1rem" : "1.2rem",
+        $size === "small" ? "1.2rem" : $size === "medium" ? "1.4rem" : "1.6rem",
     },
   })
 );

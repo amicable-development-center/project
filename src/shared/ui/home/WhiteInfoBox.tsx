@@ -99,6 +99,7 @@ const ProjectStatsCount = styled(Typography)(({ theme }) => ({
 
 const ProjectStatsTitle = styled(Typography)(({ theme }) => ({
   fontSize: "1.4rem",
+  wordBreak: "keep-all",
 
   [theme.breakpoints.up("sm")]: {
     fontSize: "1.6rem",

@@ -71,7 +71,7 @@ const Header = (): JSX.Element => {
                 color="inherit"
                 aria-label="menu"
                 onClick={() => setDrawerOpen(true)}
-                sx={{ ml: 1, mr: 1, p: 1.5 }}
+                sx={{ ml: 0.5, mr: 0, p: 0.5 }}
               >
                 <MenuIcon sx={{ fontSize: 32 }} />
               </IconButton>
