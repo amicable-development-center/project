@@ -1,7 +1,10 @@
-import { Box, styled } from "@mui/material";
+import { Box, Chip, styled } from "@mui/material";
 import type { JSX } from "react";
 
 import { useOptimisticProjectLike } from "@features/projects/hooks/useOptimisticProjectLike";
+
+import { useGetProjectApplicationUsers } from "@entities/projects/queries/useGetProjectApplications";
+import { useGetProjectLikedUsers } from "@entities/projects/queries/useGetProjectLike";
 
 import {
   getStatusClassname,
@@ -19,11 +22,17 @@ type ProjectLikeType = Pick<ProjectListRes, "status">;
 
 interface ProjectLikeProps {
   values: ProjectLikeType;
+  projectId: string;
 }
 
-const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
+const ProjectLike = ({ values, projectId }: ProjectLikeProps): JSX.Element => {
   const { isLiked, toggleLike } = useOptimisticProjectLike();
   const { showError, showSuccess } = useSnackbarStore();
+  const { data: likedUsers } = useGetProjectLikedUsers(projectId);
+  const { data: appliedUsers } = useGetProjectApplicationUsers(projectId);
+
+  const likedUserCnt = likedUsers?.length || 0;
+  const appliedUsersCnt = appliedUsers?.length || 0;
 
   const sharelink = (): void => {
     shareProjectUrl()
@@ -33,9 +42,24 @@ const ProjectLike = ({ values }: ProjectLikeProps): JSX.Element => {
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <StatusBox className={getStatusClassname(values.status)}>
-        {values.status}
-      </StatusBox>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 0.5,
+        }}
+      >
+        <StatusChip
+          label={values.status}
+          className={getStatusClassname(values.status)}
+          size="small"
+        />
+
+        {likedUserCnt + appliedUsersCnt > 3 && (
+          <StatusChip label={"🔥HOT"} className="red" size="small" />
+        )}
+      </Box>
 
       <Box display="flex">
         <HeadIconBox onClick={toggleLike}>
@@ -73,12 +97,9 @@ const HeadIconBox = styled(Box)`
   }
 `;
 
-const StatusBox = styled("div")`
-  padding: 0.5rem 1.2rem;
-  font-size: 12px;
+const StatusChip = styled(Chip)`
   font-weight: 600;
   letter-spacing: 0.025em;
-  border-radius: 4px;
 
   &.ing {
     color: white;
@@ -87,5 +108,13 @@ const StatusBox = styled("div")`
   &.done {
     color: #303030;
     background-color: #f0f0f0;
+  }
+  &.black {
+    color: white;
+    background-color: #1d1d1d;
+  }
+  &.red {
+    color: white;
+    background: linear-gradient(to bottom right, #ff8b5d, #ff2c25);
   }
 `;

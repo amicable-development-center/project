@@ -1,4 +1,4 @@
-import { Box, Container, styled } from "@mui/material";
+import { Box, Container, styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import Hero from "@widgets/hero/ui/Hero";
@@ -26,6 +26,17 @@ const HomePage = (): JSX.Element => {
       </ProjectStatsContainer>
 
       <ProjectSectionContainer>
+        <SectionTitleContainer>
+          <FadeInUpOnView delay={0.2}>
+            <SectionTitle variant="h2">새로 올라온 프로젝트</SectionTitle>
+          </FadeInUpOnView>
+          <FadeInUpOnView delay={0.4}>
+            <SectionSubtitle variant="h6">
+              따끈따끈한 신규 프로젝트들을 만나보세요
+            </SectionSubtitle>
+          </FadeInUpOnView>
+        </SectionTitleContainer>
+
         <ProjectCardContainer>
           {projects?.projects.map((project, index) => (
             <FadeInUpOnView key={project.id} delay={index + 1}>
@@ -112,5 +123,48 @@ const ProjectSectionContainer = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.up("md")]: {
     padding: "6rem 0",
+  },
+}));
+
+const SectionTitleContainer = styled(Box)(({ theme }) => ({
+  textAlign: "center",
+  marginBottom: theme.spacing(5),
+  position: "relative",
+  "&::after": {
+    content: '""',
+    display: "block",
+    width: "80px",
+    height: "3px",
+    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
+    margin: "16px auto 0",
+    borderRadius: "2px",
+  },
+}));
+
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  fontSize: "2.5rem",
+  fontWeight: 700,
+  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 50%, ${theme.palette.primary.dark} 100%)`,
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  marginBottom: theme.spacing(1),
+  letterSpacing: "-0.02em",
+  [theme.breakpoints.down("md")]: {
+    fontSize: "2rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.75rem",
+  },
+}));
+
+const SectionSubtitle = styled(Typography)(({ theme }) => ({
+  fontSize: "1.1rem",
+  fontWeight: 400,
+  color: theme.palette.text.secondary,
+  opacity: 0.8,
+  lineHeight: 1.6,
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
   },
 }));

@@ -1,253 +1,271 @@
-# 📊 Entities Layer
+# Entities Layer
 
-**데이터 조회와 표시를 담당하는 레이어**
+> 📊 **도메인 엔티티 계층** - 비즈니스 도메인 데이터의 조회와 표시를 담당
 
-Entities 레이어는 **Read 로직**에 특화된 계층으로, 데이터를 조회하고 표시하는 역할을 담당합니다.
+## 📖 개요
 
-## 🎯 역할과 책임
+Entities Layer는 **비즈니스 도메인의 핵심 데이터를 관리**하는 계층입니다. 주로 Read 작업을 담당하며, 데이터를 조회하고 사용자에게 표시하는 UI 컴포넌트와 로직을 포함합니다.
 
-### 주요 기능
-- 📋 **데이터 조회**: API로부터 데이터 패칭
-- 🎨 **데이터 표시**: UI 컴포넌트로 데이터 렌더링
-- 🔄 **데이터 캐싱**: React Query를 통한 효율적인 캐싱
-- 📊 **상태 관리**: 읽기 전용 상태 관리
-
-### Features vs Entities 구분
-| **Features (CUD)** | **Entities (Read)** |
-|-------------------|---------------------|
-| 데이터 변경 | 데이터 표시 |
-| `useMutation` | `useQuery` |
-| 폼 제출, 버튼 클릭 | 데이터 조회, 렌더링 |
-| LoginForm, DeleteButton | UserCard, PostList |
-
-## 📁 폴더 구조
-
-각 도메인 엔티티는 다음 구조를 따릅니다:
+## 📁 디렉토리 구조
 
 ```
-entities/
-├── user/                 # 사용자 도메인
-│   ├── api/             # API 요청 로직
-│   │   └── userApi.ts
-│   ├── hooks/           # 커스텀 훅
-│   │   └── useUser.ts
-│   ├── queries/         # React Query 설정
-│   │   └── userQueries.ts
-│   ├── types/           # TypeScript 타입
-│   │   └── User.ts
-│   ├── ui/              # UI 컴포넌트
-│   │   ├── UserCard.tsx
-│   │   ├── UserProfile.tsx
-│   │   └── UserList.tsx
-│   ├── libs/            # 유틸리티 함수
-│   │   └── userUtils.ts
-│   └── index.ts         # 외부 노출 인터페이스
-├── post/                # 게시물 도메인
-│   ├── api/
-│   ├── hooks/
-│   ├── queries/
-│   ├── types/
-│   ├── ui/
-│   ├── libs/
-│   └── index.ts
-└── README.md           # 이 파일
+src/entities/
+├── projects/                # 📋 프로젝트 도메인
+│   ├── api/                # 프로젝트 조회 API
+│   │   ├── getProjectApplicationsApi.ts
+│   │   ├── getProjectLikeApi.ts
+│   │   └── projectsApi.ts
+│   ├── hooks/              # 프로젝트 관련 훅
+│   │   ├── useDeleteProjectsMutation.ts
+│   │   ├── useGetProjects.ts
+│   │   └── useProjectsByIds.ts
+│   ├── queries/            # React Query 쿼리
+│   │   ├── useGetProjectApplications.ts
+│   │   ├── useGetProjectLike.ts
+│   │   ├── useProjectList.ts
+│   │   ├── useProjectsItem.ts
+│   │   └── useProjectsTotalCount.ts
+│   ├── types/              # 프로젝트 타입 정의
+│   │   └── firebase.ts
+│   └── ui/                 # 프로젝트 표시 UI
+│       ├── liked-projects/
+│       ├── post-info/
+│       ├── profile-page-projects-card/
+│       ├── project-collection-tab/
+│       ├── project-insert/
+│       ├── projects-card/
+│       ├── projects-detail/
+│       └── projects-stats/
+├── search/                  # 🔍 검색 도메인
+│   ├── api/                # 검색 API
+│   │   └── projectSearchApi.ts
+│   ├── hooks/              # 검색 관련 훅
+│   │   ├── useFilteredProjects.ts
+│   │   ├── useProjectSearch.ts
+│   │   ├── useSearchHistory.ts
+│   │   └── useSearchInput.ts
+│   ├── model/              # 검색 비즈니스 로직
+│   │   ├── searchConstants.ts
+│   │   ├── searchFormConfig.ts
+│   │   └── searchQueryBuilder.ts
+│   ├── queries/            # 검색 쿼리
+│   │   └── useProjectSearchQueries.ts
+│   └── ui/                 # 검색 UI 컴포넌트
+│       ├── SearchActions.tsx
+│       ├── SearchFilters.tsx
+│       ├── SearchForm.tsx
+│       ├── SearchInput.tsx
+│       ├── SearchInputHistory.tsx
+│       ├── SearchInputHistoryToggle.tsx
+│       ├── SearchLabels.tsx
+│       ├── SearchListResultHandler.tsx
+│       ├── SearchLoadingSpinner.tsx
+│       ├── SearchPagination.tsx
+│       ├── SearchSelectBox.tsx
+│       ├── SearchStatusField.tsx
+│       └── SelectBox.tsx
+└── user/                    # 👤 사용자 도메인
+    ├── hooks/              # 사용자 관련 훅
+    │   ├── useSignUp.ts
+    │   ├── useSignUpForm.ts
+    │   ├── useUpdateUser.ts
+    │   └── useUpdateUserForm.ts
+    └── ui/                 # 사용자 표시 UI
+        ├── SubmitButton.tsx
+        ├── UpdateUserForm.tsx
+        ├── user-profile/
+        │   ├── TapWithBadge.tsx
+        │   ├── UserProfileCard.tsx
+        │   └── UserProfileHeader.tsx
+        └── UserInfoForm.tsx
 ```
 
-## 🔧 개발 가이드
+## 🎯 도메인별 상세 기능
 
-### 1. API 요청 로직 (`api/`)
+### 1. Projects Entity (`projects/`)
+**역할**: 프로젝트 정보의 조회와 표시
 
-```typescript
-// entities/user/api/userApi.ts
-import { apiClient } from '@shared/api';
-import type { User } from '../types/User';
+#### 주요 컴포넌트 그룹
+- **liked-projects/**: 좋아요한 프로젝트 목록 및 빈 상태
+- **post-info/**: 프로젝트 상세 정보 (지원, 리더 정보, 메타데이터)
+- **project-collection-tab/**: 프로젝트 컬렉션 탭 네비게이션
+- **project-insert/**: 프로젝트 등록 폼의 각 카드 컴포넌트들
+- **projects-card/**: 프로젝트 목록용 카드 및 빈 상태
+- **projects-detail/**: 프로젝트 상세 페이지 섹션들
+- **projects-stats/**: 프로젝트 통계 및 안내 정보
 
-export const userApi = {
-  getUser: async (id: string): Promise<User> => {
-    const response = await apiClient.get(`/users/${id}`);
-    return response.data;
-  },
+#### 데이터 관리
+- **조회 최적화**: React Query를 통한 데이터 캐싱
+- **상태 동기화**: 실시간 프로젝트 상태 반영
+- **페이지네이션**: 대용량 프로젝트 목록 처리
 
-  getUsers: async (): Promise<User[]> => {
-    const response = await apiClient.get('/users');
-    return response.data;
-  },
-};
-```
+### 2. Search Entity (`search/`)
+**역할**: 프로젝트 검색 및 필터링 시스템
 
-### 2. React Query 설정 (`queries/`)
+#### 핵심 기능
+- **다중 필터**: 카테고리, 기술스택, 포지션, 상태별 필터링
+- **검색 기록**: 사용자별 검색 이력 관리
+- **실시간 검색**: 타이핑과 동시에 결과 업데이트
+- **고급 검색**: 복합 조건을 통한 정확한 매칭
 
-```typescript
-// entities/user/queries/userQueries.ts
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { userApi } from '../api/userApi';
-import type { User } from '../types/User';
+#### 검색 엔진 구조
+- **Query Builder**: 동적 검색 쿼리 생성
+- **Filter Chain**: 연쇄적 필터 적용
+- **Result Ranking**: 관련도 기반 결과 정렬
 
-export const useUser = (id: string): UseQueryResult<User, Error> => {
-  return useQuery({
-    queryKey: ['user', id],
-    queryFn: () => userApi.getUser(id),
-    enabled: !!id,
-  });
-};
+### 3. User Entity (`user/`)
+**역할**: 사용자 정보 표시 및 프로필 관리
 
-export const useUsers = (): UseQueryResult<User[], Error> => {
-  return useQuery({
-    queryKey: ['users'],
-    queryFn: userApi.getUsers,
-  });
-};
-```
+#### 사용자 표시 컴포넌트
+- **ProfileCard**: 사용자 기본 정보 카드
+- **ProfileHeader**: 프로필 페이지 헤더
+- **TapWithBadge**: 배지가 있는 탭 컴포넌트
 
-### 3. 커스텀 훅 (`hooks/`)
+#### 사용자 정보 관리
+- **회원가입**: 새 사용자 등록 폼
+- **프로필 수정**: 기존 사용자 정보 업데이트
+- **표시 최적화**: 사용자 데이터 효율적 렌더링
 
-```typescript
-// entities/user/hooks/useUser.ts
-import { useUser as useUserQuery } from '../queries/userQueries';
-import type { User } from '../types/User';
+## 🏗 아키텍처 패턴
 
-export const useUser = (id: string) => {
-  const query = useUserQuery(id);
-  
-  return {
-    user: query.data,
-    isLoading: query.isLoading,
-    isError: query.isError,
-    error: query.error,
-    refetch: query.refetch,
-  };
-};
-```
+### 1. Repository Pattern
+API 호출을 추상화하여 데이터 접근 로직과 UI를 분리
 
-### 4. UI 컴포넌트 (`ui/`)
+### 2. Query Object Pattern
+복잡한 검색 조건을 객체로 캡슐화하여 관리
 
-```typescript
-// entities/user/ui/UserCard.tsx
-import { useUser } from '../hooks/useUser';
-import type { User } from '../types/User';
+### 3. Observer Pattern
+데이터 변경 시 관련 컴포넌트들에게 자동 알림
 
-interface UserCardProps {
-  userId: string;
-}
+## 🎨 UI 컴포넌트 설계 원칙
 
-const UserCard = ({ userId }: UserCardProps): JSX.Element => {
-  const { user, isLoading, isError } = useUser(userId);
+### 1. 단일 책임 원칙
+각 컴포넌트는 하나의 명확한 데이터 표시 역할만 담당
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>에러가 발생했습니다</div>;
-  if (!user) return <div>사용자를 찾을 수 없습니다</div>;
+### 2. 조합 가능성
+작은 컴포넌트들을 조합하여 복잡한 UI 구성
 
-  return (
-    <div className="user-card">
-      <h3>{user.name}</h3>
-      <p>{user.email}</p>
-    </div>
-  );
-};
+### 3. 재사용성
+다양한 맥락에서 사용 가능한 유연한 컴포넌트 설계
 
-export { UserCard };
-```
+## 📊 데이터 흐름 관리
 
-### 5. 타입 정의 (`types/`)
+### 1. 서버 상태 캐싱
+- **React Query**: 서버 데이터 자동 캐싱 및 무효화
+- **Stale-While-Revalidate**: 캐시된 데이터 우선 표시 후 백그라운드 업데이트
+- **옵티미스틱 업데이트**: 사용자 액션 즉시 반영
 
-```typescript
-// entities/user/types/User.ts
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+### 2. 클라이언트 상태 관리
+- **지역 상태**: 컴포넌트 내부 UI 상태
+- **전역 상태**: 여러 컴포넌트가 공유하는 상태
+- **동기화**: 서버 상태와 클라이언트 상태 일치
 
-export interface UserPreview {
-  id: string;
-  name: string;
-  avatar?: string;
-}
-```
+### 3. 에러 상태 처리
+- **로딩 상태**: 데이터 fetching 중 로딩 표시
+- **에러 상태**: 네트워크 에러 시 친화적 메시지
+- **빈 상태**: 데이터가 없을 때 적절한 안내
 
-### 6. 외부 노출 인터페이스 (`index.ts`)
+## ⚡ 성능 최적화
 
-```typescript
-// entities/user/index.ts
-// UI 컴포넌트
-export { UserCard } from './ui/UserCard';
-export { UserProfile } from './ui/UserProfile';
-export { UserList } from './ui/UserList';
+### 1. 렌더링 최적화
+- **React.memo**: 불필요한 리렌더링 방지
+- **가상화**: 대용량 리스트 가상 스크롤
+- **지연 로딩**: 뷰포트 진입 시 컴포넌트 로딩
 
-// 훅
-export { useUser } from './hooks/useUser';
+### 2. 데이터 최적화
+- **선택적 필드**: 필요한 데이터만 요청
+- **페이지네이션**: 대용량 데이터 청크 단위 로딩
+- **프리페칭**: 사용자 행동 예측하여 미리 데이터 로딩
 
-// 타입
-export type { User, UserPreview } from './types/User';
+### 3. 번들 최적화
+- **트리 쉐이킹**: 사용하지 않는 코드 제거
+- **코드 스플리팅**: 라우트/컴포넌트별 청크 분할
+- **동적 임포트**: 조건부 컴포넌트 로딩
 
-// API (필요한 경우에만)
-export { userApi } from './api/userApi';
-```
+## 🔍 검색 시스템 고도화
 
-## 🎯 베스트 프랙티스
+### 1. 검색 알고리즘
+- **풀텍스트 검색**: 제목, 설명 내 키워드 매칭
+- **가중치 기반 스코어링**: 필드별 중요도 차등 적용
+- **퍼지 매칭**: 오타 허용 검색
 
-### 1. 데이터 조회 최적화
-- React Query의 캐싱 활용
-- 적절한 `staleTime` 설정
-- 데이터 의존성 관리 (`enabled` 옵션)
+### 2. 사용자 경험 개선
+- **자동완성**: 입력 중 검색어 제안
+- **검색 하이라이트**: 결과에서 검색어 강조
+- **최근 검색어**: 사용자별 검색 이력
 
-### 2. 컴포넌트 설계
-- 단일 책임 원칙 준수
-- 로딩/에러 상태 처리
-- 명시적 반환 타입 ([JSX.Element 사용][[memory:7559751984028653409]])
+### 3. 고급 필터링
+- **다중 선택**: 여러 카테고리 동시 선택
+- **범위 필터**: 날짜, 팀 크기 등 범위 조건
+- **정렬 옵션**: 최신순, 인기순, 관련도순
 
-### 3. 타입 안전성
-- 모든 API 응답에 타입 정의
-- 선택적 프로퍼티 명시
-- 유니온 타입 활용
+## 🎯 사용자 경험 (UX) 고려사항
 
-### 4. 성능 고려사항
-- 불필요한 리렌더링 방지
-- 메모이제이션 적절히 활용
-- 지연 로딩 고려
+### 1. 로딩 상태 관리
+- **스켈레톤 UI**: 데이터 로딩 중 레이아웃 미리보기
+- **프로그레시브 로딩**: 중요한 내용부터 우선 표시
+- **백그라운드 업데이트**: 사용자 인터랙션 방해 없이 데이터 갱신
 
-## 🔗 의존성 규칙
+### 2. 반응형 디자인
+- **모바일 최적화**: 터치 친화적 인터페이스
+- **적응형 레이아웃**: 화면 크기별 최적 배치
+- **성능 고려**: 모바일 환경에서의 빠른 로딩
 
-Entities는 **Shared 레이어만** 참조할 수 있습니다:
+### 3. 접근성 (Accessibility)
+- **키보드 네비게이션**: 마우스 없이도 완전한 사용
+- **스크린 리더**: 시각 장애인을 위한 음성 지원
+- **색상 대비**: WCAG 가이드라인 준수
 
-```typescript
-// ✅ 허용
-import { Button } from '@shared/ui';
-import { formatDate } from '@shared/libs';
-import { apiClient } from '@shared/api';
+## 🧪 테스트 전략
 
-// ❌ 금지 - 상위 레이어 참조
-import { LoginForm } from '@features/auth'; // Features
-import { Header } from '@widgets/header';   // Widgets
-import { HomePage } from '@pages/home';     // Pages
+### 1. 컴포넌트 테스트
+- **렌더링 테스트**: 다양한 props에 대한 올바른 렌더링
+- **상호작용 테스트**: 사용자 클릭, 입력에 대한 반응
+- **상태 변경 테스트**: 데이터 변경 시 UI 업데이트
 
-// ❌ 금지 - 같은 레이어 다른 모듈 참조
-import { PostCard } from '@entities/post';  // 다른 Entity
-```
+### 2. 통합 테스트
+- **API 연동 테스트**: 실제 API와의 데이터 흐름
+- **검색 시나리오**: 복합 검색 조건의 정확한 결과
+- **페이지네이션 테스트**: 대용량 데이터 처리
 
-## 📝 명명 규칙
+### 3. 성능 테스트
+- **렌더링 성능**: 컴포넌트 렌더링 시간 측정
+- **메모리 사용량**: 메모리 누수 검사
+- **번들 크기**: 최적화 효과 측정
 
-- **폴더명**: kebab-case (`user-profile`, `product-list`)
-- **파일명**: PascalCase (`UserCard.tsx`, `ProductList.tsx`)
-- **컴포넌트명**: PascalCase + 명시적 반환 타입
-- **훅명**: `use` 접두사 + camelCase (`useUser`, `useProductList`)
-- **타입명**: PascalCase (`User`, `Product`)
+## 🎯 개발 가이드라인
 
-## 🚀 시작하기
+### Entities vs Features 구분 기준
+- **Entities**: 사용자가 **보는** 데이터 (프로젝트 카드, 사용자 프로필)
+- **Features**: 사용자가 **하는** 액션 (프로젝트 생성, 로그인)
 
-새로운 엔티티를 추가할 때:
+### 새로운 Entity 생성 시
+1. **도메인 분석**: 비즈니스 도메인의 명확한 경계 정의
+2. **API 설계**: RESTful한 읽기 전용 엔드포인트
+3. **타입 정의**: TypeScript 인터페이스로 데이터 구조 명시
+4. **컴포넌트 분리**: 작은 단위로 재사용 가능한 컴포넌트
+5. **쿼리 최적화**: React Query 캐싱 전략 수립
 
-1. **도메인 폴더 생성**: `entities/domain-name/`
-2. **기본 구조 설정**: `api/`, `hooks/`, `queries/`, `types/`, `ui/`, `index.ts`
-3. **타입 정의**: 먼저 타입부터 정의
-4. **API 레이어**: API 요청 함수 작성
-5. **Query 레이어**: React Query 훅 작성
-6. **UI 컴포넌트**: 데이터 표시 컴포넌트 작성
-7. **Public API**: `index.ts`에서 외부 노출 인터페이스 정의
+### 기존 Entity 수정 시
+1. **영향도 분석**: 해당 Entity를 사용하는 모든 위치 파악
+2. **하위 호환성**: 기존 인터페이스 유지 또는 점진적 마이그레이션
+3. **성능 영향**: 변경으로 인한 성능 저하 여부 확인
+4. **테스트 업데이트**: 변경된 로직에 맞는 테스트 케이스
+
+### 성능 고려사항
+1. **리렌더링 최소화**: 불필요한 상태 변경 방지
+2. **메모리 효율**: 대용량 데이터 처리 시 가상화 고려
+3. **네트워크 최적화**: 필요한 데이터만 선택적으로 로딩
+4. **캐싱 전략**: 적절한 캐시 TTL 설정
 
 ---
 
-💡 **참고**: Entities는 **읽기 전용**입니다. 데이터 변경이 필요한 경우 Features 레이어를 사용해 주세요! 
+## 📚 관련 문서
+
+- [🏗 FSD 아키텍처 가이드](../../docs/FSD_ARCHITECTURE.md)
+- [⚡ Features Layer](../features/README.md)
+- [🔧 Shared Layer](../shared/README.md)
+
+---
+
+💡 **개발 팁**: Entities는 **데이터의 표현**에 집중하세요. 사용자가 정보를 쉽게 이해하고 탐색할 수 있는 직관적인 UI를 만드는 것이 핵심입니다! 

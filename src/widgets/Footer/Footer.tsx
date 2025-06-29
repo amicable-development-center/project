@@ -67,7 +67,8 @@ const Footer = (): JSX.Element => {
           </InfoSection>
         </LogoSection>
 
-        <NavSection>
+        {/* 네비게이션 컨테이너 */}
+        <NavigationContainer>
           <NavigateButton
             to="/project"
             sx={{
@@ -108,12 +109,8 @@ const Footer = (): JSX.Element => {
           >
             프로젝트 등록
           </NavigateButton>
-        </NavSection>
-
-        {/* 디벨로퍼즈 드롭다운 메뉴 */}
-        <DevelopersSection>
           <DevelopersDropdown />
-        </DevelopersSection>
+        </NavigationContainer>
       </FooterContent>
 
       <Box sx={{ maxWidth: 1280, margin: "3rem auto", width: "100%" }}>
@@ -144,7 +141,7 @@ const FooterContent = styled(Box)(({ theme }) => ({
   alignItems: "flex-start",
   justifyContent: "space-between",
   gap: theme.spacing(2),
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down(1200)]: {
     flexDirection: "column",
     alignItems: "flex-start",
     gap: theme.spacing(1),
@@ -157,7 +154,7 @@ const LogoSection = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
   gap: 8,
   height: "100%",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down(1200)]: {
     alignItems: "center",
     width: "100%",
     flexDirection: "column",
@@ -169,31 +166,24 @@ const InfoSection = styled(Box)(({ theme }) => ({
   minWidth: 200,
   marginLeft: 16,
   marginTop: 52,
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down(1200)]: {
     marginTop: 0,
     marginLeft: 0,
     textAlign: "center",
   },
 }));
 
-const NavSection = styled(Box)(({ theme }) => ({
+const NavigationContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: 16,
-  marginTop: 16,
-  [theme.breakpoints.down("sm")]: {
-    width: "100%",
-    justifyContent: "center",
-  },
-}));
+  gap: "1rem",
+  marginTop: "1rem",
 
-const DevelopersSection = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: 16,
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "0.5rem",
     width: "100%",
-    justifyContent: "center",
   },
 }));
 

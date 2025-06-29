@@ -39,18 +39,18 @@ const ProjectOneLineCard = ({
         sx={{
           "& .MuiOutlinedInput-root": {
             height: 40,
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: {
+              xs: "16px",
+              sm: "17px",
+              md: "18px",
+            },
             fontFamily: theme.typography.fontFamily,
             background: "none",
             border: "none",
 
-            // 호버 시 테두리 검정색
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.text.primary,
             },
-            // 포커스 시 테두리 primary 색상
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.primary.main,
               borderWidth: "2px",
@@ -60,9 +60,9 @@ const ProjectOneLineCard = ({
             padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
             "&::placeholder": {
               fontSize: {
-                xs: "14px",
-                sm: "15px",
-                md: "16px",
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
               },
               color: "#999",
             },

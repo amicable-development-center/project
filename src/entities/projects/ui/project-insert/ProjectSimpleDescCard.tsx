@@ -1,4 +1,5 @@
-import { TextField, useTheme } from "@mui/material";
+import { TextField } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import type { ChangeEvent, CSSProperties, JSX } from "react";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
@@ -38,10 +39,15 @@ const ProjectSimpleDescCard = ({
         size="small"
         sx={{
           "& .MuiOutlinedInput-root": {
-            fontSize: 16,
-            fontFamily: "inherit",
+            fontSize: {
+              xs: "16px",
+              sm: "17px",
+              md: "18px",
+            },
+            fontFamily: theme.typography.fontFamily,
             background: "none",
-
+            border: "none",
+            minHeight: { md: 46, sm: 43, xs: 40 },
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.text.primary,
             },
@@ -51,12 +57,13 @@ const ProjectSimpleDescCard = ({
             },
           },
           "& .MuiOutlinedInput-input": {
-            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            padding: large ? theme.spacing(1.5) : theme.spacing(1.2),
+            minHeight: { md: "46px", sm: "43px", xs: "40px" },
             "&::placeholder": {
               fontSize: {
-                xs: "14px",
-                sm: "15px",
-                md: "16px",
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
               },
               color: "#999",
             },

@@ -31,23 +31,42 @@ const ProjectTeamSizeCard = ({
         <Select<string>
           value={value ? value.toString() : ""}
           onChange={onChange}
-          size={large ? "medium" : "small"}
+          size="small"
           displayEmpty
           sx={{
-            fontSize: {
-              xs: large ? "14px" : "14px",
-              sm: large ? "15px" : "15px",
-              md: large ? "16px" : "16px",
+            height: { xs: 40, sm: 48 },
+            "& .MuiOutlinedInput-root": {
+              height: { xs: "40px !important", sm: "48px !important" },
+              fontSize: {
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
+              },
+              fontFamily: theme.typography.fontFamily,
+              background: "none",
+              border: "none",
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.text.primary,
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.primary.main,
+                borderWidth: "2px",
+              },
             },
-            fontFamily: theme.typography.fontFamily,
-            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
-
-            height: 40,
             "& .MuiSelect-select": {
-              height: "40px",
+              padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+              height: "auto !important",
+              minHeight: "unset !important",
               display: "flex",
               alignItems: "center",
-              padding: 0,
+              fontSize: {
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
+              },
+              "&[aria-expanded='false']": {
+                color: value ? "inherit" : "#999",
+              },
             },
           }}
         >

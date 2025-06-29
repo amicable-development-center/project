@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  publicDir: "src/app/public",
+  publicDir: "../../public",
   server: {
     port: 3000,
     hmr: {
