@@ -31,7 +31,12 @@ export default defineConfig(({ mode }) => ({
         sourcemapFileNames: "assets/maps/[name].[hash].js.map",
         chunkFileNames: "assets/js/[name].[hash].js",
         entryFileNames: "assets/js/[name].[hash].js",
-        assetFileNames: "assets/[ext]/[name].[hash].[ext]",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === "logo.svg") {
+            return "[name].[ext]";
+          }
+          return "assets/[ext]/[name].[hash].[ext]";
+        },
         manualChunks: {
           "react-vendor": ["react", "react-dom"],
           "mui-vendor": ["@mui/material"],
