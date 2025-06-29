@@ -67,7 +67,8 @@ const Footer = (): JSX.Element => {
           </InfoSection>
         </LogoSection>
 
-        <NavSection>
+        {/* 네비게이션 컨테이너 */}
+        <NavigationContainer>
           <NavigateButton
             to="/project"
             sx={{
@@ -108,12 +109,8 @@ const Footer = (): JSX.Element => {
           >
             프로젝트 등록
           </NavigateButton>
-        </NavSection>
-
-        {/* 디벨로퍼즈 드롭다운 메뉴 */}
-        <DevelopersSection>
           <DevelopersDropdown />
-        </DevelopersSection>
+        </NavigationContainer>
       </FooterContent>
 
       <Box sx={{ maxWidth: 1280, margin: "3rem auto", width: "100%" }}>
@@ -176,24 +173,17 @@ const InfoSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-const NavSection = styled(Box)(({ theme }) => ({
+const NavigationContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: 16,
-  marginTop: 16,
-  [theme.breakpoints.down(1200)]: {
-    width: "100%",
-    justifyContent: "center",
-  },
-}));
+  gap: "1rem",
+  marginTop: "1rem",
 
-const DevelopersSection = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: 16,
-  [theme.breakpoints.down(1200)]: {
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "0.5rem",
     width: "100%",
-    justifyContent: "center",
   },
 }));
 

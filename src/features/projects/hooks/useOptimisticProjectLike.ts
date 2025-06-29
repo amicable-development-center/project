@@ -42,7 +42,6 @@ export const useOptimisticProjectLike = (): UseOptimisticProjectLikeProps => {
     // 의존성 [] 이어도 될 같습니다 ... 만 나중에 천천히 알아보며 리팩토링 하기로하고 남겨두겟습니다
     return () => {
       if (debounceTimerRef.current) {
-        console.log("???//sDFsdfsdf");
         clearTimeout(debounceTimerRef.current);
       }
       pendingServerSync.current = false;
