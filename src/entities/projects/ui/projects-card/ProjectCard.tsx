@@ -226,6 +226,7 @@ const ContentSection = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(0.8),
+  flex: 1,
 }));
 
 const ProjectTitle = styled(Typography)(({ theme }) => ({
@@ -251,6 +252,7 @@ const SimpleInfo = styled(Typography)(() => ({
   WebkitBoxOrient: "vertical",
   wordBreak: "break-word",
   overflowWrap: "break-word",
+  minHeight: "3em",
 }));
 
 const UserProfileContainer = styled(Stack)(({ theme }) => ({
