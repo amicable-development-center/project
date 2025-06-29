@@ -25,7 +25,7 @@ export default function DevelopersDropdown(): JSX.Element {
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const isActive = open || hover;
 
@@ -102,7 +102,7 @@ const DropdownTitle = styled(Box)<{ $active?: boolean }>(
     color: "#23294a",
     marginBottom: 8,
     transform: $active ? "scale(1.04)" : "scale(1)",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       padding: "12px 8px",
       gap: 8,
     },
@@ -114,7 +114,7 @@ const DropdownTitleCenter = styled(Box)(({ theme }) => ({
   alignItems: "center",
   flex: 1,
   justifyContent: "center",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     gap: 4,
   },
 }));
@@ -127,7 +127,7 @@ const DropdownTitleText = styled(Typography, {
   color: $active ? "#2563eb" : "#888",
   letterSpacing: "0.2rem",
   transition: "color 0.2s",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     fontSize: 15,
   },
 }));
