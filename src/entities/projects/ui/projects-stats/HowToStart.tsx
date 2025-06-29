@@ -41,8 +41,10 @@ export default HowToStart;
 const ProjectStatsContainer = styled("div")(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr 1fr 1fr",
+  gridAutoRows: "1fr",
   gap: "3.2rem",
   marginTop: "3rem",
+  alignItems: "stretch",
 
   [theme.breakpoints.down("sm")]: {
     width: "100%",

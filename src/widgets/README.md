@@ -1,159 +1,221 @@
 # Widgets Layer
 
-여러 Features를 조합하여 완성된 기능 블록을 제공하는 계층입니다.
+> 🧩 **복합 UI 컴포넌트 계층** - 여러 entities와 features를 조합한 재사용 가능한 위젯
 
-## 📁 구조
+## 📖 개요
 
-```
-widgets/
-├── header/
-│   ├── ui/
-│   │   └── Header.tsx
-│   ├── hooks/
-│   │   └── useHeaderData.ts
-│   └── index.ts
-├── sidebar/
-│   ├── ui/
-│   │   └── Sidebar.tsx
-│   └── index.ts
-└── user-dashboard/
-    ├── ui/
-    │   └── UserDashboard.tsx
-    ├── types/
-    │   └── Dashboard.ts
-    └── index.ts
-```
+Widgets Layer는 **복합 UI 컴포넌트**를 관리하는 계층입니다. 여러 entities와 features를 조합하여 완전한 기능을 가진 UI 블록을 제공하며, 여러 페이지에서 재사용 가능한 큰 단위의 컴포넌트들을 포함합니다.
 
-## 🎯 역할
-
-- **기능 조합**: 여러 Features와 Entities를 조합하여 완성된 UI 블록 생성
-- **독립적 위젯**: 재사용 가능한 복합 컴포넌트
-- **레이아웃 컴포넌트**: 헤더, 사이드바, 푸터 등 레이아웃 요소
-- **대시보드**: 여러 정보를 종합한 종합 화면
-
-## 📄 폴더별 표준 구조
-
-각 위젯 폴더는 다음 구조를 따릅니다:
+## 📁 디렉토리 구조
 
 ```
-widget-name/
-├── header/         
-├── aside/       
-├── footer/    
-├── layout/       
+src/widgets/
+├── Header/                  # 🧭 네비게이션 헤더
+│   ├── Header.tsx          # 메인 헤더 컴포넌트
+│   └── index.ts            # 공개 API
+├── Footer/                  # 🦶 페이지 푸터
+│   ├── Footer.tsx          # 푸터 컴포넌트
+│   └── index.ts            # 공개 API
+├── hero/                    # 🎯 히어로 섹션
+│   └── ui/
+│       ├── Hero.tsx        # 메인 히어로 영역
+│       └── HowToStartTitle.tsx  # 시작 가이드 제목
+└── BackToHome/              # 🏠 홈 이동 버튼
+    └── BackToHome.tsx      # 고정 위치 홈 버튼
 ```
 
-## 🔧 사용 예시
+## 🎯 위젯별 상세 기능
 
-```typescript
-// widgets/header/ui/Header.tsx
-import { UserProfile } from '@entities/user';
-import { NotificationButton } from '@features/notification';
-import { SearchBar } from '@features/search';
-import { Logo } from '@shared/ui';
+### 1. Header 위젯 (`Header/`)
+**역할**: 전체 애플리케이션의 네비게이션 허브
 
-const Header = (): JSX.Element => {
-  return (
-    <header className="header">
-      <Logo />
-      <SearchBar />
-      <div className="header-actions">
-        <NotificationButton />
-        <UserProfile />
-      </div>
-    </header>
-  );
-};
+#### 주요 기능
+- **로고 & 브랜딩**: 프로젝트 잼 로고 및 홈 링크
+- **주요 네비게이션**: 프로젝트 목록, 프로젝트 등록 링크
+- **사용자 메뉴**: 로그인/로그아웃, 프로필 드롭다운
+- **반응형 디자인**: 모바일 햄버거 메뉴
 
-export { Header };
-```
+#### 인증 상태별 동작
+- **비로그인**: 로그인/회원가입 버튼 표시
+- **로그인**: 사용자 아바타 및 드롭다운 메뉴
+- **관리자**: 추가 관리 메뉴 항목
 
-```typescript
-// widgets/user-dashboard/ui/UserDashboard.tsx
-import { UserStats } from '@entities/user';
-import { RecentActivity } from '@entities/activity';
-import { QuickActions } from '@features/user-actions';
+### 2. Footer 위젯 (`Footer/`)
+**역할**: 사이트 전체 정보 및 링크 제공
 
-const UserDashboard = (): JSX.Element => {
-  return (
-    <div className="dashboard">
-      <UserStats />
-      <RecentActivity />
-      <QuickActions />
-    </div>
-  );
-};
+#### 주요 구성
+- **회사 정보**: 프로젝트 설명 및 연락처
+- **서비스 링크**: 이용약관, 개인정보처리방침
+- **소셜 미디어**: GitHub, Discord 등 커뮤니티 링크
+- **개발자 정보**: 팀 소개 및 기여자 목록
 
-export { UserDashboard };
-```
+#### 반응형 레이아웃
+- **데스크톱**: 4컬럼 레이아웃
+- **태블릿**: 2컬럼 스택
+- **모바일**: 1컬럼 세로 배치
 
-```typescript
-// widgets/header/index.ts
-export { Header } from './ui/Header';
-export type { HeaderProps } from './types/Header';
-```
+### 3. Hero 위젯 (`hero/`)
+**역할**: 메인 페이지의 핵심 메시지 전달
 
-## 📋 개발 가이드라인
+#### 핵심 컴포넌트
+- **Hero.tsx**: 메인 캐치프레이즈와 CTA 버튼
+- **HowToStartTitle.tsx**: 서비스 이용 가이드 섹션
 
-### 1. 위젯 명명 규칙
-- 폴더명: kebab-case (예: `user-dashboard`, `navigation-menu`)
-- 컴포넌트명: PascalCase (예: `UserDashboard`, `NavigationMenu`)
+#### 주요 기능
+- **임팩트 메시지**: "함께 만들어가는 사이드 프로젝트"
+- **CTA 버튼**: 프로젝트 둘러보기, 프로젝트 등록
+- **애니메이션**: Fade-in, Slide-up 효과
+- **통계 정보**: 등록된 프로젝트 수, 활성 사용자 등
 
-### 2. 위젯 특징
-- **독립성**: 다른 위젯에 의존하지 않고 독립적으로 동작
-- **재사용성**: 여러 페이지에서 재사용 가능
-- **완성도**: 사용자에게 완전한 기능을 제공
+### 4. BackToHome 위젯 (`BackToHome/`)
+**역할**: 어디서든 빠른 홈 이동 제공
 
-### 3. 조합 원칙
-- Features의 액션과 Entities의 데이터를 조합
-- 복잡한 비즈니스 로직은 Features에 위임
-- UI 조합에만 집중
+#### 주요 특징
+- **고정 위치**: 화면 우하단 플로팅 버튼
+- **스크롤 인식**: 일정 스크롤 시 표시
+- **부드러운 애니메이션**: 나타나기/사라지기 효과
+- **접근성**: 키보드 네비게이션 지원
 
-### 4. 의존성 규칙
-- Features, Entities, Shared 계층 참조 가능
-- 다른 Widgets 직접 참조 금지
-- Pages, App 계층 참조 금지
+## 🏗 아키텍처 패턴
 
-## 🎨 위젯 유형별 예시
+### 1. Compound Component Pattern
+복잡한 위젯의 내부 구조를 컴포넌트로 분리하여 유연성 확보
 
-### 레이아웃 위젯
-```typescript
-// 헤더, 사이드바, 푸터 등
-const Header = (): JSX.Element => {
-  return (
-    <header>
-      {/* Features와 Entities 조합 */}
-    </header>
-  );
-};
-```
+### 2. Container/Presenter Pattern
+- **Container**: 비즈니스 로직과 상태 관리
+- **Presenter**: UI 렌더링에만 집중
 
-### 대시보드 위젯
-```typescript
-// 여러 정보를 종합한 대시보드
-const AdminDashboard = (): JSX.Element => {
-  return (
-    <div className="dashboard-grid">
-      {/* 여러 통계와 차트 조합 */}
-    </div>
-  );
-};
-```
+### 3. Hook Composition Pattern
+위젯별 커스텀 훅으로 재사용 가능한 로직 분리
 
-### 기능 위젯
-```typescript
-// 완성된 기능 단위
-const CommentSection = (): JSX.Element => {
-  return (
-    <section>
-      {/* 댓글 목록 + 댓글 작성 기능 조합 */}
-    </section>
-  );
-};
-```
+## 🎨 위젯 설계 원칙
 
-## ⚠️ 주의사항
+### 재사용성 (Reusability)
+- **Props Interface**: 유연한 설정 옵션 제공
+- **Theming**: MUI 테마 시스템 완전 지원
+- **반응형**: 모든 화면 크기에서 동작
 
-- 위젯은 완성된 기능 블록이므로 Pages에서 바로 사용 가능해야 합니다
-- 다른 위젯과의 직접적인 의존성은 피하세요
-- 위젯 내부에서 복잡한 상태 관리가 필요하면 Features로 분리를 고려하세요 
+### 독립성 (Independence)
+- **외부 의존성 최소화**: 필수 props만 요구
+- **내부 상태 관리**: 위젯 내부에서 상태 완결
+- **에러 바운더리**: 위젯 오류가 전체에 영향 미치지 않음
+
+### 확장성 (Extensibility)
+- **슬롯 패턴**: 내부 컴포넌트 교체 가능
+- **이벤트 핸들러**: 외부에서 커스텀 동작 주입
+- **스타일 오버라이드**: 테마를 통한 스타일 커스터마이징
+
+## 🎯 반응형 디자인 전략
+
+### 브레이크포인트 시스템
+- **xs (0px)**: 모바일 세로
+- **sm (600px)**: 모바일 가로
+- **md (900px)**: 태블릿
+- **lg (1200px)**: 소형 데스크톱
+- **xl (1536px)**: 대형 데스크톱
+
+### 모바일 퍼스트 접근
+1. **기본**: 모바일 레이아웃으로 설계
+2. **확장**: 큰 화면을 위한 점진적 개선
+3. **터치**: 터치 친화적 인터랙션
+
+## 🎨 테마 및 스타일링
+
+### MUI 테마 통합
+- **팔레트**: 프로젝트 브랜드 컬러 시스템
+- **타이포그래피**: Pretendard 폰트 패밀리
+- **컴포넌트**: 일관된 스타일 오버라이드
+
+### CSS-in-JS 전략
+- **Emotion**: MUI의 기본 CSS-in-JS 엔진
+- **sx prop**: 인라인 스타일링
+- **styled**: 재사용 컴포넌트 스타일링
+
+### 다크 모드 지원
+- **테마 토글**: Header에서 다크/라이트 모드 전환
+- **자동 감지**: 시스템 설정 기반 초기 테마
+- **지속성**: localStorage를 통한 설정 유지
+
+## ⚡ 성능 최적화
+
+### 렌더링 최적화
+- **React.memo**: 불필요한 리렌더링 방지
+- **useMemo/useCallback**: 계산 비용이 큰 연산 메모이제이션
+- **지연 로딩**: 무거운 컴포넌트의 동적 임포트
+
+### 번들 최적화
+- **Tree Shaking**: 사용하지 않는 코드 제거
+- **Code Splitting**: 위젯별 청크 분할
+- **Dynamic Import**: 조건부 위젯 로딩
+
+### 이미지 최적화
+- **WebP 포맷**: 모던 브라우저 최적화
+- **Lazy Loading**: 뷰포트 진입 시 로딩
+- **적응형 이미지**: 디바이스별 최적 해상도
+
+## 🔧 접근성 (A11y) 지원
+
+### ARIA 표준 준수
+- **역할 정의**: role 속성을 통한 의미 전달
+- **상태 관리**: aria-expanded, aria-selected 등
+- **레이블링**: aria-label, aria-describedby 활용
+
+### 키보드 네비게이션
+- **Tab 순서**: 논리적인 포커스 흐름
+- **단축키**: 주요 액션에 대한 키보드 단축키
+- **포커스 표시**: 명확한 포커스 인디케이터
+
+### 스크린 리더 지원
+- **의미 있는 텍스트**: alt 텍스트, 버튼 레이블
+- **구조 정보**: 헤딩 계층, 랜드마크 역할
+- **상태 알림**: 동적 콘텐츠 변경 알림
+
+## 🧪 테스트 전략
+
+### 단위 테스트
+- **컴포넌트 렌더링**: 기본 렌더링 확인
+- **Props 전달**: 다양한 props 조합 테스트
+- **이벤트 핸들링**: 사용자 인터랙션 시뮬레이션
+
+### 통합 테스트
+- **위젯 간 상호작용**: Header와 다른 컴포넌트 연동
+- **라우팅 테스트**: 네비게이션 동작 확인
+- **반응형 테스트**: 다양한 화면 크기 검증
+
+### 시각적 회귀 테스트
+- **Storybook**: 위젯 스토리 작성
+- **스냅샷 테스트**: UI 변경 감지
+- **크로스 브라우저**: 주요 브라우저 호환성
+
+## 🎯 개발 가이드라인
+
+### 새로운 위젯 생성 시
+1. **디렉토리 구조**: `src/widgets/WidgetName/`
+2. **인덱스 파일**: 공개 API 정의
+3. **타입스크립트**: Props 인터페이스 정의
+4. **스토리북**: 개발 및 테스트용 스토리
+5. **문서화**: README 또는 JSDoc 주석
+
+### 기존 위젯 수정 시
+1. **영향도 분석**: 사용하는 페이지 확인
+2. **하위 호환성**: Props 변경 시 기존 사용법 유지
+3. **테스트 업데이트**: 변경사항에 맞는 테스트 수정
+4. **문서 갱신**: 변경된 API 문서화
+
+### 성능 고려사항
+1. **렌더링 최적화**: 불필요한 리렌더링 방지
+2. **메모리 누수**: 이벤트 리스너 정리
+3. **번들 크기**: 큰 의존성 동적 임포트
+4. **로딩 시간**: 초기 렌더링 최적화
+
+---
+
+## 📚 관련 문서
+
+- [🏗 FSD 아키텍처 가이드](../../docs/FSD_ARCHITECTURE.md)
+- [🎨 디자인 시스템](../app/styles/README.md)
+- [🧩 UI 컴포넌트](../shared/ui/README.md)
+
+---
+
+💡 **개발 팁**: 위젯은 **큰 단위의 UI 블록**입니다. 단순한 버튼이나 입력 필드보다는 Header, Footer 같은 완전한 기능을 가진 컴포넌트를 만드세요! 

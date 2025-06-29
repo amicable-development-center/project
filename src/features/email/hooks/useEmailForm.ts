@@ -55,7 +55,7 @@ const useEmailForm = ({
 
     sendEmailMutation.mutate(
       {
-        actualSenderEmail: senderEmail,
+        senderEmail,
         receiverEmail,
         projectId,
         projectTitle,
