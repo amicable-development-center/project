@@ -1,215 +1,146 @@
-# 🚀 App Layer
+# App Layer
 
-**앱 전체 설정 및 초기화를 담당하는 레이어**
+> 🏛️ **애플리케이션의 최상위 계층** - 전체 앱의 설정과 초기화를 담당
 
-App 레이어는 애플리케이션의 진입점과 전역 설정을 관리합니다.
+## 📖 개요
 
-## 📁 폴더 구조
+App Layer는 **FSD 아키텍처의 최상위 계층**으로, 애플리케이션 전체의 설정과 초기화를 담당합니다. 다른 모든 계층들이 올바르게 작동할 수 있는 환경을 제공합니다.
+
+## 📁 디렉토리 구조
 
 ```
-app/
-├── entry/               # 앱 진입점
-│   └── main.tsx        # React 애플리케이션 마운트
-├── routes/             # 라우팅 설정
-│   └── App.tsx        # 메인 앱 컴포넌트, 라우터 설정
-├── styles/            # 전역 스타일
-│   └── App.css       # 글로벌 CSS
-├── configs/           # 앱 설정
-│   └── vite-env.d.ts # Vite 환경 타입 정의
-├── index.html         # HTML 템플릿
-└── README.md         # 이 파일
+src/app/
+├── configs/                # 🔧 앱 전체 설정
+│   └── vite-env.d.ts      # Vite 환경 변수 타입 정의
+├── entry/                  # 🚀 앱 진입점
+│   └── main.tsx           # React 앱 최초 마운트
+├── routes/                 # 🛣️ 라우팅 설정
+│   ├── App.tsx            # 최상위 앱 컴포넌트
+│   ├── AuthLayout.tsx     # 인증 관련 레이아웃
+│   ├── MainLayout.tsx     # 메인 앱 레이아웃
+│   └── PrivateRoute.tsx   # 인증 가드
+└── styles/                 # 🎨 글로벌 스타일
+    ├── fonts/             # 웹폰트 (Pretendard)
+    ├── global.css         # CSS 리셋 & 전역 스타일
+    └── theme.ts           # MUI 테마 설정
 ```
 
-## 🛣️ 라우터 설정 (React Router v7)
+## 🎯 주요 책임
 
-### 레이지 로딩 구현
+### 1. 앱 진입점 관리 (`entry/`)
+- **React 앱 초기화**: DOM 마운트 및 최초 렌더링
+- **StrictMode 설정**: 개발 환경에서 잠재적 문제 감지
+- **Global Provider 설정**: React Query, Router, Theme Provider
 
-성능 최적화를 위해 모든 페이지 컴포넌트에 레이지 로딩을 적용했습니다:
+### 2. 라우팅 시스템 (`routes/`)
+- **라우트 정의**: 8개 주요 페이지 라우팅
+- **인증 가드**: 로그인 필요 페이지 보호
+- **레이아웃 관리**: 인증/비인증 사용자별 레이아웃
+- **중첩 라우팅**: 계층적 URL 구조
 
-```typescript
-// app/routes/App.tsx
-import { Suspense, lazy } from "react";
-import { LoadingSpinner } from "@shared/ui";
+### 3. 글로벌 스타일 (`styles/`)
+- **CSS 변수**: 색상, 폰트, 간격 등 디자인 토큰
+- **웹폰트 관리**: Pretendard 폰트 최적화 로딩
+- **MUI 테마**: Material-UI 커스텀 테마 정의
+- **반응형 브레이크포인트**: 모바일 퍼스트 디자인
 
-// 동적 임포트로 번들 분할
-const HomePage = lazy(() => import("@pages/home/ui/HomePage"));
-const ProjectDetailPage = lazy(() => import("@pages/project-detail/ui/ProjectDetailPage"));
-const NotFoundPage = lazy(() => import("@pages/not-found/ui/NotFoundPage"));
+### 4. 환경 설정 (`configs/`)
+- **환경 변수**: Firebase, EmailJS 등 외부 서비스 설정
+- **타입 정의**: Vite 관련 환경 변수 타입 안전성
+- **빌드 설정**: 배포 환경별 설정 분리
 
-function App(): JSX.Element {
-  return (
-    <BrowserRouter>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<ProjectDetailPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
-  );
-}
-```
+## 🏗 아키텍처 역할
 
-### 📈 레이지 로딩의 장점
+### 계층 의존성 관리
+App Layer는 **모든 하위 계층을 통합**하여 완전한 애플리케이션을 구성합니다.
 
-1. **초기 번들 크기 감소**: 첫 페이지 로드 시 필요한 코드만 다운로드
-2. **빠른 초기 로딩**: 사용자가 접근하지 않는 페이지는 로드하지 않음
-3. **자동 코드 스플리팅**: Vite가 자동으로 청크를 분할
-4. **네트워크 효율성**: 필요할 때만 리소스 다운로드
+- **Pages** → UI 라우팅 연결
+- **Widgets** → 공통 레이아웃 컴포넌트 배치
+- **Features** → 전역 기능 초기화
+- **Entities** → 데이터 계층 설정
+- **Shared** → 공통 설정 및 유틸리티
 
-### 🔧 라우트 설정 규칙
+### 전역 상태 관리
+- **React Query**: 서버 상태 관리 및 캐싱 설정
+- **Zustand**: 클라이언트 상태 관리 초기화
+- **Firebase**: 인증 및 데이터베이스 연결 설정
 
-#### 1. 페이지 컴포넌트 요구사항
-```typescript
-// ✅ 올바른 방법 - default export 사용
-const HomePage = (): JSX.Element => {
-  return <div>홈 페이지</div>;
-};
+### 라우팅 전략
+- **React Router v6**: 선언적 라우팅
+- **Lazy Loading**: 페이지별 코드 스플리팅
+- **Protected Routes**: 인증 기반 접근 제어
+- **Error Boundaries**: 라우트 레벨 에러 처리
 
-export default HomePage;
+## ⚡ 성능 최적화
 
-// ❌ 잘못된 방법 - named export는 레이지 로딩에서 사용 불가
-export { HomePage };
-```
+### 초기 로딩 최적화
+- **폰트 preload**: 중요 폰트 우선 로딩
+- **Critical CSS**: 중요 스타일 인라인 처리
+- **Resource Hints**: DNS prefetch, preconnect 설정
 
-#### 2. 라우트 패턴
-```typescript
-// 기본 라우트
-<Route path="/" element={<HomePage />} />
+### 번들 최적화
+- **Tree Shaking**: 사용하지 않는 코드 제거
+- **Code Splitting**: 라우트별 청크 분할
+- **Dynamic Import**: 필요 시점 모듈 로딩
 
-// 동적 라우트
-<Route path="/user/:id" element={<UserDetailPage />} />
+## 🔒 보안 고려사항
 
-// 중첩 라우트
-<Route path="/dashboard/*" element={<DashboardLayout />} />
+### 환경 변수 관리
+- **민감 정보 보호**: API 키 등 환경 변수 분리
+- **런타임 검증**: 필수 환경 변수 존재 여부 확인
+- **타입 안전성**: 환경 변수 타입 정의 및 검증
 
-// 404 페이지 (반드시 마지막에 위치)
-<Route path="*" element={<NotFoundPage />} />
-```
+### 인증 보안
+- **토큰 관리**: Firebase Auth 토큰 자동 갱신
+- **세션 보안**: 안전한 세션 관리
+- **CSRF 보호**: 크로스 사이트 요청 위조 방지
 
-#### 3. 네비게이션 가드
-```typescript
-// 인증이 필요한 페이지의 경우
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuthenticated = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
+## 📊 성능 모니터링
 
-<Route 
-  path="/dashboard" 
-  element={
-    <ProtectedRoute>
-      <DashboardPage />
-    </ProtectedRoute>
-  } 
-/>
-```
+### Core Web Vitals
+- **LCP (Largest Contentful Paint)**: 최대 콘텐츠 렌더링 시간
+- **FID (First Input Delay)**: 첫 번째 입력 지연 시간
+- **CLS (Cumulative Layout Shift)**: 누적 레이아웃 이동
 
-## 🎨 로딩 상태 관리
+### 사용자 경험 메트릭
+- **TTFB (Time to First Byte)**: 첫 바이트까지의 시간
+- **FCP (First Contentful Paint)**: 첫 콘텐츠 렌더링 시간
+- **TTI (Time to Interactive)**: 상호작용 가능 시점
 
-### LoadingSpinner 컴포넌트
-레이지 로딩 중 표시되는 로딩 스피너:
+## 🚀 배포 설정
 
-```typescript
-// shared/ui/LoadingSpinner.tsx
-const LoadingSpinner = (): JSX.Element => {
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-      <div className="spinner" />
-      <span>페이지를 로딩 중입니다...</span>
-    </div>
-  );
-};
-```
+### Vercel 최적화
+- **Build Settings**: 빌드 명령어 및 출력 디렉토리
+- **Environment Variables**: 배포 환경별 변수 설정
+- **Headers Configuration**: 보안 헤더 및 캐싱 정책
 
-### 에러 바운더리
-추후 추가 예정:
-```typescript
-// app/components/ErrorBoundary.tsx
-class ErrorBoundary extends Component {
-  // 레이지 로딩 실패 시 에러 처리
-}
-```
+### 환경별 배포
+- **Production**: `main` 브랜치 → 프로덕션 도메인
+- **Staging**: `develop` 브랜치 → 스테이징 도메인
+- **Preview**: PR 브랜치 → 미리보기 URL
 
-## 🔗 의존성 규칙
+## 🎯 개발 가이드라인
 
-App 레이어는 **모든 레이어**를 참조할 수 있습니다:
+### App Layer 수정 시 주의사항
+1. **전역 영향도**: 모든 페이지에 영향을 미침
+2. **성능 고려**: 초기 로딩 성능에 직접 영향
+3. **의존성 순환**: 하위 계층 참조 금지
+4. **브레이킹 체인지**: 다른 개발자와 사전 논의 필요
 
-```typescript
-// ✅ 허용 - 모든 레이어 참조 가능
-import { HomePage } from '@pages/home';       // Pages
-import { Navigation } from '@widgets/navigation'; // Widgets  
-import { LoginForm } from '@features/auth';   // Features
-import { UserCard } from '@entities/user';    // Entities
-import { Button } from '@shared/ui';          // Shared
-```
-
-## 📝 진입점 설정
-
-### main.tsx
-React 애플리케이션의 진입점:
-
-```typescript
-// app/entry/main.tsx
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from '@app/routes/App';
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
-```
-
-### 전역 프로바이더 설정
-추후 추가될 프로바이더들:
-
-```typescript
-// React Query, 테마, 다국어 등
-function App(): JSX.Element {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          {/* 라우터 설정 */}
-        </BrowserRouter>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-}
-```
-
-## 🚀 성능 최적화
-
-### 1. 프리로딩
-중요한 페이지는 미리 로드:
-```typescript
-// 마우스 오버 시 프리로드
-const handleMouseEnter = () => {
-  import('@pages/about/ui/AboutPage');
-};
-```
-
-### 2. 번들 분석
-빌드 후 번들 크기 확인:
-```bash
-pnpm build
-pnpm preview
-```
-
-### 3. 라우트 우선순위
-자주 사용되는 라우트를 먼저 정의:
-```typescript
-<Routes>
-  <Route path="/" element={<HomePage />} />        {/* 가장 많이 사용 */}
-  <Route path="/dashboard" element={<Dashboard />} /> {/* 두 번째로 많이 사용 */}
-  <Route path="/settings" element={<Settings />} />  {/* 가끔 사용 */}
-  <Route path="*" element={<NotFoundPage />} />     {/* 404는 항상 마지막 */}
-</Routes>
-```
+### 새로운 글로벌 설정 추가 시
+1. **configs/** 디렉토리에 설정 파일 생성
+2. **main.tsx**에서 Provider 래핑
+3. **타입 정의** 추가 (vite-env.d.ts)
+4. **문서화** 및 팀 공유
 
 ---
 
-💡 **참고**: 새로운 페이지를 추가할 때는 반드시 레이지 로딩을 적용하고 default export를 사용해 주세요! 
+## 📚 관련 문서
+
+- [🏗 FSD 아키텍처 가이드](../../docs/FSD_ARCHITECTURE.md)
+- [🎨 디자인 시스템](./styles/README.md)
+- [🛣️ 라우팅 가이드](./routes/README.md)
+
+---
+
+💡 **개발 팁**: App Layer는 **앱의 뼈대**입니다. 변경 시 모든 하위 계층에 영향을 미치므로 신중하게 접근하세요! 

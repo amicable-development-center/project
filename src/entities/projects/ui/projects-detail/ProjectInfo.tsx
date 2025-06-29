@@ -2,7 +2,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import GroupIcon from "@mui/icons-material/Group";
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
-import { Box, styled, Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import type { JSX } from "react";
 
 import { formatDate } from "@shared/libs/utils/projectDetail";
@@ -28,12 +28,11 @@ const ProjectInfo = ({
   if (!values) return null;
 
   return (
-    <>
-      <Typography variant="h2">{values.title}</Typography>
+    <TextContainer>
+      <Title variant="h2">{values.title}</Title>
       <OneLineInfo>{values.oneLineInfo}</OneLineInfo>
-      <Typography>{values.simpleInfo}</Typography>
-
-      <Box display="flex" marginTop={2} gap={1}>
+      <Description>{values.simpleInfo}</Description>
+      <InfoContainer>
         <InfoWithIcon
           item="팀 규모"
           Icon={GroupIcon}
@@ -54,14 +53,50 @@ const ProjectInfo = ({
           Icon={RoomOutlinedIcon}
           content={values.workflow}
         />
-      </Box>
-    </>
+      </InfoContainer>
+    </TextContainer>
   );
 };
 
 export default ProjectInfo;
 
+const TextContainer = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.5rem",
+  marginTop: "1rem",
+});
+
+const Title = styled(Typography)({
+  marginBottom: "0.5rem",
+});
+
+const Description = styled(Typography)({
+  lineHeight: 1.7,
+  fontSize: "1rem",
+});
+
 const OneLineInfo = styled("div")`
-  margin: 1rem 0 1.5rem 0;
   font-size: 18px;
+  color: #666;
+  font-weight: 500;
 `;
+
+const InfoContainer = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(4, auto)",
+  gap: "4rem",
+  marginTop: "1rem",
+  justifyContent: "flex-start",
+  alignItems: "start",
+
+  [theme.breakpoints.down("md")]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "1rem",
+  },
+
+  [theme.breakpoints.down("sm")]: {
+    gridTemplateColumns: "1fr",
+    gap: "0.75rem",
+  },
+}));
