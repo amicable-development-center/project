@@ -163,7 +163,7 @@ const ProjectCard = ({
               <DetailItem>
                 <LocationPinIcon fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
-                  온라인
+                  {project.workflow}
                 </Typography>
               </DetailItem>
             </ProjectDetails>

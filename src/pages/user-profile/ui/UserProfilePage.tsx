@@ -15,6 +15,7 @@ import UserProfileHeader from "@entities/user/ui/user-profile/UserProfileHeader"
 
 import { useUserProfile } from "@shared/queries/useUserProfile";
 import { useAuthStore } from "@shared/stores/authStore";
+import { useLikeStore } from "@shared/stores/likeStore";
 import { useProjectStore } from "@shared/stores/projectStore";
 import { ProjectCollectionTabType } from "@shared/types/project";
 import LoadingSpinner from "@shared/ui/loading-spinner/LoadingSpinner";
@@ -66,6 +67,7 @@ const UserProfilePage = (): JSX.Element => {
 
   // projectStore 동기화
   const { setAppliedProjects, setLikeProjects } = useProjectStore();
+  const { setLikedProjectIds } = useLikeStore();
 
   // 지원한 프로젝트 데이터를 store에 동기화
   useEffect(() => {
@@ -74,12 +76,13 @@ const UserProfilePage = (): JSX.Element => {
     }
   }, [appliedProjectsData, setAppliedProjects]);
 
-  // 좋아요한 프로젝트 데이터를 store에 동기화
+  // 좋아요한 프로젝트 데이터를 store와 likeStore에 동기화
   useEffect(() => {
     if (myLikedProjectsData) {
       setLikeProjects(myLikedProjectsData);
+      setLikedProjectIds(myLikedProjectsData.map((p) => p.id));
     }
-  }, [myLikedProjectsData, setLikeProjects]);
+  }, [myLikedProjectsData, setLikeProjects, setLikedProjectIds]);
 
   const handleDeleteProjects = async (
     type: ProjectCollectionTabType,

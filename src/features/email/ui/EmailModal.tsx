@@ -1,10 +1,10 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -79,7 +79,7 @@ const EmailModal = ({
 export default EmailModal;
 
 const StyledDialog = styled(Dialog)({
-  zIndex: 9999,
+  zIndex: 8000,
   "& .MuiDialog-paper": {
     width: "600px",
     maxWidth: "90vw",
