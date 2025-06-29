@@ -32,22 +32,42 @@ const ProjectCategoryCard = ({
         <Select
           value={value || ""}
           onChange={onChange}
-          size={large ? "medium" : "small"}
+          size="small"
           displayEmpty
           sx={{
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
-            fontFamily: theme.typography.fontFamily,
-            height: 40,
-            border: `1px solid ${theme.palette.divider}`,
-            boxSizing: "border-box",
-            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            height: { xs: 40, sm: 48 },
+            "& .MuiOutlinedInput-root": {
+              height: { xs: "40px !important", sm: "48px !important" },
+              fontSize: {
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
+              },
+              fontFamily: theme.typography.fontFamily,
+              background: "none",
+              border: "none",
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.text.primary,
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.primary.main,
+                borderWidth: "2px",
+              },
+            },
             "& .MuiSelect-select": {
-              height: "40px",
+              padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+              height: "auto !important",
+              minHeight: "unset !important",
               display: "flex",
               alignItems: "center",
-              padding: 0,
+              fontSize: {
+                xs: "16px",
+                sm: "16px",
+                md: "17px",
+              },
+              "&[aria-expanded='false']": {
+                color: value ? "inherit" : "#999",
+              },
             },
           }}
         >

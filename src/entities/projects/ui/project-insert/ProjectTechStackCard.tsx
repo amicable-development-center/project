@@ -61,26 +61,28 @@ const ProjectTechStackCard = ({
           placeholder="React, Python, Figma... 뭐든 좋아요!"
           sx={{
             flex: 1,
-            height: 40,
+            height: { xs: "40px !important", sm: "48px !important" },
             borderRadius: "8px",
-            border: `1px solid ${theme.palette.divider}`,
+            border: `1px solid #c9c9c9`,
             fontSize: {
-              xs: "14px",
-              sm: "15px",
-              md: "16px",
+              xs: "16px",
+              sm: "17px",
+              md: "18px",
             },
             fontFamily: theme.typography.fontFamily,
-            background: theme.palette.background.paper,
-            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            background: "none",
+            padding: large ? theme.spacing(1.5) : theme.spacing(1),
             boxSizing: "border-box",
             outline: "none",
             transition: "border-color 0.2s ease-in-out",
+            lineHeight: "normal",
+            minHeight: "unset",
 
             "&::placeholder": {
               fontSize: {
-                xs: "14px", // 모바일
-                sm: "15px", // 태블릿
-                md: "16px", // 데스크톱
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
               },
               color: "#999",
             },
@@ -91,7 +93,7 @@ const ProjectTechStackCard = ({
             },
 
             "&:hover:not(:focus)": {
-              borderColor: "#000000",
+              borderColor: theme.palette.text.primary,
             },
           }}
         />
@@ -101,7 +103,7 @@ const ProjectTechStackCard = ({
           disabled={!newTech.trim()}
           sx={{
             minWidth: 48,
-            height: 46,
+            height: { xs: "40px !important", sm: "48px !important" },
             backgroundColor: "#2563EB",
             "&:hover": { backgroundColor: "#1d4ed8" },
           }}
@@ -125,9 +127,9 @@ const ProjectTechStackCard = ({
                 backgroundColor: theme.palette.grey[100],
                 borderRadius: 2,
                 fontSize: {
-                  xs: "14px",
-                  sm: "15px",
-                  md: "16px",
+                  xs: "16px",
+                  sm: "17px",
+                  md: "18px",
                 },
                 color: theme.palette.text.primary,
               }}
