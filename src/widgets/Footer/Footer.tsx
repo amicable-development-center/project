@@ -14,7 +14,7 @@ import NavigateButton from "@shared/ui/NavigateButton";
 
 const Footer = (): JSX.Element => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <FooterContainer>

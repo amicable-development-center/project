@@ -1,14 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import type {
-  ChangeEvent,
-  CSSProperties,
-  JSX,
-  FocusEvent,
-  MouseEvent,
-  KeyboardEvent,
-} from "react";
+import type { ChangeEvent, CSSProperties, JSX, KeyboardEvent } from "react";
 import { useState } from "react";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
@@ -57,7 +50,8 @@ const ProjectPreferentialCard = ({
     >
       {/* 입력 + 추가 버튼 */}
       <Box display="flex" gap={1} mb={2}>
-        <input
+        <Box
+          component="input"
           type="text"
           value={newPreferential}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -65,38 +59,42 @@ const ProjectPreferentialCard = ({
           }
           onKeyUp={handleKeyPress}
           placeholder="예: AWS, Docker, 스타트업 경험..."
-          style={{
+          sx={{
             flex: 1,
-            height: 40,
-            borderRadius: theme.shape.borderRadius,
-            border: `1px solid ${theme.palette.divider}`,
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            height: { xs: "40px !important", sm: "48px !important" },
+            borderRadius: "8px",
+            border: `1px solid #c9c9c9`,
+            fontSize: {
+              xs: "16px",
+              sm: "17px",
+              md: "18px",
+            },
             fontFamily: theme.typography.fontFamily,
-            background: theme.palette.background.paper,
-            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+            background: "none",
+            padding: large ? theme.spacing(1.5) : theme.spacing(1),
             boxSizing: "border-box",
             outline: "none",
             transition: "border-color 0.2s ease-in-out",
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = theme.palette.primary.main;
-            e.target.style.borderWidth = "2px";
-          }}
-          onBlur={(e: FocusEvent<HTMLInputElement>) => {
-            e.currentTarget.style.borderColor = theme.palette.divider;
-            e.currentTarget.style.borderWidth = "1px";
-          }}
-          onMouseEnter={(e: MouseEvent<HTMLInputElement>) => {
-            if (e.currentTarget !== document.activeElement) {
-              e.currentTarget.style.borderColor = "#000000";
-            }
-          }}
-          onMouseLeave={(e: MouseEvent<HTMLInputElement>) => {
-            if (e.currentTarget !== document.activeElement) {
-              e.currentTarget.style.borderColor = theme.palette.divider;
-            }
+            lineHeight: "normal",
+            minHeight: "unset",
+
+            "&::placeholder": {
+              fontSize: {
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
+              },
+              color: "#999",
+            },
+
+            "&:focus": {
+              borderColor: theme.palette.primary.main,
+              borderWidth: "2px",
+            },
+
+            "&:hover:not(:focus)": {
+              borderColor: theme.palette.text.primary,
+            },
           }}
         />
         <Button
@@ -105,7 +103,7 @@ const ProjectPreferentialCard = ({
           disabled={!newPreferential.trim()}
           sx={{
             minWidth: 48,
-            height: 46,
+            height: { xs: "40px !important", sm: "48px !important" },
             backgroundColor: "#2563EB",
             "&:hover": { backgroundColor: "#1d4ed8" },
           }}
@@ -128,7 +126,11 @@ const ProjectPreferentialCard = ({
                 py: 1,
                 backgroundColor: theme.palette.grey[100],
                 borderRadius: "999px",
-                fontSize: "1.5rem",
+                fontSize: {
+                  xs: "16px",
+                  sm: "17px",
+                  md: "18px",
+                },
                 color: theme.palette.text.primary,
               }}
             >
@@ -144,7 +146,11 @@ const ProjectPreferentialCard = ({
                   color: theme.palette.text.primary,
                   backgroundColor: "transparent",
                   cursor: "pointer",
-                  fontSize: "18px",
+                  fontSize: {
+                    xs: "16px",
+                    sm: "17px",
+                    md: "18px",
+                  },
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

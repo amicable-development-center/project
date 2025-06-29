@@ -1,5 +1,5 @@
-import { FormControl, Select, MenuItem } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
+import { FormControl, Select, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { CSSProperties, JSX } from "react";
 
@@ -59,21 +59,42 @@ export default function ProjectWorkflowCard({
         <Select<Workflow>
           value={value || ("" as Workflow)}
           onChange={handleChange}
-          size={large ? "medium" : "small"}
+          size="small"
           displayEmpty
           sx={{
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
-            fontFamily: theme.typography.fontFamily,
-            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
-
-            height: 40,
+            height: { xs: 40, sm: 48 },
+            "& .MuiOutlinedInput-root": {
+              height: { xs: "36px !important", sm: "48px !important" },
+              fontSize: {
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
+              },
+              fontFamily: theme.typography.fontFamily,
+              background: "none",
+              border: "none",
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.text.primary,
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: theme.palette.primary.main,
+                borderWidth: "2px",
+              },
+            },
             "& .MuiSelect-select": {
-              height: "40px",
+              padding: large ? theme.spacing(1.5) : theme.spacing(1),
+              height: "auto !important",
+              minHeight: "unset !important",
               display: "flex",
               alignItems: "center",
-              padding: 0,
+              fontSize: {
+                xs: "16px",
+                sm: "17px",
+                md: "18px",
+              },
+              "&[aria-expanded='false']": {
+                color: value ? "inherit" : "#999",
+              },
             },
           }}
         >

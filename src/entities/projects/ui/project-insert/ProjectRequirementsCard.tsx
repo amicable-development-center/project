@@ -71,10 +71,12 @@ const ProjectRequirementsCard = ({
               size="small"
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  height: 40,
-                  fontSize: large
-                    ? theme.typography.h5.fontSize
-                    : theme.typography.body1.fontSize,
+                  height: { xs: 36, sm: 48 },
+                  fontSize: {
+                    xs: "16px",
+                    sm: "17px",
+                    md: "18px",
+                  },
                   fontFamily: theme.typography.fontFamily,
                   background: "none",
                   border: "none",
@@ -90,7 +92,15 @@ const ProjectRequirementsCard = ({
                   },
                 },
                 "& .MuiOutlinedInput-input": {
-                  padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+                  padding: large ? theme.spacing(1.5) : theme.spacing(1),
+                  "&::placeholder": {
+                    fontSize: {
+                      xs: "16px",
+                      sm: "17px",
+                      md: "18px",
+                    },
+                    color: "#999",
+                  },
                 },
               }}
             />

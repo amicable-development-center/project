@@ -1,16 +1,18 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { type JSX } from "react";
 
+import useAutoFocus from "@features/email/hooks/useAutoFocus";
 import useEmailForm from "@features/email/hooks/useEmailForm";
+import useFormValidation from "@features/email/hooks/useFormValidation";
 import EmailField from "@features/email/ui/EmailField";
 import MessageField from "@features/email/ui/MessageField";
 import SubjectField from "@features/email/ui/SubjectField";
@@ -47,10 +49,23 @@ const EmailModal = ({
     onClose,
   });
 
-  const isFormValid = subject.trim().length > 0 && message.trim().length > 0;
+  const { elementRef, handleTransitionEnd } = useAutoFocus({
+    isOpen: open,
+  });
+
+  const { isFormValid } = useFormValidation({
+    subject,
+    message,
+  });
 
   return (
-    <StyledDialog open={open} onClose={onClose}>
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      TransitionProps={{
+        onEntered: handleTransitionEnd,
+      }}
+    >
       <DialogTitle>
         <Title>📧 이메일 보내기</Title>
       </DialogTitle>
@@ -58,7 +73,11 @@ const EmailModal = ({
         <FormContainer>
           <EmailField label="📤 보내는 사람" value={senderEmail} />
           <EmailField label="📥 받는 사람" value={receiverEmail} />
-          <SubjectField value={subject} onChange={handleSubjectChange} />
+          <SubjectField
+            ref={elementRef}
+            value={subject}
+            onChange={handleSubjectChange}
+          />
           <MessageField value={message} onChange={handleMessageChange} />
         </FormContainer>
       </DialogContent>
@@ -79,7 +98,7 @@ const EmailModal = ({
 export default EmailModal;
 
 const StyledDialog = styled(Dialog)({
-  zIndex: 9999,
+  zIndex: 8000,
   "& .MuiDialog-paper": {
     width: "600px",
     maxWidth: "90vw",

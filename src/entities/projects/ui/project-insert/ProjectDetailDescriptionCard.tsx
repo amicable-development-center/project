@@ -45,16 +45,18 @@ AI 기술을 활용하여 개인별 학습 패턴을 분석하고, 최적화된 
 ## 🚀 기대 효과
 - 개인화된 학습으로 학습 효율성 30% 향상
 - 학습 동기 부여 및 지속성 증대`}
-        multiline // 여러 줄 입력 가능
+        multiline
         minRows={large ? 12 : 8}
         maxRows={large ? 20 : 15}
         fullWidth
         variant="outlined"
         sx={{
           "& .MuiOutlinedInput-root": {
-            fontSize: large
-              ? theme.typography.h5.fontSize
-              : theme.typography.body1.fontSize,
+            fontSize: {
+              xs: "15px",
+              sm: "16px",
+              md: "17px",
+            },
             fontFamily: "monospace",
             lineHeight: 1.6,
             padding: 0,
@@ -69,6 +71,19 @@ AI 기술을 활용하여 개인별 학습 패턴을 분석하고, 최적화된 
           "& .MuiOutlinedInput-input": {
             padding: large ? theme.spacing(2.5) : theme.spacing(2),
             resize: "vertical",
+            fontSize: {
+              xs: "15px",
+              sm: "16px",
+              md: "17px",
+            },
+            "&::placeholder": {
+              fontSize: {
+                xs: "15px",
+                sm: "16px",
+                md: "17px",
+              },
+              color: "#999",
+            },
           },
         }}
       />

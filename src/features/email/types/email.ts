@@ -29,7 +29,7 @@ export interface UseEmailFormReturn {
 }
 
 export interface SendEmailRequest {
-  actualSenderEmail: string;
+  senderEmail: string;
   receiverEmail: string;
   projectId: string;
   projectTitle: string;

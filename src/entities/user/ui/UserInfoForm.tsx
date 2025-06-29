@@ -14,6 +14,8 @@ import { type JSX } from "react";
 import { useSignUpForm } from "@entities/user/hooks/useSignUpForm";
 import SubmitButton from "@entities/user/ui/SubmitButton";
 
+import { UserExperience } from "@shared/types/user";
+
 // import { useAuthStore } from "@shared/stores/authStore";
 
 const UserInfoForm = (): JSX.Element => {
@@ -71,9 +73,13 @@ const UserInfoForm = (): JSX.Element => {
           displayEmpty
         >
           <MenuItem value="">경력 선택</MenuItem>
-          <MenuItem value="junior">주니어 (3년 이하)</MenuItem>
-          <MenuItem value="mid">미들 (3년 이상 10년 이하)</MenuItem>
-          <MenuItem value="senior">시니어 (10년 이상)</MenuItem>
+          <MenuItem value={UserExperience.junior}>
+            {UserExperience.junior}
+          </MenuItem>
+          <MenuItem value={UserExperience.mid}>{UserExperience.mid}</MenuItem>
+          <MenuItem value={UserExperience.senior}>
+            {UserExperience.senior}
+          </MenuItem>
         </StyledSelect>
         {errors.experience && <ErrorText>경력을 선택해주세요.</ErrorText>}
       </FormControl>

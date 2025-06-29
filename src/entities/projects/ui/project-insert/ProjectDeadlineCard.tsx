@@ -1,3 +1,5 @@
+import { TextField } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import type { ChangeEvent, CSSProperties, JSX } from "react";
 
 import SimpleFormCard from "@shared/ui/project-insert/SimpleFormCard";
@@ -15,6 +17,8 @@ const ProjectDeadlineCard = ({
   large,
   style,
 }: ProjectDeadlineCardProps): JSX.Element => {
+  const theme = useTheme();
+
   return (
     <SimpleFormCard
       title="모집 마감일"
@@ -23,22 +27,41 @@ const ProjectDeadlineCard = ({
       large={large}
       style={style}
     >
-      <input
+      <TextField
         type="date"
         name="deadline"
         value={value}
         onChange={onChange}
-        style={{
-          width: "100%",
-          padding: large ? 18 : 14,
-          borderRadius: 8,
-          border: "1px solid #e0e0e0",
-          fontSize: 16,
-          marginBottom: 8,
-          fontFamily: "inherit",
-          height: 40,
-          boxSizing: "border-box",
-          background: "inherit",
+        fullWidth
+        variant="outlined"
+        size="small"
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+          },
+        }}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            height: { xs: 40, sm: 48 },
+            fontSize: {
+              xs: "16px",
+              sm: "17px",
+              md: "18px",
+            },
+            fontFamily: theme.typography.fontFamily,
+            background: "none",
+            border: "none",
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.text.primary,
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.main,
+              borderWidth: "2px",
+            },
+          },
+          "& .MuiOutlinedInput-input": {
+            padding: large ? theme.spacing(2.2) : theme.spacing(1.7),
+          },
         }}
         required
       />
