@@ -26,17 +26,17 @@ interface ProjectPositionsCardProps {
 }
 
 const USER_ROLES = [
-  { value: "frontend", label: "프론트엔드 개발자" },
-  { value: "backend", label: "백엔드 개발자" },
-  { value: "fullstack", label: "풀스택 개발자" },
-  { value: "designer", label: "디자이너" },
-  { value: "pm", label: "프로덕트 매니저" },
+  { value: "프론트엔드 개발자", label: "프론트엔드 개발자" },
+  { value: "백엔드 개발자", label: "백엔드 개발자" },
+  { value: "풀스택 개발자", label: "풀스택 개발자" },
+  { value: "디자이너", label: "디자이너" },
+  { value: "프로덕트 매니저", label: "프로덕트 매니저" },
 ];
 
 const EXPERIENCE_OPTIONS = [
-  { value: "junior", label: "주니어 (3년 이하)" },
-  { value: "mid", label: "미들 (3년 이상 10년 이하)" },
-  { value: "senior", label: "시니어 (10년 이상)" },
+  { value: "주니어 (3년 이하)", label: "주니어 (3년 이하)" },
+  { value: "미들 (3년 이상 10년 이하)", label: "미들 (3년 이상 10년 이하)" },
+  { value: "시니어 (10년 이상)", label: "시니어 (10년 이상)" },
 ];
 
 const ProjectPositionsCard = ({
