@@ -141,7 +141,7 @@ const FooterContent = styled(Box)(({ theme }) => ({
   alignItems: "flex-start",
   justifyContent: "space-between",
   gap: theme.spacing(2),
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down(1200)]: {
     flexDirection: "column",
     alignItems: "flex-start",
     gap: theme.spacing(1),
@@ -154,7 +154,7 @@ const LogoSection = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
   gap: 8,
   height: "100%",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down(1200)]: {
     alignItems: "center",
     width: "100%",
     flexDirection: "column",
@@ -166,7 +166,7 @@ const InfoSection = styled(Box)(({ theme }) => ({
   minWidth: 200,
   marginLeft: 16,
   marginTop: 52,
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down(1200)]: {
     marginTop: 0,
     marginLeft: 0,
     textAlign: "center",
